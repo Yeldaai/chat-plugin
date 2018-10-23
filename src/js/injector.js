@@ -57,6 +57,7 @@ class YeldaChat {
    * @return {String} url
   */
   createWebChatURL (data) {
+    let url = data.chatUrl
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
