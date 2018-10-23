@@ -6,7 +6,7 @@ Website Chat Plugin for [yelda.ai](https://yelda.ai)
 Add the yelda package using this command
 ```
  # NPM
- npm install yelda
+ npm install yelda --save
 ```
 
 Use it in your code
