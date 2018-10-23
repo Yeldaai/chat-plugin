@@ -1,9 +1,10 @@
 {
-  "name": "yelda",
-  "version": "1.0.9",
+  "name": "yelda-webchat",
+  "version": "1.0.1",
   "description": "Website Chat Plugin",
   "main": "./dist/js/yelda.min.js",
   "license": "MIT",
+  "homepage": "https://github.com/Yeldaai/chat-plugin",
   "keywords": [
     "yelda",
     "chat",

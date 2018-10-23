@@ -6,13 +6,13 @@ Website Chat Plugin for [yelda.ai](https://yelda.ai)
 Add the yelda package using this command
 ```
  # NPM
- npm install yelda --save
+ npm install yelda-webchat --save
 ```
 
 Use it in your code
 ```
-  import yeldaChat from 'yelda'
-  import 'yelda/dist/css/injector.min.css'
+  import yeldaChat from 'yelda-webchat'
+  import 'yelda-webchat/dist/css/injector.min.css'
 
   yeldaChat.init({
     'assistantSlug': '<assistantSlug>',
