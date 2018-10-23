@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const env = 'production'
 
@@ -53,17 +54,24 @@ let rules = [
 const webpackConfig = {
   mode: 'production',
   entry: {
-    yelda: path.resolve(__dirname, './src/js/injector.js')
+    'yelda': path.resolve(__dirname, './src/js/injector.js'),
+    'yelda.min': path.resolve(__dirname, './src/js/injector.js')
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'js/[name].min.js',
+    filename: 'js/[name].js',
     libraryExport: 'default',
     libraryTarget: 'umd',
     library: 'YeldaChat',
     umdNamedDefine: true
   },
-  devtool: false,
+  devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [new UglifyJsPlugin({
+      include: /\.min\.js$/
+    })]
+  },
   resolve: {
     extensions: ['.js', '.json'],
     alias: {

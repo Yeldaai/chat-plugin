@@ -9,3 +9,5 @@
 #web_chat_frame{width:500px;height:calc(100vh - 100px);opacity:0;transition-duration:1s}
 @media only screen and (min-width:768px){#web_chat_frame{max-height:600px}}
 #web_chat_frame.y_active{opacity:1;margin-bottom:20px}
+
+/*# sourceMappingURL=injector.min.css.map*/
