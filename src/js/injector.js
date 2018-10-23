@@ -56,10 +56,15 @@ class YeldaChat {
    * @param {String} assistantSlug assistant slug
    * @return {String} url
   */
-  createWebChatURL (url, assistantId, assistantSlug, locale) {
-    url = this.updateQueryStringParameter(url, 'assistantId', assistantId)
-    url = this.updateQueryStringParameter(url, 'assistantSlug', assistantSlug)
-    url = this.updateQueryStringParameter(url, 'locale', locale)
+  createWebChatURL (data) {
+    url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
+    url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
+    url = this.updateQueryStringParameter(url, 'locale', data.locale)
+
+    if(data.isAdmin) {
+      url = this.updateQueryStringParameter(url, 'isAdmin', data.isAdmin)
+    }
+
     return url
   }
 
@@ -168,7 +173,7 @@ class YeldaChat {
    * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug }
   */
   setUpChatIFrame (data) {
-    const webchatUrl = this.createWebChatURL(data.chatUrl, data.assistantId, data.assistantSlug, data.locale)
+    const webchatUrl = this.createWebChatURL(data)
     this.webChatIframe = this.createWebChatFrame(webchatUrl)
   }
   /**
@@ -193,6 +198,7 @@ class YeldaChat {
     data.chatPath = data.chatPath || ''
     data.chatUrl = data.assistantUrl + data.chatPath
     data.locale = data.locale || 'fr_FR'
+    data.isAdmin = data.isAdmin ? true : false
     return data
   }
 
