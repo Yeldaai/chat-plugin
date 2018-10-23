@@ -19,7 +19,8 @@ Use it in your code
     'assistantId': '<assistantId>',
     'assistantUrl': '<assistantUrl>',
     'chatPath': '<chatPath>',
-    'locale': '<locale>'
+    'locale': '<locale>',
+    'isAdmin': true | false //used to see the NLP logs
   })
 ```
 
