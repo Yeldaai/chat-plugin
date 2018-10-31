@@ -577,20 +577,29 @@ var YeldaChat = function () {
         this.webChatContainer = document.getElementById('yelda_container');
       }
 
+      this.webchatUrlTest = url;
       // Iframe creation
       // Parent div to contain the iframe. To allow css animation on iframe
-      this.iframeContainer = document.createElement('div');
-      this.iframeContainer.setAttribute('id', 'yelda_iframe_container');
-      this.iframeContainer.setAttribute('class', 'yelda_iframe_container');
-      this.iframeContainer.style.cssText = 'display: none;';
-      this.webChatContainer.appendChild(this.iframeContainer);
+      if (!this.iframeContainer) {
+        this.iframeContainer = document.createElement('div');
+        this.iframeContainer.setAttribute('id', 'yelda_iframe_container');
+        this.iframeContainer.setAttribute('class', 'yelda_iframe_container');
+        this.iframeContainer.style.cssText = 'display: none;';
+        this.webChatContainer.appendChild(this.iframeContainer);
+      }
 
-      var iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.id = 'web_chat_frame';
-      iframe.name = 'frame';
-      iframe.style.border = '0';
-      this.iframeContainer.appendChild(iframe);
+      var iframe = void 0;
+
+      if (!this.webChatIframe) {
+        iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.id = 'web_chat_frame';
+        iframe.name = 'frame';
+        iframe.style.border = '0';
+        this.iframeContainer.appendChild(iframe);
+      } else {
+        iframe = document.getElementById('web_chat_frame');
+      }
 
       return iframe;
     }
@@ -711,7 +720,7 @@ var YeldaChat = function () {
   }, {
     key: 'formatData',
     value: function formatData(data) {
-      data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai';
+      data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/';
       data.chatPath = data.chatPath || '';
       data.chatUrl = data.assistantUrl + data.chatPath;
       data.locale = data.locale || 'fr_FR';
@@ -728,7 +737,12 @@ var YeldaChat = function () {
     key: 'setupChat',
     value: function setupChat(data) {
       data = this.formatData(data);
-      //this.loadCssAsync(data.assistantUrl)
+
+      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+        return null;
+      }
+
+      // this.loadCssAsync(data.assistantUrl)
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
@@ -749,6 +763,10 @@ var YeldaChat = function () {
     key: 'init',
     value: function init(data) {
       var _this2 = this;
+
+      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+        return null;
+      }
 
       window.onload = function (e) {
         _this2.setupChat(data);
