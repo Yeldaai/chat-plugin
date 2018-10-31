@@ -82,18 +82,26 @@ class YeldaChat {
 
     // Iframe creation
     // Parent div to contain the iframe. To allow css animation on iframe
-    this.iframeContainer = document.createElement('div')
-    this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
-    this.iframeContainer.setAttribute('class', 'yelda_iframe_container')
-    this.iframeContainer.style.cssText = 'display: none;'
-    this.webChatContainer.appendChild(this.iframeContainer)
+    if (!this.iframeContainer) {
+      this.iframeContainer = document.createElement('div')
+      this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
+      this.iframeContainer.setAttribute('class', 'yelda_iframe_container')
+      this.iframeContainer.style.cssText = 'display: none;'
+      this.webChatContainer.appendChild(this.iframeContainer)
+    }
 
-    var iframe = document.createElement('iframe')
-    iframe.src = url
-    iframe.id = 'web_chat_frame'
-    iframe.name = 'frame'
-    iframe.style.border = '0'
-    this.iframeContainer.appendChild(iframe)
+    let iframe
+
+    if(!this.webChatIframe) {
+      iframe = document.createElement('iframe')
+      iframe.src = url
+      iframe.id = 'web_chat_frame'
+      iframe.name = 'frame'
+      iframe.style.border = '0'
+      this.iframeContainer.appendChild(iframe)
+    } else {
+      iframe = document.getElementById('web_chat_frame')
+    }
 
     return iframe
   }
@@ -106,7 +114,7 @@ class YeldaChat {
       target.dispatchEvent(new Event(event))
     } else {
       // This will be executed on old browsers and especially IE
-      var customEvent = window.document.createEvent('UIEvents')
+      const customEvent = window.document.createEvent('UIEvents')
       customEvent.initUIEvent(event, true, false, window, 0)
       target.dispatchEvent(customEvent)
     }
@@ -116,11 +124,11 @@ class YeldaChat {
    * handles communcation between parent window and iframe
   */
   handleFrameListner () {
-    var eventMethod = window.addEventListener
+    const eventMethod = window.addEventListener
       ? 'addEventListener'
       : 'attachEvent'
-    var eventer = window[eventMethod]
-    var messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
+    const eventer = window[eventMethod]
+    const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
     eventer(messageEvent, (e) => {
       if (e.data === 'closeChat' || e.message === 'closeChat') {
         document.getElementById('web_chat_frame').classList.remove('y_active')
@@ -159,8 +167,8 @@ class YeldaChat {
   */
 
   loadCssAsync (origin) {
-    var head = document.getElementsByTagName('head')[0]
-    var yeldaCss = document.createElement('link')
+    const head = document.getElementsByTagName('head')[0]
+    const yeldaCss = document.createElement('link')
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
@@ -195,7 +203,7 @@ class YeldaChat {
    * @param {Object} data
   */
   formatData (data) {
-    data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai'
+    data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/'
     data.chatPath = data.chatPath || ''
     data.chatUrl = data.assistantUrl + data.chatPath
     data.locale = data.locale || 'fr_FR'
@@ -209,7 +217,12 @@ class YeldaChat {
   */
   setupChat (data) {
     data = this.formatData(data)
-    //this.loadCssAsync(data.assistantUrl)
+
+    if(data.assistantId === undefined || data.assistantSlug === undefined) {
+      return null
+    }
+
+    // this.loadCssAsync(data.assistantUrl)
     this.createContainer()
     this.addAssistantImage()
     this.setUpChatIFrame(data)
@@ -222,7 +235,7 @@ class YeldaChat {
         document.getElementById('assistant_img').style.display = 'none'
         document.getElementById('yelda_iframe_container').style.display = 'block'
         document.getElementById('web_chat_frame').classList.add('y_active')
-        var frame = document.getElementById('web_chat_frame')
+        const frame = document.getElementById('web_chat_frame')
         frame.contentWindow.postMessage('openChat', '*')
       })
 
@@ -230,6 +243,10 @@ class YeldaChat {
   }
 
   init (data) {
+    if(data.assistantId === undefined || data.assistantSlug === undefined) {
+      return null
+    }
+
     window.onload = (e) => {
       this.setupChat(data)
     }
