@@ -577,7 +577,6 @@ var YeldaChat = function () {
         this.webChatContainer = document.getElementById('yelda_container');
       }
 
-      this.webchatUrlTest = url;
       // Iframe creation
       // Parent div to contain the iframe. To allow css animation on iframe
       if (!this.iframeContainer) {
