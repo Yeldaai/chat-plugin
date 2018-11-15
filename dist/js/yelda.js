@@ -703,8 +703,12 @@ var YeldaChat = function () {
 
   }, {
     key: 'resetChat',
-    value: function resetChat(data, container) {
-      container.remove(); // Remove the element from the DOM tree its belongs
+    value: function resetChat(data) {
+      if (this.iframeContainer) {
+        this.iframeContainer.remove(); // Remove the element from the DOM tree its belongs
+      }
+
+      this.iframeContainer = null;
       data = this.formatData(data);
       this.setUpChatIFrame(data);
       document.getElementById('assistant_img').style.display = 'block';
