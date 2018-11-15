@@ -92,7 +92,7 @@ class YeldaChat {
 
     let iframe
 
-    if(!this.webChatIframe) {
+    if (!this.webChatIframe) {
       iframe = document.createElement('iframe')
       iframe.src = url
       iframe.id = 'web_chat_frame'
@@ -196,6 +196,7 @@ class YeldaChat {
     }
 
     this.iframeContainer = null
+    this.webChatIframe = null
     data = this.formatData(data)
     this.setUpChatIFrame(data)
     document.getElementById('assistant_img').style.display = 'block'
