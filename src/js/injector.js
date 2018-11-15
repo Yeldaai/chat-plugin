@@ -190,8 +190,12 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.chatPath }
    * @param {Element} container webchat container
   */
-  resetChat (data, container) {
-    container.remove() // Remove the element from the DOM tree its belongs
+  resetChat (data) {
+    if (this.iframeContainer) {
+      this.iframeContainer.remove() // Remove the element from the DOM tree its belongs
+    }
+
+    this.iframeContainer = null
     data = this.formatData(data)
     this.setUpChatIFrame(data)
     document.getElementById('assistant_img').style.display = 'block'
