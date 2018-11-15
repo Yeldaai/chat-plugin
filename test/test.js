@@ -151,4 +151,20 @@ describe('YeldaChat', () => {
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
+
+  describe('yeldaChat.resetChat', () => {
+    it('iframeContainer should not be empty after reset', () => {
+      const mockData = {
+        'assistantSlug': 'testClient',
+        'assistantId': '12345678',
+        'chatUrl': 'https://app.yelda.ai/chat',
+        'locale': 'fr_FR',
+        'isAdmin': true
+      }
+
+      yeldaChat.resetChat(mockData)
+
+      document.querySelector('#yelda_iframe_container').should.exist
+    })
+  })
 })
