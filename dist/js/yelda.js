@@ -709,6 +709,7 @@ var YeldaChat = function () {
       }
 
       this.iframeContainer = null;
+      this.webChatIframe = null;
       data = this.formatData(data);
       this.setUpChatIFrame(data);
       document.getElementById('assistant_img').style.display = 'block';
