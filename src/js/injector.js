@@ -41,6 +41,11 @@ class YeldaChat {
       this.webChatContainer = document.getElementById('yelda_container')
     }
 
+    // Removed the Assistant Img element if already rendered in the DOM
+    if(document.getElementById('assistant_img')) {
+      document.getElementById('assistant_img').remove()
+    }
+
     // Assistant Image Creation
     this.assistantImage = document.createElement('div')
     this.assistantImage.setAttribute('id', 'assistant_img')
