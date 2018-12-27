@@ -6,7 +6,7 @@ Yelda Website Chat Plugin is a library that enables your website to load [yelda.
 
 ![Demo](screencast-yelda.gif "Demo")
 
-# Using Package Managers
+# Load the library using Node Packages Manager
 
 ## System requirement
 Node.JS 8+
@@ -17,49 +17,42 @@ Install with npm
  npm install yelda-webchat --save
 ```
 
-## Usage
-Import yeldaChat lib and injector.min.css and initialize the lib with the Yelda provided elements
-- assistantSlug
-- assistantId
-- assistantUrl : `https://app.yelda.ai`
-- chatPath : `/chat`
-- locale : `fr_FR`
-
+## Import js and css files in your JavaScript
+Import yeldaChat lib and injector.min.css
 ```javascript
   import yeldaChat from 'yelda-webchat'
   import 'yelda-webchat/dist/css/injector.min.css'
-
-  yeldaChat.init({
-    'assistantSlug': '<assistantSlug>',
-    'assistantId': '<assistantId>',
-    'assistantUrl': '<assistantUrl>',
-    'chatPath': '<chatPath>',
-    'locale': '<locale>',
-    'isAdmin': true | false // Used to see the NLP logs
-  })
 ```
 
-# Using script tags
-
-## Usage
-
-Add the style using the link tag in the webpage <head> tag
+## Load js and css files using script and link tags
+Add the style using the `<link>` tag in the webpage `<head>` tag
 
 ```html
   <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/injector.min.css"/>
 ```
 
-Add the script tag before closing the <body> tag of the same webpage
+Add the script tag before closing the `<body>` tag of the same webpage
 ```html
   <script type="text/javascript" src="/node_modules/yelda/dist/js/yelda.min.js"></script>
 ```
 
-Initialize the lib with the Yelda provided elements :
+Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)  
+
+```html
+  <link rel="stylesheet" type="text/css" href="https://app.yelda.ai/static/css/injector.min.css"/>
+```
+```html
+  <script type="text/javascript" src="https://app.yelda.ai/static/js/yelda.min.js"></script>
+```
+
+## Init the library
+Initialize the lib with the Yelda provided elements
 - assistantSlug
 - assistantId
 - assistantUrl : `https://app.yelda.ai`
 - chatPath : `/chat`
 - locale : `fr_FR`
+- isAdmin : false (set to true only for intent analysis)
 
 ```javascript
   yeldaChat.init({
