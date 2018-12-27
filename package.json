@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "webpack -p",
+    "prepack": "npm run build && npm run test",
     "test": "mocha"
   },
   "devDependencies": {
