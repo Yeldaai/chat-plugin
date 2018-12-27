@@ -320,7 +320,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.1' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -531,6 +531,11 @@ var YeldaChat = function () {
     value: function addAssistantImage() {
       if (!this.webChatContainer) {
         this.webChatContainer = document.getElementById('yelda_container');
+      }
+
+      // Removed the Assistant Img element if already rendered in the DOM
+      if (document.getElementById('assistant_img')) {
+        document.getElementById('assistant_img').remove();
       }
 
       // Assistant Image Creation
