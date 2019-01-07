@@ -303,23 +303,6 @@ var YeldaChat = function () {
         this.webChatContainer.classList.remove('yelda_mobile');
       }
     }
-    /**
-     * Load CSS asynchroneously
-     * @param {String} origin to retrive css
-    */
-
-  }, {
-    key: 'loadCssAsync',
-    value: function loadCssAsync(origin) {
-      var head = document.getElementsByTagName('head')[0];
-      var yeldaCss = document.createElement('link');
-      yeldaCss.rel = 'stylesheet';
-      yeldaCss.type = 'text/css';
-      yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = origin + '/static/css/injector.min.css';
-      yeldaCss.media = 'all';
-      head.appendChild(yeldaCss);
-    }
 
     /**
      * Gererate webchatURL and create webchatIframe
@@ -385,7 +368,6 @@ var YeldaChat = function () {
         return null;
       }
 
-      this.loadCssAsync(data.assistantUrl);
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
@@ -654,7 +636,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.1' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
