@@ -42,7 +42,7 @@ Initialize the lib with the Yelda provided elements
 - chatPath : `/chat`
 - locale : `fr_FR`
 - isAdmin : false (set to true only for intent analysis)
-- openOnLoad : false
+- shouldBeOpened : false
 
 ```javascript
   yeldaChat.init({
@@ -52,7 +52,7 @@ Initialize the lib with the Yelda provided elements
     'chatPath': '<chatPath>',
     'locale': '<locale>',
     'isAdmin': true | false, // Used to see the NLP logs
-    'openOnLoad': true | false // open the chat window by default on loading the page if set to true
+    'shouldBeOpened': true | false // open the chat window by default on loading the page if set to true
   })
 ```
 

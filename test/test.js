@@ -110,10 +110,10 @@ describe('YeldaChat', () => {
         'chatUrl': 'https://app.yelda.ai/chat',
         'locale': 'fr_FR',
         'isAdmin': true,
-        'openOnLoad': true
+        'shouldBeOpened': true
       }
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&openOnLoad=true&isAdmin=true'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&shouldBeOpened=true&isAdmin=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
   })
@@ -148,7 +148,7 @@ describe('YeldaChat', () => {
     })
 
     it('webChatIframe should have attribute url', () => {
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&openOnLoad=false'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&shouldBeOpened=false'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
