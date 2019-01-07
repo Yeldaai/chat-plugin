@@ -316,7 +316,7 @@ var YeldaChat = function () {
       yeldaCss.rel = 'stylesheet';
       yeldaCss.type = 'text/css';
       yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = origin + '/yelda/css/injector.min.css';
+      yeldaCss.href = '/node_modules/yelda-webchat/dist/css/yeldaWebchatInjector.min.css';
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
@@ -385,7 +385,7 @@ var YeldaChat = function () {
         return null;
       }
 
-      // this.loadCssAsync(data.assistantUrl)
+      this.loadCssAsync(data.assistantUrl);
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
