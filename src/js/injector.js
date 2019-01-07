@@ -66,6 +66,7 @@ class YeldaChat {
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
+    url = this.updateQueryStringParameter(url, 'openOnLoad', data.openOnLoad)
 
     if(data.isAdmin) {
       url = this.updateQueryStringParameter(url, 'isAdmin', data.isAdmin)
@@ -218,6 +219,8 @@ class YeldaChat {
     data.chatUrl = data.assistantUrl + data.chatPath
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
+    data.openOnLoad = data.openOnLoad ? true : false
+
     return data
   }
 
