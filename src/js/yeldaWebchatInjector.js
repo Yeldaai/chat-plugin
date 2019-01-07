@@ -169,16 +169,15 @@ class YeldaChat {
   }
   /**
    * Load CSS asynchroneously
-   * @param {String} origin domain url
   */
 
-  loadCssAsync (origin) {
+  loadCssAsync () {
     const head = document.getElementsByTagName('head')[0]
     const yeldaCss = document.createElement('link')
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = origin + '/yelda/css/injector.min.css'
+    yeldaCss.href = '/node_modules/yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
     yeldaCss.media = 'all'
     head.appendChild(yeldaCss)
   }
@@ -235,7 +234,7 @@ class YeldaChat {
       return null
     }
 
-    // this.loadCssAsync(data.assistantUrl)
+    this.loadCssAsync()
     this.createContainer()
     this.addAssistantImage()
     this.setUpChatIFrame(data)
