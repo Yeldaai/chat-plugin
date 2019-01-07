@@ -305,12 +305,11 @@ var YeldaChat = function () {
     }
     /**
      * Load CSS asynchroneously
-     * @param {String} origin domain url
     */
 
   }, {
     key: 'loadCssAsync',
-    value: function loadCssAsync(origin) {
+    value: function loadCssAsync() {
       var head = document.getElementsByTagName('head')[0];
       var yeldaCss = document.createElement('link');
       yeldaCss.rel = 'stylesheet';
@@ -385,7 +384,7 @@ var YeldaChat = function () {
         return null;
       }
 
-      this.loadCssAsync(data.assistantUrl);
+      this.loadCssAsync();
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
