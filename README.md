@@ -21,28 +21,17 @@ Install with npm
 Import yeldaChat lib and injector.min.css
 ```javascript
   import yeldaChat from 'yelda-webchat'
-  import 'yelda-webchat/dist/css/injector.min.css'
 ```
 
-## Load js and css files using script and link tags
-Add the style using the `<link>` tag in the webpage `<head>` tag
-
-```html
-  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/injector.min.css"/>
-```
-
+## Load js using script and link tags
 Add the script tag before closing the `<body>` tag of the same webpage
 ```html
-  <script type="text/javascript" src="/node_modules/yelda/dist/js/yelda.min.js"></script>
+  <script type="text/javascript" src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"></script>
 ```
 
-Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)  
-
+Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)
 ```html
-  <link rel="stylesheet" type="text/css" href="https://app.yelda.ai/static/css/injector.min.css"/>
-```
-```html
-  <script type="text/javascript" src="https://app.yelda.ai/static/js/yelda.min.js"></script>
+  <script type="text/javascript" src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"></script>
 ```
 
 ## Init the library
@@ -53,6 +42,7 @@ Initialize the lib with the Yelda provided elements
 - chatPath : `/chat`
 - locale : `fr_FR`
 - isAdmin : false (set to true only for intent analysis)
+- openOnLoad : false
 
 ```javascript
   yeldaChat.init({
@@ -61,7 +51,8 @@ Initialize the lib with the Yelda provided elements
     'assistantUrl': '<assistantUrl>',
     'chatPath': '<chatPath>',
     'locale': '<locale>',
-    'isAdmin': true | false // Used to see the NLP logs
+    'isAdmin': true | false, // Used to see the NLP logs
+    'openOnLoad': true | false // open the chat window by default on loading the page if set to true
   })
 ```
 
