@@ -24,7 +24,7 @@ describe('YeldaChat', () => {
   global.window = window
   global.document = window.document
 
-  const yeldaChat = require('../dist/js/yelda.min')
+  const yeldaChat = require('../dist/js/yeldaWebchatInjector.min')
 
   // yeldaChat should be a object and yeldaChat.init should be a typeof function
   it('should return typeof object', (done) => {
@@ -109,10 +109,11 @@ describe('YeldaChat', () => {
         'assistantId': '12345678',
         'chatUrl': 'https://app.yelda.ai/chat',
         'locale': 'fr_FR',
-        'isAdmin': true
+        'isAdmin': true,
+        'openOnLoad': true
       }
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&isAdmin=true'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&openOnLoad=true&isAdmin=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
   })
@@ -147,7 +148,7 @@ describe('YeldaChat', () => {
     })
 
     it('webChatIframe should have attribute url', () => {
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&openOnLoad=false'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
