@@ -305,17 +305,18 @@ var YeldaChat = function () {
     }
     /**
      * Load CSS asynchroneously
+     * @param {String} origin to retrive css
     */
 
   }, {
     key: 'loadCssAsync',
-    value: function loadCssAsync() {
+    value: function loadCssAsync(origin) {
       var head = document.getElementsByTagName('head')[0];
       var yeldaCss = document.createElement('link');
       yeldaCss.rel = 'stylesheet';
       yeldaCss.type = 'text/css';
       yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = '/node_modules/yelda-webchat/dist/css/yeldaWebchatInjector.min.css';
+      yeldaCss.href = origin + '/static/css/injector.css';
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
@@ -384,7 +385,7 @@ var YeldaChat = function () {
         return null;
       }
 
-      this.loadCssAsync();
+      this.loadCssAsync(data.assistantUrl);
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
