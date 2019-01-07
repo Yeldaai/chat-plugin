@@ -178,7 +178,7 @@ class YeldaChat {
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = origin + '/static/css/injector.css'
+    yeldaCss.href = origin + '/static/css/injector.min.css'
     yeldaCss.media = 'all'
     head.appendChild(yeldaCss)
   }
