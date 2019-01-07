@@ -54,8 +54,8 @@ let rules = [
 const webpackConfig = {
   mode: 'production',
   entry: {
-    'yelda': path.resolve(__dirname, './src/js/injector.js'),
-    'yelda.min': path.resolve(__dirname, './src/js/injector.js')
+    'yeldaWebchatInjector': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js'),
+    'yeldaWebchatInjector.min': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js')
   },
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -88,15 +88,15 @@ const webpackConfig = {
     }),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, './src/css/injector.css'),
-        to: path.resolve(__dirname, './dist/css/injector.css'),
+        from: path.resolve(__dirname, './src/css/yeldaWebchatInjector.css'),
+        to: path.resolve(__dirname, './dist/css/yeldaWebchatInjector.css'),
         ignore: ['.*']
       }
     ]),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: 'css/injector.min.css',
+      filename: 'css/yeldaWebchatInjector.min.css',
       chunkFilename: '[id].css'
     }),
     // keep module.id stable when vendor modules does not change

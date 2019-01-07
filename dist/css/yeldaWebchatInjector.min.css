@@ -1,0 +1,13 @@
+@import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
+.yelda_container{position:fixed;right:0;bottom:0;z-index:2147483647}
+.yelda_mobile{right:0;bottom:0}
+.assistant_img{color:white;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1);font-size:32px;border-radius:50%;height:60px;width:60px;text-align:center;line-height:64px;cursor:pointer;box-shadow:0 5px 10px rgba(0,0,0,0.16);margin-bottom:20px;margin-right:35px}
+.assistant_img i{opacity:.93;font-size:32px !important}
+.assistant_img:hover{font-size:35px !important;line-height:65px;height:60px;width:60px;animation-name:fonta;animation-duration:300ms}
+.assistant_img:hover i{font-size:35px !important;animation-name:fonta;animation-duration:300ms;opacity:1}
+@keyframes fonta{from{font-size:32px}to{font-size:35px}}
+#web_chat_frame{width:500px;height:calc(100vh - 100px);opacity:0;transition-duration:1s}
+@media only screen and (min-width:768px){#web_chat_frame{max-height:600px}}
+#web_chat_frame.y_active{opacity:1;margin-bottom:20px}
+
+/*# sourceMappingURL=yeldaWebchatInjector.min.css.map*/

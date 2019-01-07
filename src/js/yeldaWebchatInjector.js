@@ -1,4 +1,4 @@
-import '../css/injector.css'
+import '../css/yeldaWebchatInjector.css'
 
 class YeldaChat {
   /**
