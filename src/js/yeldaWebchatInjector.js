@@ -167,6 +167,7 @@ class YeldaChat {
       this.webChatContainer.classList.remove('yelda_mobile')
     }
   }
+  
   /**
    * Load CSS asynchroneously
    * @param {String} origin to retrive css
