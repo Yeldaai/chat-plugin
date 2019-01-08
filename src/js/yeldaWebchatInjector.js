@@ -167,6 +167,22 @@ class YeldaChat {
       this.webChatContainer.classList.remove('yelda_mobile')
     }
   }
+  
+  /**
+   * Load CSS asynchroneously
+   * @param {String} origin to retrive css
+  */
+
+  loadCssAsync (origin) {
+    const head = document.getElementsByTagName('head')[0]
+    const yeldaCss = document.createElement('link')
+    yeldaCss.rel = 'stylesheet'
+    yeldaCss.type = 'text/css'
+    yeldaCss.crossorigin = 'anonymous'
+    yeldaCss.href = origin + '/static/css/injector.min.css'
+    yeldaCss.media = 'all'
+    head.appendChild(yeldaCss)
+  }
 
   /**
    * Gererate webchatURL and create webchatIframe
@@ -209,6 +225,35 @@ class YeldaChat {
     return data
   }
 
+  isStyleSheetLoaded () {
+    const sheets = document.styleSheets
+    let isFound = false
+    const cssSelector = '.assistant_img i' // Used to check style sheet loaded or not
+
+    if (typeof sheets != 'undefined' && sheets.length) {
+      sheetsLoop:
+      for (let i = 0; i < sheets.length; i++) {
+        const sheet = document.styleSheets[i];
+
+        try {
+          const rules = sheet.cssRules
+          if (typeof rules != 'undefined') {
+            for (let j = 0; j < rules.length; j++) {
+              if (typeof rules[j].selectorText != 'undefined' && rules[j].selectorText === cssSelector) {
+                isFound = true
+                break sheetsLoop
+              }
+            }
+          }
+        }
+        catch (e) {
+          continue
+        }
+      }
+    }
+
+    return isFound
+  }
   /**
    * Initilize the chat window
    * @param {object} data
@@ -218,6 +263,11 @@ class YeldaChat {
 
     if(data.assistantId === undefined || data.assistantSlug === undefined) {
       return null
+    }
+
+    // Load Async css only if style sheet not found
+    if ( ! this.isStyleSheetLoaded()) {
+      this.loadCssAsync(data.assistantUrl)
     }
 
     this.createContainer()

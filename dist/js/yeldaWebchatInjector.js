@@ -305,6 +305,23 @@ var YeldaChat = function () {
     }
 
     /**
+     * Load CSS asynchroneously
+     * @param {String} origin to retrive css
+    */
+
+  }, {
+    key: 'loadCssAsync',
+    value: function loadCssAsync(origin) {
+      var head = document.getElementsByTagName('head')[0];
+      var yeldaCss = document.createElement('link');
+      yeldaCss.rel = 'stylesheet';
+      yeldaCss.type = 'text/css';
+      yeldaCss.crossorigin = 'anonymous';
+      yeldaCss.href = origin + '/static/css/injector.min.css';
+      yeldaCss.media = 'all';
+      head.appendChild(yeldaCss);
+    }
+    /**
      * Gererate webchatURL and create webchatIframe
      * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug }
     */
@@ -353,7 +370,35 @@ var YeldaChat = function () {
 
       return data;
     }
+  }, {
+    key: 'isStyleSheetLoaded',
+    value: function isStyleSheetLoaded() {
+      var sheets = document.styleSheets;
+      var isFound = false;
+      var cssSelector = '.assistant_img i'; // Used to check style sheet loaded or not
 
+      if (typeof sheets != 'undefined' && sheets.length) {
+        sheetsLoop: for (var i = 0; i < sheets.length; i++) {
+          var sheet = document.styleSheets[i];
+
+          try {
+            var rules = sheet.cssRules;
+            if (typeof rules != 'undefined') {
+              for (var j = 0; j < rules.length; j++) {
+                if (typeof rules[j].selectorText != 'undefined' && rules[j].selectorText === cssSelector) {
+                  isFound = true;
+                  break sheetsLoop;
+                }
+              }
+            }
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+
+      return isFound;
+    }
     /**
      * Initilize the chat window
      * @param {object} data
@@ -368,6 +413,11 @@ var YeldaChat = function () {
         return null;
       }
 
+      // Load Async css only if style sheet not found
+      if (!this.isStyleSheetLoaded()) {
+        this.loadCssAsync(data.assistantUrl);
+      }
+      
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
@@ -636,7 +686,8 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.5.7' };
+
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 

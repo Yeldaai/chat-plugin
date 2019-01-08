@@ -24,22 +24,18 @@ Import yeldaChat lib and yeldaWebchatInjector.min.css
   import 'yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
 ```
 
-## Load js and css files using script and link tags
-Add the style using the `<link>` tag in the webpage `<head>` tag
-
-```html
-  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"/>
-```
-
+## Load js using script and link tags
 Add the script tag before closing the `<body>` tag of the same webpage
 ```html
   <script type="text/javascript" src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"></script>
 ```
 
-Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)
+Add the style using the <link> tag in the webpage <head> tag
 ```html
-  <link rel="stylesheet" type="text/css" href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"/>
 ```
+
+Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)
 ```html
   <script type="text/javascript" src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"></script>
 ```
