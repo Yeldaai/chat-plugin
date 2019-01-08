@@ -370,7 +370,35 @@ var YeldaChat = function () {
 
       return data;
     }
+  }, {
+    key: 'isStyleSheetLoaded',
+    value: function isStyleSheetLoaded() {
+      var sheets = document.styleSheets;
+      var isFound = false;
+      var cssSelector = '.assistant_img i'; // Used to check style sheet loaded or not
 
+      if (typeof sheets != 'undefined' && sheets.length) {
+        sheetsLoop: for (var i = 0; i < sheets.length; i++) {
+          var sheet = document.styleSheets[i];
+
+          try {
+            var rules = sheet.cssRules;
+            if (typeof rules != 'undefined') {
+              for (var j = 0; j < rules.length; j++) {
+                if (typeof rules[j].selectorText != 'undefined' && rules[j].selectorText === cssSelector) {
+                  isFound = true;
+                  break sheetsLoop;
+                }
+              }
+            }
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+
+      return isFound;
+    }
     /**
      * Initilize the chat window
      * @param {object} data
@@ -385,7 +413,11 @@ var YeldaChat = function () {
         return null;
       }
 
-      this.loadCssAsync(data.assistantUrl);
+      // Load Async css only if style sheet not found
+      if (!this.isStyleSheetLoaded()) {
+        this.loadCssAsync(data.assistantUrl);
+      }
+
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
