@@ -37,9 +37,6 @@ Add the style using the <link> tag in the webpage <head> tag
 
 Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)
 ```html
-  <link rel="stylesheet" type="text/css" href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css"/>
-```
-```html
   <script type="text/javascript" src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"></script>
 ```
 
