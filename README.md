@@ -21,6 +21,7 @@ Install with npm
 Import yeldaChat lib and injector.min.css
 ```javascript
   import yeldaChat from 'yelda-webchat'
+  import 'yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
 ```
 
 ## Load js using script and link tags
