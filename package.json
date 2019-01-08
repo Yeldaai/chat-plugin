@@ -1,8 +1,8 @@
 {
   "name": "yelda-webchat",
-  "version": "1.0.10",
+  "version": "1.0.13",
   "description": "Website Chat Plugin",
-  "main": "./dist/js/yelda.min.js",
+  "main": "./dist/js/yeldaWebchatInjector.min.js",
   "license": "MIT",
   "homepage": "https://github.com/Yeldaai/chat-plugin",
   "keywords": [
@@ -12,7 +12,7 @@
     "chatWindow"
   ],
   "scripts": {
-    "build": "webpack -p",
+    "build": "rimraf dist && webpack -p",
     "prepack": "npm run build && npm run test",
     "test": "mocha"
   },
@@ -42,10 +42,11 @@
     "postcss-import": "^12.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-url": "^8.0.0",
+    "rimraf": "^2.6.3",
     "style-loader": "^0.22.1",
-    "uglifyjs-webpack-plugin": "^2.0.1",
+    "uglifyjs-webpack-plugin": "^2.1.1",
     "url-loader": "^1.1.1",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.2"
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1"
   }
 }

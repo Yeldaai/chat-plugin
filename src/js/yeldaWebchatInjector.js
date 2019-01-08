@@ -167,20 +167,6 @@ class YeldaChat {
       this.webChatContainer.classList.remove('yelda_mobile')
     }
   }
-  /**
-   * Load CSS asynchroneously
-  */
-
-  loadCssAsync () {
-    const head = document.getElementsByTagName('head')[0]
-    const yeldaCss = document.createElement('link')
-    yeldaCss.rel = 'stylesheet'
-    yeldaCss.type = 'text/css'
-    yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = '/node_modules/yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
-    yeldaCss.media = 'all'
-    head.appendChild(yeldaCss)
-  }
 
   /**
    * Gererate webchatURL and create webchatIframe
@@ -234,7 +220,6 @@ class YeldaChat {
       return null
     }
 
-    this.loadCssAsync()
     this.createContainer()
     this.addAssistantImage()
     this.setUpChatIFrame(data)
