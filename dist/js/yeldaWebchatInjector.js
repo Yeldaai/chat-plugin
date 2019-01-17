@@ -321,6 +321,7 @@ var YeldaChat = function () {
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
+
     /**
      * Gererate webchatURL and create webchatIframe
      * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug }
@@ -417,7 +418,7 @@ var YeldaChat = function () {
       if (!this.isStyleSheetLoaded()) {
         this.loadCssAsync(data.assistantUrl);
       }
-      
+
       this.createContainer();
       this.addAssistantImage();
       this.setUpChatIFrame(data);
@@ -687,7 +688,6 @@ exports.default = function () {
 /***/ (function(module, exports) {
 
 var core = module.exports = { version: '2.5.7' };
-
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 

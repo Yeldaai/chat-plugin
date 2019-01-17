@@ -1,15 +1,9 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
 
-.yelda_container{
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  z-index: 2147483647;
-}
+
 
 .yelda_mobile{
-  right: 0;
-  bottom: 0;
+
 }
 
 .assistant_img{
@@ -57,15 +51,45 @@
 }
 
 #web_chat_frame{
-  width: 500px;
-  height: calc(100vh - 100px);
+
   opacity: 0;
-  transition-duration: 1s;
+
 }
 
 @media only screen and (min-width: 768px) {
+  .yelda_container{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 2147483647;
+  }
+
   #web_chat_frame {
+    width: 430px;
+    height: calc(100vh - 170px);
     max-height: 600px;
+    box-shadow: 0 5px 32px rgba(0,0,0,.16);
+    border-radius: 6px;
+    transition-duration: 1s;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+
+  .yelda_container{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 2147483647;
+    top: 0;
+    left: 0;
+  }
+
+  #web_chat_frame {
+  }
+
+  .header a{
+    display: none;
   }
 }
 
