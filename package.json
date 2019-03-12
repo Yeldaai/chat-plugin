@@ -11,6 +11,10 @@
     "ai",
     "chatWindow"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Yeldaai/chat-plugin.git"
+  },
   "scripts": {
     "build": "rimraf dist && webpack -p",
     "prepack": "npm run build && npm run test",

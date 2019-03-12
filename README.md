@@ -4,7 +4,7 @@ Yelda Website Chat Plugin
 # Introduction
 Yelda Website Chat Plugin is a library that enables your website to load [yelda.ai](https://yelda.ai) webchat in an iframe integrated into your website
 
-![Demo](screencast-yelda.gif "Demo")
+![Demo](https://github.com/Yeldaai/chat-plugin/blob/master/screencast-yelda.gif?raw=true "Demo")
 
 # Load the library using Node Packages Manager
 
