@@ -63,7 +63,7 @@ yarn.lock
 .postcssrc.js
 
 #webpack config
-webpack.config.js 
+webpack.config.js
 
 # dotenv environment variables file
 .env
@@ -71,15 +71,15 @@ webpack.config.js
 # next.js build output
 .next
 
+# issue templates
+.github
+
 # images
 *.jpg
 *.jpeg
-*.gif
 *.png
 
 # editor files
 .editorconfig
 .eslintrc
 .babelrc
-
-
