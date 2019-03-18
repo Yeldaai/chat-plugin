@@ -137,7 +137,7 @@ class YeldaChat {
     const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
     eventer(messageEvent, (e) => {
       if (e.data === 'closeChat' || e.message === 'closeChat') {
-        document.getElementById('web_chat_frame').classList.remove('y_active')
+        document.getElementById('yelda_iframe_container').classList.remove('y_active')
         setTimeout(function () {
           document.getElementById('assistant_img').style.display = 'block'
           document.getElementById('yelda_iframe_container').style.display = 'none'
@@ -281,7 +281,7 @@ class YeldaChat {
       .addEventListener('click', function (e) {
         document.getElementById('assistant_img').style.display = 'none'
         document.getElementById('yelda_iframe_container').style.display = 'block'
-        document.getElementById('web_chat_frame').classList.add('y_active')
+        document.getElementById('yelda_iframe_container').classList.add('y_active')
         const frame = document.getElementById('web_chat_frame')
         frame.contentWindow.postMessage('openChat', '*')
       })
