@@ -271,7 +271,7 @@ var YeldaChat = function () {
       var messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message';
       eventer(messageEvent, function (e) {
         if (e.data === 'closeChat' || e.message === 'closeChat') {
-          document.getElementById('web_chat_frame').classList.remove('y_active');
+          document.getElementById('yelda_iframe_container').classList.remove('y_active');
           setTimeout(function () {
             document.getElementById('assistant_img').style.display = 'block';
             document.getElementById('yelda_iframe_container').style.display = 'none';
@@ -428,7 +428,7 @@ var YeldaChat = function () {
       document.getElementById('assistant_img').addEventListener('click', function (e) {
         document.getElementById('assistant_img').style.display = 'none';
         document.getElementById('yelda_iframe_container').style.display = 'block';
-        document.getElementById('web_chat_frame').classList.add('y_active');
+        document.getElementById('yelda_iframe_container').classList.add('y_active');
         var frame = document.getElementById('web_chat_frame');
         frame.contentWindow.postMessage('openChat', '*');
       });

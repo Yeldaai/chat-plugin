@@ -1,16 +1,6 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
 
 
-
-.yelda_mobile .yelda_iframe_container{
-	position: fixed;
-    left: 0px;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-}
-
-
 .assistant_img{
   color: white;
   background: #17a3d8; /* Old browsers */
@@ -27,7 +17,7 @@
   cursor: pointer;
   box-shadow: 0 5px 10px rgba(0,0,0,.16);
   margin-bottom: 20px;
-  margin-right: 35px;
+  margin-right: 20px;
 }
 
 .assistant_img i{
@@ -56,9 +46,8 @@
 }
 
 #web_chat_frame{
-
-  opacity: 0;
-
+  height: 100% !important;
+  width: 100% !important;
 }
 
 @media only screen and (min-width: 768px) {
@@ -69,14 +58,22 @@
     z-index: 2147483647;
   }
 
-  #web_chat_frame {
+  .yelda_iframe_container {
     width: 430px;
     height: calc(100vh - 170px);
     max-height: 600px;
     box-shadow: 0 5px 32px rgba(0,0,0,.16);
     border-radius: 6px;
     transition-duration: 1s;
+    margin: 0px 20px 0 0px;
+    overflow: hidden;
+    opacity: 0;
   }
+  
+  .yelda_iframe_container.y_active{
+	  opacity: 1 !important;
+	  margin-bottom: 20px !important;
+	}
 }
 
 @media only screen and (max-width: 767px) {
@@ -86,17 +83,19 @@
     right: 0;
     bottom: 0;
     z-index: 2147483647;
-  }
+	}
+  
+  .yelda_mobile .yelda_iframe_container{
+	position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+	}
 
-  #web_chat_frame {
-  }
 
-  .header a{
-    display: none;
-  }
 }
 
-#web_chat_frame.y_active{
-  opacity: 1;
-  margin-bottom: 20px;
-}
+
+
+
