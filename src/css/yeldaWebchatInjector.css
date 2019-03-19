@@ -16,8 +16,6 @@
   line-height: 64px;
   cursor: pointer;
   box-shadow: 0 5px 10px rgba(0,0,0,.16);
-  margin-bottom: 20px;
-  margin-right: 20px;
 }
 
 .assistant_img i{
@@ -53,8 +51,8 @@
 @media only screen and (min-width: 768px) {
   .yelda_container{
     position: fixed;
-    right: 0;
-    bottom: 0;
+    right: 20px;
+    bottom: 20px;
     z-index: 2147483647;
   }
 
@@ -80,8 +78,8 @@
 
   .yelda_container{
     position: fixed;
-    right: 0;
-    bottom: 0;
+    right: 20px;
+    bottom: 20px;
     z-index: 2147483647;
 	}
   
