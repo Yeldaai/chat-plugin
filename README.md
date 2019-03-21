@@ -51,7 +51,7 @@ Initialize the lib with the Yelda provided elements
 - shouldBeOpened : false
 
 ```javascript
-  yeldaChat.init({
+  yeldaChat.setupChat({
     'assistantSlug': '<assistantSlug>',
     'assistantId': '<assistantId>',
     'assistantUrl': '<assistantUrl>',
@@ -61,6 +61,7 @@ Initialize the lib with the Yelda provided elements
     'shouldBeOpened': true | false // open the chat window by default on loading the page if set to true
   })
 ```
+Note : you can replace setupChat function by init if you want to wait for window.onload event.
 
 # Issues and Feature Requests
 If you have a bug report, feature request, or wish to contribute code, please [open an issue](https://github.com/Yeldaai/chat-plugin/issues).
