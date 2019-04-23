@@ -18,7 +18,8 @@
   "scripts": {
     "build": "rimraf dist && webpack -p",
     "prepack": "npm run build && npm run test",
-    "eslint:fix": "eslint --fix --ext .js src",
+    "lint:check": "eslint --ext .js src",
+    "lint:fix": "eslint --fix --ext .js src",
     "test": "mocha"
   },
   "devDependencies": {
