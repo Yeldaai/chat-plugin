@@ -50,7 +50,7 @@ class YeldaChat {
     }
 
     // Removed the Assistant Img element if already rendered in the DOM
-    if(document.getElementById('assistant_img')) {
+    if (document.getElementById('assistant_img')) {
       document.getElementById('assistant_img').remove()
     }
 
@@ -76,7 +76,7 @@ class YeldaChat {
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
     url = this.updateQueryStringParameter(url, 'shouldBeOpened', data.shouldBeOpened)
 
-    if(data.isAdmin) {
+    if (data.isAdmin) {
       url = this.updateQueryStringParameter(url, 'isAdmin', data.isAdmin)
     }
 
@@ -282,7 +282,7 @@ class YeldaChat {
   setupChat (data) {
     data = this.formatData(data)
 
-    if(
+    if (
       data.assistantId === undefined ||
       data.assistantSlug === undefined ||
       (data.framePosition === 'inner' && data.parent === undefined)
@@ -308,7 +308,7 @@ class YeldaChat {
 
     document
       .getElementById('assistant_img')
-      .addEventListener('click', function (e) {
+      .addEventListener('click', function () {
         document.getElementById('assistant_img').style.display = 'none'
         document.getElementById('yelda_iframe_container').style.display = 'block'
         document.getElementById('yelda_iframe_container').classList.add('y_active')
@@ -320,11 +320,11 @@ class YeldaChat {
   }
 
   init (data) {
-    if(data.assistantId === undefined || data.assistantSlug === undefined) {
+    if (data.assistantId === undefined || data.assistantSlug === undefined) {
       return null
     }
 
-    window.onload = (e) => {
+    window.onload = () => {
       this.setupChat(data)
     }
   }
