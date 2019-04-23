@@ -104,8 +104,7 @@ class YeldaChat {
 
       if (data.framePosition === 'inner') {
         classList += ' y_active'
-      }
-      else {
+      } else {
         this.iframeContainer.style.cssText = 'display: none;'
       }
 
@@ -283,9 +282,11 @@ class YeldaChat {
   setupChat (data) {
     data = this.formatData(data)
 
-    if(data.assistantId === undefined || data.assistantSlug === undefined || (
-      data.framePosition === 'inner' && data.parent === undefined
-    )) {
+    if(
+      data.assistantId === undefined ||
+      data.assistantSlug === undefined ||
+      (data.framePosition === 'inner' && data.parent === undefined)
+    ) {
       return null
     }
 
