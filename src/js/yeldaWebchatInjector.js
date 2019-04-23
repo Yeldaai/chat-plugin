@@ -280,6 +280,9 @@ class YeldaChat {
    * @param {object} data
   */
   setupChat (data) {
+    this.webChatContainer = null
+    this.iframeContainer = null
+    this.webChatIframe = null
     data = this.formatData(data)
 
     if (
@@ -306,17 +309,19 @@ class YeldaChat {
     window.addEventListener('resize', this.handleOnResize.bind(this))
     this.triggerEvent(window, 'resize')
 
-    document
-      .getElementById('assistant_img')
-      .addEventListener('click', function () {
-        document.getElementById('assistant_img').style.display = 'none'
-        document.getElementById('yelda_iframe_container').style.display = 'block'
-        document.getElementById('yelda_iframe_container').classList.add('y_active')
-        const frame = document.getElementById('web_chat_frame')
-        frame.contentWindow.postMessage('openChat', '*')
-      })
+    if (data.framePosition === 'outer') {
+      document
+        .getElementById('assistant_img')
+        .addEventListener('click', function () {
+          document.getElementById('assistant_img').style.display = 'none'
+          document.getElementById('yelda_iframe_container').style.display = 'block'
+          document.getElementById('yelda_iframe_container').classList.add('y_active')
+          const frame = document.getElementById('web_chat_frame')
+          frame.contentWindow.postMessage('openChat', '*')
+        })
+        this.handleFrameListner()
+    }
 
-    this.handleFrameListner()
   }
 
   init (data) {
