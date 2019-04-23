@@ -32,6 +32,14 @@ class YeldaChat {
     }
   }
 
+  setUpParentContainer (parent) {
+    // Parent div to append the iframe
+    if (!this.webChatContainer) {
+      this.webChatContainer = document.getElementById(parent)
+      this.webChatContainer.setAttribute('class', 'yelda_container inner')
+    }
+  }
+
   /**
   * Create assistantImage element and add it to webChatContainer element
   */
@@ -81,18 +89,27 @@ class YeldaChat {
    * @return {Element} iframe HTML element
   */
 
-  createWebChatFrame (url) {
+  createWebChatFrame (url, data) {
     if (!this.webChatContainer) {
-      this.webChatContainer = document.getElementById('yelda_container')
+      this.webChatContainer = document.getElementsByClassName('yelda_container')[0]
     }
 
     // Iframe creation
     // Parent div to contain the iframe. To allow css animation on iframe
     if (!this.iframeContainer) {
+      let classList = 'yelda_iframe_container'
+
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
-      this.iframeContainer.setAttribute('class', 'yelda_iframe_container')
-      this.iframeContainer.style.cssText = 'display: none;'
+
+      if (data.framePosition === 'inner') {
+        classList += ' y_active'
+      }
+      else {
+        this.iframeContainer.style.cssText = 'display: none;'
+      }
+
+      this.iframeContainer.setAttribute('class', classList)
       this.webChatContainer.appendChild(this.iframeContainer)
     }
 
@@ -167,7 +184,7 @@ class YeldaChat {
       this.webChatContainer.classList.remove('yelda_mobile')
     }
   }
-  
+
   /**
    * Load CSS asynchroneously
    * @param {String} origin to retrive css
@@ -190,7 +207,7 @@ class YeldaChat {
   */
   setUpChatIFrame (data) {
     const webchatUrl = this.createWebChatURL(data)
-    this.webChatIframe = this.createWebChatFrame(webchatUrl)
+    this.webChatIframe = this.createWebChatFrame(webchatUrl, data)
   }
   /**
    * Delete old webchat element and create new webchat
@@ -215,12 +232,17 @@ class YeldaChat {
    * @param {Object} data
   */
   formatData (data) {
+    const validFramePosition = ['inner', 'outer']
     data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/'
     data.chatPath = data.chatPath || ''
     data.chatUrl = data.assistantUrl + data.chatPath
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
     data.shouldBeOpened = data.shouldBeOpened ? true : false
+
+    if (!data.framePosition || validFramePosition.indexOf(data.framePosition) === -1) {
+      data.framePosition = 'outer'
+    }
 
     return data
   }
@@ -261,7 +283,9 @@ class YeldaChat {
   setupChat (data) {
     data = this.formatData(data)
 
-    if(data.assistantId === undefined || data.assistantSlug === undefined) {
+    if(data.assistantId === undefined || data.assistantSlug === undefined || (
+      data.framePosition === 'inner' && data.parent === undefined
+    )) {
       return null
     }
 
@@ -270,8 +294,13 @@ class YeldaChat {
       this.loadCssAsync(data.assistantUrl)
     }
 
-    this.createContainer()
-    this.addAssistantImage()
+    if (data.framePosition === 'outer') {
+      this.createContainer()
+      this.addAssistantImage()
+    } else {
+      this.setUpParentContainer(data.parent)
+    }
+
     this.setUpChatIFrame(data)
     window.addEventListener('resize', this.handleOnResize.bind(this))
     this.triggerEvent(window, 'resize')
