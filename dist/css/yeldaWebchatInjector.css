@@ -38,6 +38,10 @@
   opacity: 1;
 }
 
+.yelda_container.inner{
+  position: inherit !important;
+}
+
 @keyframes fonta {
   from {font-size:32px;}
   to {font-size:35px;}
@@ -54,10 +58,6 @@
     right: 20px;
     bottom: 20px;
     z-index: 2147483647;
-  }
-
-  .yelda_container.inner{
-    position: inherit !important;
   }
 
   .yelda_iframe_container {
@@ -85,10 +85,6 @@
     right: 20px;
     bottom: 20px;
     z-index: 2147483647;
-  }
-
-  .yelda_container.inner{
-    position: inherit !important;
   }
 
   .yelda_mobile .yelda_iframe_container{
