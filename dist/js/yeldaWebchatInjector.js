@@ -152,6 +152,15 @@ var YeldaChat = function () {
         document.body.appendChild(this.webChatContainer);
       }
     }
+  }, {
+    key: 'setUpParentContainer',
+    value: function setUpParentContainer(parent) {
+      // Parent div to append the iframe
+      if (!this.webChatContainer) {
+        this.webChatContainer = document.getElementById(parent);
+        this.webChatContainer.setAttribute('class', 'yelda_container inner');
+      }
+    }
 
     /**
     * Create assistantImage element and add it to webChatContainer element
@@ -209,18 +218,26 @@ var YeldaChat = function () {
 
   }, {
     key: 'createWebChatFrame',
-    value: function createWebChatFrame(url) {
+    value: function createWebChatFrame(url, data) {
       if (!this.webChatContainer) {
-        this.webChatContainer = document.getElementById('yelda_container');
+        this.webChatContainer = document.getElementsByClassName('yelda_container')[0];
       }
 
       // Iframe creation
       // Parent div to contain the iframe. To allow css animation on iframe
       if (!this.iframeContainer) {
+        var classList = 'yelda_iframe_container';
+
         this.iframeContainer = document.createElement('div');
         this.iframeContainer.setAttribute('id', 'yelda_iframe_container');
-        this.iframeContainer.setAttribute('class', 'yelda_iframe_container');
-        this.iframeContainer.style.cssText = 'display: none;';
+
+        if (data.framePosition === 'inner') {
+          classList += ' y_active';
+        } else {
+          this.iframeContainer.style.cssText = 'display: none;';
+        }
+
+        this.iframeContainer.setAttribute('class', classList);
         this.webChatContainer.appendChild(this.iframeContainer);
       }
 
@@ -331,7 +348,7 @@ var YeldaChat = function () {
     key: 'setUpChatIFrame',
     value: function setUpChatIFrame(data) {
       var webchatUrl = this.createWebChatURL(data);
-      this.webChatIframe = this.createWebChatFrame(webchatUrl);
+      this.webChatIframe = this.createWebChatFrame(webchatUrl, data);
     }
     /**
      * Delete old webchat element and create new webchat
@@ -362,12 +379,17 @@ var YeldaChat = function () {
   }, {
     key: 'formatData',
     value: function formatData(data) {
+      var validFramePosition = ['inner', 'outer'];
       data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/';
       data.chatPath = data.chatPath || '';
       data.chatUrl = data.assistantUrl + data.chatPath;
       data.locale = data.locale || 'fr_FR';
       data.isAdmin = data.isAdmin ? true : false;
       data.shouldBeOpened = data.shouldBeOpened ? true : false;
+
+      if (!data.framePosition || validFramePosition.indexOf(data.framePosition) === -1) {
+        data.framePosition = 'outer';
+      }
 
       return data;
     }
@@ -410,7 +432,7 @@ var YeldaChat = function () {
     value: function setupChat(data) {
       data = this.formatData(data);
 
-      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+      if (data.assistantId === undefined || data.assistantSlug === undefined || data.framePosition === 'inner' && data.parent === undefined) {
         return null;
       }
 
@@ -419,8 +441,13 @@ var YeldaChat = function () {
         this.loadCssAsync(data.assistantUrl);
       }
 
-      this.createContainer();
-      this.addAssistantImage();
+      if (data.framePosition === 'outer') {
+        this.createContainer();
+        this.addAssistantImage();
+      } else {
+        this.setUpParentContainer(data.parent);
+      }
+
       this.setUpChatIFrame(data);
       window.addEventListener('resize', this.handleOnResize.bind(this));
       this.triggerEvent(window, 'resize');
@@ -687,7 +714,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.5.7' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
