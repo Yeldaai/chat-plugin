@@ -49,6 +49,8 @@ Initialize the lib with the Yelda provided elements
 - locale : `fr_FR`
 - isAdmin : false (set to true only for intent analysis)
 - shouldBeOpened : false
+- framePosition : `outer` (available values [inner, outer]), default value is outer
+- parent: `container_id` (dom element id, required if the framePosition is set to inner)
 
 ```javascript
   yeldaChat.setupChat({
@@ -58,7 +60,8 @@ Initialize the lib with the Yelda provided elements
     'chatPath': '<chatPath>',
     'locale': '<locale>',
     'isAdmin': true | false, // Used to see the NLP logs
-    'shouldBeOpened': true | false // open the chat window by default on loading the page if set to true
+    'shouldBeOpened': true | false, // open the chat window by default on loading the page if set to true
+    'framePosition' : 'outer'
   })
 ```
 Note : you can replace setupChat function by init if you want to wait for window.onload event.
