@@ -430,6 +430,9 @@ var YeldaChat = function () {
   }, {
     key: 'setupChat',
     value: function setupChat(data) {
+      this.webChatContainer = null;
+      this.iframeContainer = null;
+      this.webChatIframe = null;
       data = this.formatData(data);
 
       if (data.assistantId === undefined || data.assistantSlug === undefined || data.framePosition === 'inner' && data.parent === undefined) {
@@ -452,15 +455,16 @@ var YeldaChat = function () {
       window.addEventListener('resize', this.handleOnResize.bind(this));
       this.triggerEvent(window, 'resize');
 
-      document.getElementById('assistant_img').addEventListener('click', function (e) {
-        document.getElementById('assistant_img').style.display = 'none';
-        document.getElementById('yelda_iframe_container').style.display = 'block';
-        document.getElementById('yelda_iframe_container').classList.add('y_active');
-        var frame = document.getElementById('web_chat_frame');
-        frame.contentWindow.postMessage('openChat', '*');
-      });
-
-      this.handleFrameListner();
+      if (data.framePosition === 'outer') {
+        document.getElementById('assistant_img').addEventListener('click', function () {
+          document.getElementById('assistant_img').style.display = 'none';
+          document.getElementById('yelda_iframe_container').style.display = 'block';
+          document.getElementById('yelda_iframe_container').classList.add('y_active');
+          var frame = document.getElementById('web_chat_frame');
+          frame.contentWindow.postMessage('openChat', '*');
+        });
+        this.handleFrameListner();
+      }
     }
   }, {
     key: 'init',
@@ -471,7 +475,7 @@ var YeldaChat = function () {
         return null;
       }
 
-      window.onload = function (e) {
+      window.onload = function () {
         _this2.setupChat(data);
       };
     }
@@ -714,7 +718,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.1' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
