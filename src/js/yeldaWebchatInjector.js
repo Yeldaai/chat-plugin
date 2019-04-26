@@ -343,7 +343,7 @@ class YeldaChat {
         })
     }
 
-    this.handleFrameListner()
+    this.handleFrameListener()
   }
 
   unLoadChat () {
