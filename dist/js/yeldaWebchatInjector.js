@@ -230,6 +230,7 @@ var YeldaChat = function () {
       url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId);
       url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug);
       url = this.updateQueryStringParameter(url, 'locale', data.locale);
+      url = this.updateQueryStringParameter(url, 'canBeClosed', data.canBeClosed);
       url = this.updateQueryStringParameter(url, 'shouldBeOpened', data.shouldBeOpened);
 
       if (data.isAdmin) {
@@ -429,6 +430,7 @@ var YeldaChat = function () {
       data.locale = data.locale || 'fr_FR';
       data.isAdmin = data.isAdmin ? true : false;
       data.shouldBeOpened = data.shouldBeOpened ? true : false;
+      data.canBeClosed = data.canBeClosed ? true : false;
 
       if (!data.framePosition || validFramePosition.indexOf(data.framePosition) === -1) {
         data.framePosition = 'outer';
