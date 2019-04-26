@@ -32,11 +32,18 @@ class YeldaChat {
     }
   }
 
-  setUpParentContainer (parent) {
+  setUpParentContainer (id_parent) {
     // Parent div to append the iframe
     if (!this.webChatContainer) {
-      this.webChatContainer = document.getElementById(parent)
+      this.webChatContainer = document.createElement('div')
+      this.webChatContainer.setAttribute('id', 'yelda_container')
       this.webChatContainer.setAttribute('class', 'yelda_container inner')
+
+      const parent = document.getElementById(id_parent)
+
+      if (typeof(parent) !== undefined && parent !== null) {
+        parent.appendChild(this.webChatContainer)
+      }
     }
   }
 
@@ -142,28 +149,42 @@ class YeldaChat {
     }
   }
 
+  messageListener (e) {
+    if (e.data === 'closeChat' || e.message === 'closeChat') {
+      document.getElementById('yelda_iframe_container').classList.remove('y_active')
+      setTimeout(function () {
+        document.getElementById('assistant_img').style.display = 'block'
+        document.getElementById('yelda_iframe_container').style.display = 'none'
+      },
+      1000)
+    } else if (e.data === 'openChat' || e.message === 'openChat') {
+      this.triggerEvent(document.getElementById('assistant_img'), 'click')
+    }
+  }
   /**
    * handles communcation between parent window and iframe
   */
-  handleFrameListner () {
+  handleFrameListener () {
     const eventMethod = window.addEventListener
       ? 'addEventListener'
       : 'attachEvent'
     const eventer = window[eventMethod]
     const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
-    eventer(messageEvent, (e) => {
-      if (e.data === 'closeChat' || e.message === 'closeChat') {
-        document.getElementById('yelda_iframe_container').classList.remove('y_active')
-        setTimeout(function () {
-          document.getElementById('assistant_img').style.display = 'block'
-          document.getElementById('yelda_iframe_container').style.display = 'none'
-        },
-        1000)
-      } else if (e.data === 'openChat' || e.message === 'openChat') {
-        this.triggerEvent(document.getElementById('assistant_img'), 'click')
-      }
-    })
+    eventer(messageEvent, this.messageListener)
   }
+
+  /**
+   * removes the event listener
+   */
+  removeFrameListener () {
+    const eventMethod = window.addEventListener
+      ? 'removeEventListener'
+      : 'detachEvent'
+    const eventer = window[eventMethod]
+    const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
+    eventer(messageEvent, this.messageListener)
+  }
+
   /**
    * handles window resize event by adding and removing class based on window width
   */
@@ -321,7 +342,22 @@ class YeldaChat {
         })
         this.handleFrameListner()
     }
+  }
 
+  unLoadChat () {
+    window.removeEventListener('resize', this.handleOnResize.bind(this))
+    this.removeFrameListener()
+
+    if (this.iframeContainer) {
+      this.iframeContainer.remove() // Remove the element from the DOM tree its belongs
+    }
+
+    if (this.webChatContainer) {
+      this.webChatContainer.remove()
+    }
+
+    this.iframeContainer = null
+    this.webChatIframe = null
   }
 
   init (data) {
