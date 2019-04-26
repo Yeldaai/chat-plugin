@@ -304,6 +304,7 @@ class YeldaChat {
     this.webChatContainer = null
     this.iframeContainer = null
     this.webChatIframe = null
+
     data = this.formatData(data)
 
     if (
@@ -358,6 +359,7 @@ class YeldaChat {
 
     this.iframeContainer = null
     this.webChatIframe = null
+    this.webChatContainer = null
   }
 
   init (data) {
