@@ -476,6 +476,7 @@ var YeldaChat = function () {
       this.webChatContainer = null;
       this.iframeContainer = null;
       this.webChatIframe = null;
+
       data = this.formatData(data);
 
       if (data.assistantId === undefined || data.assistantSlug === undefined || data.framePosition === 'inner' && data.parent === undefined) {
@@ -525,6 +526,7 @@ var YeldaChat = function () {
 
       this.iframeContainer = null;
       this.webChatIframe = null;
+      this.webChatContainer = null;
     }
   }, {
     key: 'init',
