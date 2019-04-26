@@ -507,8 +507,9 @@ var YeldaChat = function () {
           var frame = document.getElementById('web_chat_frame');
           frame.contentWindow.postMessage('openChat', '*');
         });
-        this.handleFrameListner();
       }
+
+      this.handleFrameListener();
     }
   }, {
     key: 'unLoadChat',
