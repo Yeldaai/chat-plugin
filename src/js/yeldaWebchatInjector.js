@@ -341,8 +341,9 @@ class YeldaChat {
           const frame = document.getElementById('web_chat_frame')
           frame.contentWindow.postMessage('openChat', '*')
         })
-        this.handleFrameListner()
     }
+
+    this.handleFrameListner()
   }
 
   unLoadChat () {
