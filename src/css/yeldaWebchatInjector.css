@@ -39,7 +39,9 @@
 }
 
 .yelda_container.inner{
-  position: inherit !important;
+  position: absolute !important;
+  left: 45px;
+  top: 80px;
 }
 
 @keyframes fonta {
