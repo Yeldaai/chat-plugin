@@ -306,13 +306,13 @@ var YeldaChat = function () {
   }, {
     key: 'messageListener',
     value: function messageListener(e) {
-      if (e.data === 'closeChat' || e.message === 'closeChat') {
+      if ((e.data === 'closeChat' || e.message === 'closeChat') && document.getElementById('assistant_img') !== null) {
         document.getElementById('yelda_iframe_container').classList.remove('y_active');
         setTimeout(function () {
           document.getElementById('assistant_img').style.display = 'block';
           document.getElementById('yelda_iframe_container').style.display = 'none';
         }, 1000);
-      } else if (e.data === 'openChat' || e.message === 'openChat') {
+      } else if ((e.data === 'openChat' || e.message === 'openChat') && document.getElementById('assistant_img') !== null) {
         this.triggerEvent(document.getElementById('assistant_img'), 'click');
       }
     }
@@ -326,7 +326,8 @@ var YeldaChat = function () {
       var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
       var eventer = window[eventMethod];
       var messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message';
-      eventer(messageEvent, this.messageListener);
+      this.messageListenerBind = this.messageListener.bind(this);
+      eventer(messageEvent, this.messageListenerBind);
     }
 
     /**
@@ -339,7 +340,7 @@ var YeldaChat = function () {
       var eventMethod = window.addEventListener ? 'removeEventListener' : 'detachEvent';
       var eventer = window[eventMethod];
       var messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message';
-      eventer(messageEvent, this.messageListener);
+      eventer(messageEvent, this.messageListenerBind);
     }
 
     /**
@@ -498,7 +499,8 @@ var YeldaChat = function () {
       }
 
       this.setUpChatIFrame(data);
-      window.addEventListener('resize', this.handleOnResize.bind(this));
+      this.handleOnResizeBind = this.handleOnResize.bind(this);
+      window.addEventListener('resize', this.handleOnResizeBind, true);
       this.triggerEvent(window, 'resize');
 
       if (data.framePosition === 'outer') {
@@ -516,7 +518,7 @@ var YeldaChat = function () {
   }, {
     key: 'unLoadChat',
     value: function unLoadChat() {
-      window.removeEventListener('resize', this.handleOnResize.bind(this));
+      window.removeEventListener('resize', this.handleOnResizeBind, true);
       this.removeFrameListener();
 
       if (this.iframeContainer) {
