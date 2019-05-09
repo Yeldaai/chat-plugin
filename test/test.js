@@ -168,5 +168,25 @@ describe('YeldaChat', () => {
 
       document.querySelector('#yelda_iframe_container').should.exist
     })
+
+    it('It does not throw error if assistantImg is missing', (done, fail) => {
+      const mockData = {
+        'assistantSlug': 'testClient',
+        'assistantId': '12345678',
+        'chatUrl': 'https://app.yelda.ai/chat',
+        'locale': 'fr_FR',
+        'isAdmin': true
+      }
+
+      document.getElementById('assistant_img').remove()
+
+      try {
+        yeldaChat.resetChat(mockData)
+      } catch (error) {
+        fail()
+      }
+
+      done()
+    })
   })
 })
