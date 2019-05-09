@@ -50,15 +50,14 @@ class YeldaChat {
   /**
   * Create assistantImage element and add it to webChatContainer element
   */
-
   addAssistantImage () {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementById('yelda_container')
     }
 
-    // Removed the Assistant Img element if already rendered in the DOM
-    if (document.getElementById('assistant_img')) {
-      document.getElementById('assistant_img').remove()
+    // If it's already set up, keep it
+    if (document.getElementById('assistant_img') !== null) {
+      return
     }
 
     // Assistant Image Creation
@@ -237,6 +236,7 @@ class YeldaChat {
     const webchatUrl = this.createWebChatURL(data)
     this.webChatIframe = this.createWebChatFrame(webchatUrl, data)
   }
+
   /**
    * Delete old webchat element and create new webchat
    * @param {Object} data { data.assistantUrl, data.chatPath }
@@ -251,7 +251,11 @@ class YeldaChat {
     this.webChatIframe = null
     data = this.formatData(data)
     this.setUpChatIFrame(data)
-    document.getElementById('assistant_img').style.display = 'block'
+
+    const assistantImage = document.getElementById('assistant_img')
+    if (assistantImage !== null) {
+      assistantImage.style.display = 'block'
+    }
   }
 
   /**
@@ -306,7 +310,7 @@ class YeldaChat {
     return isFound
   }
   /**
-   * Initilize the chat window
+   * Initialize the chat window
    * @param {object} data
   */
   setupChat (data) {
