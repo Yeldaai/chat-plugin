@@ -202,9 +202,9 @@ var YeldaChat = function () {
         this.webChatContainer = document.getElementById('yelda_container');
       }
 
-      // Removed the Assistant Img element if already rendered in the DOM
-      if (document.getElementById('assistant_img')) {
-        document.getElementById('assistant_img').remove();
+      // If it's already set up, keep it
+      if (document.getElementById('assistant_img') !== null) {
+        return;
       }
 
       // Assistant Image Creation
@@ -395,6 +395,7 @@ var YeldaChat = function () {
       var webchatUrl = this.createWebChatURL(data);
       this.webChatIframe = this.createWebChatFrame(webchatUrl, data);
     }
+
     /**
      * Delete old webchat element and create new webchat
      * @param {Object} data { data.assistantUrl, data.chatPath }
@@ -412,7 +413,11 @@ var YeldaChat = function () {
       this.webChatIframe = null;
       data = this.formatData(data);
       this.setUpChatIFrame(data);
-      document.getElementById('assistant_img').style.display = 'block';
+
+      var assistantImage = document.getElementById('assistant_img');
+      if (assistantImage !== null) {
+        assistantImage.style.display = 'block';
+      }
     }
 
     /**
@@ -469,7 +474,7 @@ var YeldaChat = function () {
       return isFound;
     }
     /**
-     * Initilize the chat window
+     * Initialize the chat window
      * @param {object} data
     */
 
