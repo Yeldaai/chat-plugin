@@ -88,7 +88,7 @@ class YeldaChat {
     }
 
     if (data.isStartBtn) {
-      url = this.updateQueryStringParameter(url, 'isStartBtn', data.isStartBtn)
+      url = this.updateQueryStringParameter(url, 'isStartBtn', (data.isAdmin && data.isStartBtn))
     }
 
     return url
