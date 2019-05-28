@@ -237,6 +237,10 @@ var YeldaChat = function () {
         url = this.updateQueryStringParameter(url, 'isAdmin', data.isAdmin);
       }
 
+      if (data.isStartBtn) {
+        url = this.updateQueryStringParameter(url, 'isStartBtn', data.isStartBtn);
+      }
+
       return url;
     }
 
@@ -435,6 +439,7 @@ var YeldaChat = function () {
       data.chatUrl = data.assistantUrl + data.chatPath;
       data.locale = data.locale || 'fr_FR';
       data.isAdmin = data.isAdmin ? true : false;
+      data.isStartBtn = data.isStartBtn ? true : false;
       data.shouldBeOpened = data.shouldBeOpened ? true : false;
       data.canBeClosed = data.canBeClosed ? true : false;
 
