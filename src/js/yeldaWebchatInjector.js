@@ -22,27 +22,25 @@ class YeldaChat {
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
   */
-  createContainer () {
+  createContainer (parentContainerId) {
     // Parent div to append the iframe
     if (!this.webChatContainer) {
+      let classList = 'yelda_container'
+
+      if (parentContainerId) {
+        classList += ' inner'
+      }
+
       this.webChatContainer = document.createElement('div')
       this.webChatContainer.setAttribute('id', 'yelda_container')
-      this.webChatContainer.setAttribute('class', 'yelda_container')
-      document.body.appendChild(this.webChatContainer)
-    }
-  }
+      this.webChatContainer.setAttribute('class', classList)
 
-  setUpParentContainer (id_parent) {
-    // Parent div to append the iframe
-    if (!this.webChatContainer) {
-      this.webChatContainer = document.createElement('div')
-      this.webChatContainer.setAttribute('id', 'yelda_container')
-      this.webChatContainer.setAttribute('class', 'yelda_container inner')
-
-      const parent = document.getElementById(id_parent)
-
-      if (typeof(parent) !== undefined && parent !== null) {
+      if (parentContainerId) {
+        const parent = document.getElementById(parentContainerId)
         parent.appendChild(this.webChatContainer)
+      } else {
+        document.body.appendChild(this.webChatContainer)
+        this.addAssistantImage()
       }
     }
   }
@@ -113,7 +111,7 @@ class YeldaChat {
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
 
-      if (data.framePosition === 'inner') {
+      if (data.parentContainerId !== false) {
         classList += ' y_active'
       } else {
         this.iframeContainer.style.cssText = 'display: none;'
@@ -268,7 +266,6 @@ class YeldaChat {
    * @param {Object} data
   */
   formatData (data) {
-    const validFramePosition = ['inner', 'outer']
     data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/'
     data.chatPath = data.chatPath || ''
     data.chatUrl = data.assistantUrl + data.chatPath
@@ -278,8 +275,16 @@ class YeldaChat {
     data.shouldBeOpened = data.shouldBeOpened ? true : false
     data.canBeClosed = data.canBeClosed ? true : false
 
-    if (!data.framePosition || validFramePosition.indexOf(data.framePosition) === -1) {
-      data.framePosition = 'outer'
+    // Assign parentContainerId only if the element presents else follow outer behavior
+    if (
+      !data.parentContainerId ||
+      data.parentContainerId === undefined ||
+      data.parentContainerId === null ||
+      !document.getElementById(data.parentContainerId) ||
+      typeof (document.getElementById(data.parentContainerId)) !== undefined ||
+      document.getElementById(data.parentContainerId) !== null
+    ) {
+      data.parentContainerId = false
     }
 
     return data
@@ -327,8 +332,7 @@ class YeldaChat {
 
     if (
       data.assistantId === undefined ||
-      data.assistantSlug === undefined ||
-      (data.framePosition === 'inner' && data.parent === undefined)
+      data.assistantSlug === undefined
     ) {
       return null
     }
@@ -338,19 +342,14 @@ class YeldaChat {
       this.loadCssAsync(data.assistantUrl)
     }
 
-    if (data.framePosition === 'outer') {
-      this.createContainer()
-      this.addAssistantImage()
-    } else {
-      this.setUpParentContainer(data.parent)
-    }
+    this.createContainer(data.parentContainerId)
 
     this.setUpChatIFrame(data)
     this.handleOnResizeBind = this.handleOnResize.bind(this)
     window.addEventListener('resize', this.handleOnResizeBind, true)
     this.triggerEvent(window, 'resize')
 
-    if (data.framePosition === 'outer') {
+    if (!data.parentContainerId) {
       document
         .getElementById('assistant_img')
         .addEventListener('click', function () {
