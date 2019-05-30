@@ -64,6 +64,8 @@ class YeldaChat {
     this.assistantImage.setAttribute('class', 'assistant_img')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
     this.webChatContainer.appendChild(this.assistantImage)
+    // Add click event to assistant image
+    this.assistantImage.addEventListener('click', this.openChat)
   }
 
   /**
@@ -106,14 +108,18 @@ class YeldaChat {
     // Iframe creation
     // Parent div to contain the iframe. To allow css animation on iframe
     if (!this.iframeContainer) {
+      // These classes are used for applying css style
       let classList = 'yelda_iframe_container'
 
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
 
       if (data.parentContainerId !== false) {
-        classList += ' y_active'
+        // CSS class which contols the opacity and positin of the frame container
+        classList += ' y_active inner'
       } else {
+        // If the iframe inserted into the document body, hide it by default
+        // in this y_active not needed since, it is handled in assistant_img click event
         this.iframeContainer.style.cssText = 'display: none;'
       }
 
@@ -150,68 +156,41 @@ class YeldaChat {
       target.dispatchEvent(customEvent)
     }
   }
-
+  /**
+   * handles communcation between parent window and iframe, mainly for open and closing the chat
+   * @param {event} e
+   */
   messageListener (e) {
-    if (
-      (e.data === 'closeChat' || e.message === 'closeChat')
-      && document.getElementById('assistant_img') !== null
-    ) {
+    if (document.getElementById('assistant_img') === null) {
+      return false
+    }
+    if (e.data === 'closeChat' || e.message === 'closeChat') {
       document.getElementById('yelda_iframe_container').classList.remove('y_active')
-      setTimeout(function () {
         document.getElementById('assistant_img').style.display = 'block'
         document.getElementById('yelda_iframe_container').style.display = 'none'
-      },
-      1000)
-    } else if (
-      (e.data === 'openChat' || e.message === 'openChat')
-      && document.getElementById('assistant_img') !== null
-    ) {
-      this.triggerEvent(document.getElementById('assistant_img'), 'click')
+    } else if (e.data === 'openChat' || e.message === 'openChat') {
+      this.openChat()
     }
   }
+
   /**
-   * handles communcation between parent window and iframe
-  */
-  handleFrameListener () {
-    const eventMethod = window.addEventListener
-      ? 'addEventListener'
-      : 'attachEvent'
+   * toggle the event listener
+   * @param {Boolean} is_add
+   */
+  toggleFrameListener (is_add) {
+    let eventMethod
+    const eventCondition = is_add ? 'attachEvent' : 'detachEvent'
+
+    if (is_add) {
+      eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent'
+    } else {
+      eventMethod = window.removeEventListener ? 'removeEventListener' : 'detachEvent'
+    }
+
     const eventer = window[eventMethod]
-    const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
+    const messageEvent = eventMethod === eventCondition ? 'onmessage' : 'message'
     this.messageListenerBind = this.messageListener.bind(this)
     eventer(messageEvent, this.messageListenerBind)
-  }
-
-  /**
-   * removes the event listener
-   */
-  removeFrameListener () {
-    const eventMethod = window.addEventListener
-      ? 'removeEventListener'
-      : 'detachEvent'
-    const eventer = window[eventMethod]
-    const messageEvent = eventMethod === 'attachEvent' ? 'onmessage' : 'message'
-    eventer(messageEvent, this.messageListenerBind)
-  }
-
-  /**
-   * handles window resize event by adding and removing class based on window width
-  */
-  handleOnResize () {
-    if (window.outerWidth < 768) {
-      const w = window
-      const d = document
-      const e = d.documentElement
-      const g = d.getElementsByTagName('body')[0]
-      const x = w.innerWidth || e.clientWidth || g.clientWidth
-      const y = w.innerHeight || e.clientHeight || g.clientHeight
-
-      this.webChatContainer.classList.add('yelda_mobile')
-      this.webChatIframe.style.width = x + 'px'
-      this.webChatIframe.style.height = y + 'px'
-    } else {
-      this.webChatContainer.classList.remove('yelda_mobile')
-    }
   }
 
   /**
@@ -245,19 +224,8 @@ class YeldaChat {
    * @param {Element} container webchat container
   */
   resetChat (data) {
-    if (this.iframeContainer) {
-      this.iframeContainer.remove() // Remove the element from the DOM tree its belongs
-    }
-
-    this.iframeContainer = null
-    this.webChatIframe = null
-    data = this.formatData(data)
-    this.setUpChatIFrame(data)
-
-    const assistantImage = document.getElementById('assistant_img')
-    if (assistantImage !== null) {
-      assistantImage.style.display = 'block'
-    }
+    this.unLoadChat()
+    this.setupChat(data)
   }
 
   /**
@@ -281,10 +249,12 @@ class YeldaChat {
       data.parentContainerId === undefined ||
       data.parentContainerId === null ||
       !document.getElementById(data.parentContainerId) ||
-      typeof (document.getElementById(data.parentContainerId)) !== undefined ||
-      document.getElementById(data.parentContainerId) !== null
+      typeof (document.getElementById(data.parentContainerId)) === undefined ||
+      document.getElementById(data.parentContainerId) === null
     ) {
       data.parentContainerId = false
+    } else {
+      data.canBeClosed = false
     }
 
     return data
@@ -328,6 +298,7 @@ class YeldaChat {
     this.iframeContainer = null
     this.webChatIframe = null
 
+    // Format the data with default values if not exists
     data = this.formatData(data)
 
     if (
@@ -342,31 +313,32 @@ class YeldaChat {
       this.loadCssAsync(data.assistantUrl)
     }
 
+    // Create container for iframe
     this.createContainer(data.parentContainerId)
 
+    // create the iframe and insert into iframe container
     this.setUpChatIFrame(data)
-    this.handleOnResizeBind = this.handleOnResize.bind(this)
-    window.addEventListener('resize', this.handleOnResizeBind, true)
-    this.triggerEvent(window, 'resize')
 
-    if (!data.parentContainerId) {
-      document
-        .getElementById('assistant_img')
-        .addEventListener('click', function () {
-          document.getElementById('assistant_img').style.display = 'none'
-          document.getElementById('yelda_iframe_container').style.display = 'block'
-          document.getElementById('yelda_iframe_container').classList.add('y_active')
-          const frame = document.getElementById('web_chat_frame')
-          frame.contentWindow.postMessage('openChat', '*')
-        })
-    }
-
-    this.handleFrameListener()
+    // add the frame lister to receive message from iframe to the parent
+    this.toggleFrameListener(true)
   }
 
+  /**
+   * opens the webchat window
+   */
+  openChat () {
+    document.getElementById('assistant_img').style.display = 'none'
+    document.getElementById('yelda_iframe_container').style.display = 'block'
+    document.getElementById('yelda_iframe_container').classList.add('y_active')
+    const frame = document.getElementById('web_chat_frame')
+    frame.contentWindow.postMessage('openChat', '*')
+  }
+
+  /**
+   * destroy the webchat window
+   */
   unLoadChat () {
-    window.removeEventListener('resize', this.handleOnResizeBind, true)
-    this.removeFrameListener()
+    this.toggleFrameListener(false)
 
     if (this.iframeContainer) {
       this.iframeContainer.remove() // Remove the element from the DOM tree its belongs
