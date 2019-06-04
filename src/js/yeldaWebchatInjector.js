@@ -106,7 +106,6 @@ class YeldaChat {
     // Iframe creation
     // Parent div to contain the iframe. To allow css animation on iframe
     if (!this.iframeContainer) {
-      // These classes are used for applying css style
       let classList = 'yelda_iframe_container'
 
       this.iframeContainer = document.createElement('div')
