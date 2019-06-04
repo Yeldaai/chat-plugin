@@ -111,7 +111,7 @@ class YeldaChat {
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
 
-      if (data.parentContainerId !== false) {
+      if (data.parentContainerId !== false && document.getElementById(data.parentContainerId)) {
         // CSS class which contols the opacity and positin of the frame container
         classList += ' y_active inner'
       } else {
