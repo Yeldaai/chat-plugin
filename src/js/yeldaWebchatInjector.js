@@ -115,8 +115,9 @@ class YeldaChat {
         // CSS class which contols the opacity and positin of the frame container
         classList += ' y_active inner'
       } else {
-        // If the iframe inserted into the document body, hide it by default
-        // in this y_active not needed since, it is handled in assistant_img click event
+        // If the iframe is inserted into the document body, hide it by default
+        // If the webChatContainer is inserted into the document body, the iframeContainer should be hidden it by default
+        // assistant_img click event management will take care of showing and hiding the webchat
         this.iframeContainer.style.cssText = 'display: none;'
       }
 
