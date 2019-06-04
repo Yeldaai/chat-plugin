@@ -21,6 +21,7 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
+   * @param (String) container_id to which the iframe will be inserted
   */
   createContainer (parentContainerId) {
     // Parent div to append the iframe
