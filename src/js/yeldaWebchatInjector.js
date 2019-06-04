@@ -174,19 +174,17 @@ class YeldaChat {
    * @param {Boolean} isAttachEvent
    */
   toggleFrameListener (isAttachEvent) {
-    let eventMethod
-    const eventCondition = isAttachEvent ? 'attachEvent' : 'detachEvent'
+    // attachEvent is a non-standard JS function implemented in IE8 and previous versions
+    //  addEventListener is supported by IE9+ (and all the other browsers).
+    let eventMethod =  window.addEventListener ? 'addEventListener' : 'attachEvent'
+    const messageEvent = window.addEventListener ? 'onmessage' : 'message'
 
-    if (isAttachEvent) {
-      eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent'
-    } else {
+    if (!isAttachEvent) {
       eventMethod = window.removeEventListener ? 'removeEventListener' : 'detachEvent'
     }
 
-    const eventer = window[eventMethod]
-    const messageEvent = eventMethod === eventCondition ? 'onmessage' : 'message'
     this.messageListenerBind = this.messageListener.bind(this)
-    eventer(messageEvent, this.messageListenerBind)
+    window[eventMethod](messageEvent, this.messageListenerBind)
   }
 
   /**
