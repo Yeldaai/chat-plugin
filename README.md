@@ -51,6 +51,7 @@ Initialize the lib with the Yelda provided elements
 - shouldBeOpened : false
 - parentContainerId : `container_id` (dom element id), if the 'container_id' does not exists in the dom, the iframe will be inserted into document body
 - isStartBtn: false (set to true only if need to show start button)
+- canBeClosed: true (used to toggle the visible state of close button, if parentContainerId provided 'canBeClosed' set to false)
 
 ```javascript
   yeldaChat.setupChat({
@@ -62,7 +63,8 @@ Initialize the lib with the Yelda provided elements
     'isAdmin': true | false, // Used to see the NLP logs
     'isStartBtn': true | false, // Used to show the start button on chat load
     'shouldBeOpened': true | false, // open the chat window by default on loading the page if set to true
-    'parentContainerId' : 'chat_frame'
+    'parentContainerId' : 'chat_frame',
+    'canBeClosed': true | false
   })
 ```
 Note : you can replace setupChat function by init if you want to wait for window.onload event.
