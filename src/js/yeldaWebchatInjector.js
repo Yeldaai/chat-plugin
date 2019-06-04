@@ -21,24 +21,22 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
-   * @param (String) container_id to which the iframe will be inserted
   */
-  createContainer (parentContainerId) {
+  createContainer () {
     // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
     if (this.webChatContainer) {
       return true
     }
 
-    // If no parentContainerId or invalid one, fallback on document.body, add inner class and assistant image
-    const parentContainer = parentContainerId && document.getElementById(parentContainerId) || document.body
-    const classList =  parentContainer === document.body ? 'yelda_container' :  'yelda_container inner'
+    // add inner class and assistant image if the parentContainer is not document.body
+    const classList =  this.parentContainer === document.body ? 'yelda_container' :  'yelda_container inner'
 
     this.webChatContainer = document.createElement('div')
     this.webChatContainer.setAttribute('id', 'yelda_container')
     this.webChatContainer.setAttribute('class', classList)
-    parentContainer.appendChild(this.webChatContainer)
+    this.parentContainer.appendChild(this.webChatContainer)
 
-    if (parentContainer === document.body) {
+    if (this.parentContainer === document.body) {
       this.addAssistantImage()
     }
   }
@@ -98,7 +96,7 @@ class YeldaChat {
    * @return {Element} iframe HTML element
   */
 
-  createWebChatFrame (url, data) {
+  createWebChatFrame (url) {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementsByClassName('yelda_container')[0]
     }
@@ -111,7 +109,7 @@ class YeldaChat {
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
 
-      if (data.parentContainerId !== false && document.getElementById(data.parentContainerId)) {
+      if (this.parentContainer !== document.body) {
         // CSS class which contols the opacity and positin of the frame container
         classList += ' y_active inner'
       } else {
@@ -213,7 +211,7 @@ class YeldaChat {
   */
   setUpChatIFrame (data) {
     const webchatUrl = this.createWebChatURL(data)
-    this.webChatIframe = this.createWebChatFrame(webchatUrl, data)
+    this.webChatIframe = this.createWebChatFrame(webchatUrl)
   }
 
   /**
@@ -241,17 +239,12 @@ class YeldaChat {
     data.shouldBeOpened = data.shouldBeOpened ? true : false
     data.canBeClosed = data.canBeClosed ? true : false
 
-    // Assign parentContainerId only if the element presents else follow outer behavior
-    if (
-      !data.parentContainerId ||
-      data.parentContainerId === undefined ||
-      data.parentContainerId === null ||
-      !document.getElementById(data.parentContainerId) ||
-      typeof (document.getElementById(data.parentContainerId)) === undefined ||
-      document.getElementById(data.parentContainerId) === null
-    ) {
-      data.parentContainerId = false
-    } else {
+    // default container
+    this.parentContainer = document.body
+
+    // If parentContainerId presents and valid one, set parentContainer
+    if(data.parentContainerId && document.getElementById(data.parentContainerId)) {
+      this.parentContainer = document.getElementById(data.parentContainerId)
       data.canBeClosed = false
     }
 
@@ -312,7 +305,7 @@ class YeldaChat {
     }
 
     // Create container for iframe
-    this.createContainer(data.parentContainerId)
+    this.createContainer()
 
     // create the iframe and insert into iframe container
     this.setUpChatIFrame(data)
@@ -349,6 +342,7 @@ class YeldaChat {
     this.iframeContainer = null
     this.webChatIframe = null
     this.webChatContainer = null
+    this.parentContainer = null
   }
 
   init (data) {
