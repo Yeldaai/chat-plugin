@@ -173,13 +173,13 @@ class YeldaChat {
 
   /**
    * toggle the event listener
-   * @param {Boolean} is_add
+   * @param {Boolean} isAttachEvent
    */
-  toggleFrameListener (is_add) {
+  toggleFrameListener (isAttachEvent) {
     let eventMethod
-    const eventCondition = is_add ? 'attachEvent' : 'detachEvent'
+    const eventCondition = isAttachEvent ? 'attachEvent' : 'detachEvent'
 
-    if (is_add) {
+    if (isAttachEvent) {
       eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent'
     } else {
       eventMethod = window.removeEventListener ? 'removeEventListener' : 'detachEvent'
