@@ -24,25 +24,22 @@ class YeldaChat {
    * @param (String) container_id to which the iframe will be inserted
   */
   createContainer (parentContainerId) {
-    // Parent div to append the iframe
-    if (!this.webChatContainer) {
-      let classList = 'yelda_container'
+    // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
+    if (this.webChatContainer) {
+      return true
+    }
 
-      if (parentContainerId) {
-        classList += ' inner'
-      }
+    // If no parentContainerId or invalid one, fallback on document.body, add inner class and assistant image
+    const parentContainer = parentContainerId && document.getElementById(parentContainerId) || document.body
+    const classList =  parentContainer === document.body ? 'yelda_container' :  'yelda_container inner'
 
-      this.webChatContainer = document.createElement('div')
-      this.webChatContainer.setAttribute('id', 'yelda_container')
-      this.webChatContainer.setAttribute('class', classList)
+    this.webChatContainer = document.createElement('div')
+    this.webChatContainer.setAttribute('id', 'yelda_container')
+    this.webChatContainer.setAttribute('class', classList)
+    parentContainer.appendChild(this.webChatContainer)
 
-      if (parentContainerId) {
-        const parent = document.getElementById(parentContainerId)
-        parent.appendChild(this.webChatContainer)
-      } else {
-        document.body.appendChild(this.webChatContainer)
-        this.addAssistantImage()
-      }
+    if (parentContainer === document.body) {
+      this.addAssistantImage()
     }
   }
 
