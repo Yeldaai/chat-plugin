@@ -49,7 +49,7 @@ Initialize the lib with the Yelda provided elements
 - locale : `fr_FR`
 - isAdmin : false (set to true only for intent analysis)
 - shouldBeOpened : false
-- parentContainerId : `container_id` (dom element id)
+- parentContainerId : `container_id` (dom element id), if the 'container_id' does not exists in the dom, the iframe will be inserted into document body
 - isStartBtn: false (set to true only if need to show start button)
 
 ```javascript
