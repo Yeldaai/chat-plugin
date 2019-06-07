@@ -170,21 +170,21 @@ class YeldaChat {
   }
 
   /**
-   * toggle the event listener
-   * @param {Boolean} isAttachEvent
+   * Attach or remove the event listener
+   *
+   * @param {Boolean} remove - If we are removing the event listener
    */
-  toggleFrameListener (isAttachEvent) {
-    // attachEvent is a non-standard JS function implemented in IE8 and previous versions
-    //  addEventListener is supported by IE9+ (and all the other browsers).
-    let eventMethod =  window.addEventListener ? 'addEventListener' : 'attachEvent'
-    const messageEvent = window.addEventListener ? 'onmessage' : 'message'
+  toggleFrameListener (remove = false) {
+    const isOldIEVersion = !window.addEventListener
 
-    if (!isAttachEvent) {
-      eventMethod = window.removeEventListener ? 'removeEventListener' : 'detachEvent'
-    }
+    const addEventMethod = isOldIEVersion ? 'attachEvent' : 'addEventListener'
+    const removeEventMethod = isOldIEVersion ? 'detachEvent' : 'removeEventListener'
+    const messageEvent = isOldIEVersion ? 'onmessage' : 'message'
+
+    const eventHandler = window[remove ? removeEventMethod : addEventMethod]
 
     this.messageListenerBind = this.messageListener.bind(this)
-    window[eventMethod](messageEvent, this.messageListenerBind)
+    eventHandler(messageEvent, this.messageListenerBind)
   }
 
   /**
@@ -309,7 +309,7 @@ class YeldaChat {
     this.setUpChatIFrame(data)
 
     // add the frame lister to receive message from iframe to the parent
-    this.toggleFrameListener(true)
+    this.toggleFrameListener()
   }
 
   /**
@@ -327,7 +327,7 @@ class YeldaChat {
    * destroy the webchat window
    */
   unLoadChat () {
-    this.toggleFrameListener(false)
+    this.toggleFrameListener(true)
 
     if (this.iframeContainer) {
       this.iframeContainer.remove() // Remove the element from the DOM tree its belongs

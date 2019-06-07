@@ -305,24 +305,26 @@ var YeldaChat = function () {
     }
 
     /**
-     * toggle the event listener
-     * @param {Boolean} isAttachEvent
+     * Attach or remove the event listener
+     *
+     * @param {Boolean} remove - If we are removing the event listener
      */
 
   }, {
     key: 'toggleFrameListener',
-    value: function toggleFrameListener(isAttachEvent) {
-      // attachEvent is a non-standard JS function implemented in IE8 and previous versions
-      //  addEventListener is supported by IE9+ (and all the other browsers).
-      var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
-      var messageEvent = window.addEventListener ? 'onmessage' : 'message';
+    value: function toggleFrameListener() {
+      var remove = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      if (!isAttachEvent) {
-        eventMethod = window.removeEventListener ? 'removeEventListener' : 'detachEvent';
-      }
+      var isOldIEVersion = !window.addEventListener;
+
+      var addEventMethod = isOldIEVersion ? 'attachEvent' : 'addEventListener';
+      var removeEventMethod = isOldIEVersion ? 'detachEvent' : 'removeEventListener';
+      var messageEvent = isOldIEVersion ? 'onmessage' : 'message';
+
+      var eventHandler = window[remove ? removeEventMethod : addEventMethod];
 
       this.messageListenerBind = this.messageListener.bind(this);
-      window[eventMethod](messageEvent, this.messageListenerBind);
+      eventHandler(messageEvent, this.messageListenerBind);
     }
 
     /**
@@ -457,7 +459,7 @@ var YeldaChat = function () {
       this.setUpChatIFrame(data);
 
       // add the frame lister to receive message from iframe to the parent
-      this.toggleFrameListener(true);
+      this.toggleFrameListener();
     }
 
     /**
@@ -481,7 +483,7 @@ var YeldaChat = function () {
   }, {
     key: 'unLoadChat',
     value: function unLoadChat() {
-      this.toggleFrameListener(false);
+      this.toggleFrameListener(true);
 
       if (this.iframeContainer) {
         this.iframeContainer.remove(); // Remove the element from the DOM tree its belongs
