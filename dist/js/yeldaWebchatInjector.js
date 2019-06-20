@@ -268,40 +268,59 @@ var YeldaChat = function () {
       return iframe;
     }
     /**
-     * Triggers event on the target
-    */
-
-  }, {
-    key: 'triggerEvent',
-    value: function triggerEvent(target, event) {
-      if (typeof Event === 'function') {
-        // modern browsers
-        target.dispatchEvent(new Event(event));
-      } else {
-        // This will be executed on old browsers and especially IE
-        var customEvent = window.document.createEvent('UIEvents');
-        customEvent.initUIEvent(event, true, false, window, 0);
-        target.dispatchEvent(customEvent);
-      }
-    }
-    /**
      * handles communcation between parent window and iframe, mainly for open and closing the chat
-     * @param {event} e
+     * @param {event} event
      */
 
   }, {
     key: 'messageListener',
-    value: function messageListener(e) {
-      if (document.getElementById('assistant_img') === null) {
-        return false;
-      }
-      if (e.data === 'closeChat' || e.message === 'closeChat') {
-        document.getElementById('yelda_iframe_container').classList.remove('y_active');
-        document.getElementById('assistant_img').style.display = 'block';
-        document.getElementById('yelda_iframe_container').style.display = 'none';
-      } else if (e.data === 'openChat' || e.message === 'openChat') {
+    value: function messageListener(event) {
+      if (event.data === 'closeChat' || event.message === 'closeChat') {
+        this.closeChat();
+      } else if (event.data === 'openChat' || event.message === 'openChat') {
         this.openChat();
       }
+    }
+
+    /**
+     * Close the webchat window
+     */
+
+  }, {
+    key: 'closeChat',
+    value: function closeChat() {
+      var assistantImgElement = document.getElementById('assistant_img');
+      if (assistantImgElement !== null) {
+        assistantImgElement.style.display = 'block';
+      }
+
+      var yeldaIframeContainerElement = document.getElementById('yelda_iframe_container');
+      if (yeldaIframeContainerElement !== null) {
+        yeldaIframeContainerElement.classList.remove('y_active');
+        yeldaIframeContainerElement.style.display = 'none';
+      }
+    }
+
+    /**
+     * Open the webchat window
+     */
+
+  }, {
+    key: 'openChat',
+    value: function openChat() {
+      var assistantImgElement = document.getElementById('assistant_img');
+      if (assistantImgElement !== null) {
+        assistantImgElement.style.display = 'none';
+      }
+
+      var yeldaIframeContainerElement = document.getElementById('yelda_iframe_container');
+      if (yeldaIframeContainerElement !== null) {
+        yeldaIframeContainerElement.style.display = 'block';
+        yeldaIframeContainerElement.classList.add('y_active');
+      }
+
+      // Propagate the event to the webchat
+      document.getElementById('web_chat_frame').contentWindow.postMessage('openChat', '*');
     }
 
     /**
@@ -460,20 +479,6 @@ var YeldaChat = function () {
 
       // add the frame lister to receive message from iframe to the parent
       this.toggleFrameListener();
-    }
-
-    /**
-     * opens the webchat window
-     */
-
-  }, {
-    key: 'openChat',
-    value: function openChat() {
-      document.getElementById('assistant_img').style.display = 'none';
-      document.getElementById('yelda_iframe_container').style.display = 'block';
-      document.getElementById('yelda_iframe_container').classList.add('y_active');
-      var frame = document.getElementById('web_chat_frame');
-      frame.contentWindow.postMessage('openChat', '*');
     }
 
     /**
