@@ -137,6 +137,41 @@ var YeldaChat = function () {
     }
 
     /**
+     * gets all the url get parameters
+     * @return {Object} vars
+     */
+
+  }, {
+    key: 'getUrlVars',
+    value: function getUrlVars() {
+      var vars = {};
+      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (match, key, value) {
+        vars[key] = value;
+      });
+
+      return vars;
+    }
+
+    /**
+     * get Specific parameter from the url
+     * @param {*} parameter
+     * @param {*} defaultValue
+     * @return {String} urlParamter
+     */
+
+  }, {
+    key: 'getUrlParam',
+    value: function getUrlParam(parameter, defaultValue) {
+      var urlparameter = defaultValue;
+
+      if (window.location.href.indexOf(parameter) > -1) {
+        urlparameter = this.getUrlVars()[parameter];
+      }
+
+      return urlparameter || false;
+    }
+
+    /**
      * Create webChatContainer, which is the main div containing image and webchat elements
      * and add it to the DOM
     */
@@ -212,6 +247,12 @@ var YeldaChat = function () {
 
       if (data.isStartBtn) {
         url = this.updateQueryStringParameter(url, 'isStartBtn', data.isAdmin && data.isStartBtn);
+      }
+
+      var yelda_push = this.getUrlParam('yelda_push', false);
+
+      if (yelda_push) {
+        url = this.updateQueryStringParameter(url, 'yelda_push', yelda_push);
       }
 
       return url;
