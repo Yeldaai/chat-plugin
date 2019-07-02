@@ -131,6 +131,7 @@ class YeldaChat {
       iframe.id = 'web_chat_frame'
       iframe.name = 'frame'
       iframe.style.border = '0'
+      iframe.setAttribute('allow', 'microphone;')
       this.iframeContainer.appendChild(iframe)
     } else {
       iframe = document.getElementById('web_chat_frame')
