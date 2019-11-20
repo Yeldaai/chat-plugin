@@ -2,54 +2,71 @@ Yelda Website Chat Plugin
 =====
 
 # Introduction
+
 Yelda Website Chat Plugin is a library that enables your website to load [yelda.ai](https://yelda.ai) webchat in an iframe integrated into your website
 
 ![Demo](https://github.com/Yeldaai/chat-plugin/blob/master/screencast-yelda.gif?raw=true "Demo")
 
-# Load the library using Node Packages Manager
+# Load the scripts
 
-## System requirement
+You can load the scripts from yelda-webchat NPM package or from yelda website
+
+## With Node Packages Manager
+
+**System requirements**
 Node.JS 8+
 
-## Install
-Install with npm
+**Install & setup**
+
+- Install with npm
+
 ```shell
  npm install yelda-webchat --save
 ```
 
-## Import js and css files in your JavaScript
-Import yeldaChat lib and yeldaWebchatInjector.min.css
+- Import yeldaChat js lib and yeldaWebchatInjector.min.css OR load js using script and link tags
+
+Or use import instruction
+
 ```javascript
   import yeldaChat from 'yelda-webchat'
   import 'yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
 ```
 
-## Load js using script and link tags
-Add the script tag before closing the `<body>` tag of the same webpage
+Or add the `<script>` in the `<body>`, and the `<link>` in the `<head>` tags
+
 ```html
+  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"/>
   <script type="text/javascript" src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"></script>
 ```
 
-Add the style using the <link> tag in the webpage <head> tag
-```html
-  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"/>
-```
+## From Yelda website
 
-Or load direct link from Yelda (always stable, but take more time to be released than the npm version, and might require users to clear their cache)
+Each time a new package version is published, we also update static minified version on Yelda.
+You can directly load these files with classic script and link tags as explained above
+
 ```html
+  <link type="text/css" rel="stylesheet" href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css">
   <script type="text/javascript" src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"></script>
 ```
 
-## Init the library
+Using NPM give you the ownership on the Yelda plugin updates. For example you might want to test it in a preprod version to ensure that a CSS change would not affect your stylesheet (each new version is carefully tested, but you might want to check it yourself 😉)
+Loading direct link from Yelda ensure to always use the latest version in production without redeploying your website assets (but it might require users to clear their cache)
+
+We don't advise you to download a local version without using the NPM package : you might miss an important update.
+
+# Init the library
+
 Initialize the lib with the Yelda provided elements
-- assistantSlug
-- assistantId
+
+- assistantSlug : the webchat short name on Yelda
+- assistantId : the webchat id on Yelda
 - assistantUrl : `https://app.yelda.ai`
 - chatPath : `/chat`
 - locale : `fr_FR`
 - isAdmin : false (set to true only for intent analysis)
 - shouldBeOpened : false
-- parentContainerId : `container_id` (dom element id), if the 'container_id' does not exists in the dom, the iframe will be inserted into document body
+- parentContainerId : `container_id` DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body
 - isStartBtn: false (set to true only if need to show start button)
 - canBeClosed: true (used to toggle the visible state of close button, if parentContainerId provided 'canBeClosed' set to false)
 
@@ -67,12 +84,15 @@ Initialize the lib with the Yelda provided elements
     'canBeClosed': true | false
   })
 ```
-Note : you can replace setupChat function by init if you want to wait for window.onload event.
+
+Note : you can replace _setupChat_ function by _init_ if you want to wait for window.onload event.
 
 # Issues and Feature Requests
+
 If you have a bug report, feature request, or wish to contribute code, please [open an issue](https://github.com/Yeldaai/chat-plugin/issues).
 
 When submitting a bug report, please include the following information :
+
 - Which install setup your are using : npm install or script tags
 - Which OS and browser version your are using, e.g. Ubuntu 18.04 with Firefox Quantum 63.0.3
 - A minimum reproducible test case, i.e. a short snippet that demonstrates the bug, if applicable
