@@ -61,12 +61,11 @@ class YeldaChat {
     this.assistantImage.setAttribute('id', 'assistant_img')
     this.assistantImage.setAttribute('class', 'assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
-    this.webChatContainer.appendChild(this.assistantImage)
 
     // Add click event to assistant image
     this.assistantImage.addEventListener('click', this.openChat)
 
-    // Get assistant settings from backend
+    // Get assistant settings from backend & add assistantImage to webChatContainer
     this.updateAssistantImageWithAssistantSettings(data)
   }
 
@@ -82,22 +81,27 @@ class YeldaChat {
 
     xhr.onreadystatechange = () => {
       if (!xhr.responseText) {
+        this.webChatContainer.appendChild(this.assistantImage)
         return
       }
 
       try {
         const settings = JSON.parse(xhr.responseText)
         if (!settings || !settings.data || !settings.data.style|| !settings.data.image) {
+          this.webChatContainer.appendChild(this.assistantImage)
           return
         }
 
         // @TODO update with data.isDefaultStyle
         if(settings.data.style === 'custom' && settings.data.image.url) {
           document.getElementById('assistant_img').classList.remove('default', 'custom')
+          this.assistantImage.innerHTML = `<img src="${settings.data.image.url}" alt="assistant">`
           document.getElementById('assistant_img').classList.add('custom')
-          document.getElementById('assistant_img').style.backgroundImage = `url('${settings.data.image.url}')`
+          this.webChatContainer.appendChild(this.assistantImage)
+
         }
       } catch (e) {
+        this.webChatContainer.appendChild(this.assistantImage)
         return
       }
     }

@@ -2,18 +2,19 @@
 
 
 .assistant_img {
-  font-size: 32px;
-  border-radius: 50%;
-  height: 60px;
-  width: 60px;
   text-align: center;
-  line-height: 64px;
+  opacity: 0.93;
   cursor: pointer;
   box-shadow: 0 5px 10px rgba(0,0,0,.16);
 }
 
 .assistant_img.default {
   color: white;
+  font-size: 32px;
+  line-height: 64px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
   background: #17a3d8; /* Old browsers */
   background: -moz-linear-gradient(-45deg, #17a3d8 0%, #1f60f2 100%); /* FF3.6-15 */
   background: -webkit-linear-gradient(-45deg, #17a3d8 0%,#1f60f2 100%); /* Chrome10-25,Safari5.1-6 */
@@ -21,28 +22,30 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#17a3d8', endColorstr='#1f60f2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-.assistant_img.custom i {
-  display: none;
+.assistant_img.custom {
+  height: auto;
+  width: auto;
+}
+
+.assistant_img.custom img {
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .assistant_img.default i{
-  opacity: 0.93;
   font-size: 32px !important;
 }
 
 .assistant_img:hover{
-  font-size: 35px !important;
-  line-height: 65px;
-  height: 60px;
-  width: 60px;
-  animation-name: fonta;
-  animation-duration: 300ms;
-}
-.assistant_img.default:hover i{
-  font-size: 35px !important;
   animation-name: fonta;
   animation-duration: 300ms;
   opacity: 1;
+}
+.assistant_img.default:hover i{
+  height: 60px;
+  width: 60px;
+  line-height: 65px;
+  font-size: 35px !important;
 }
 
 .yelda_container.inner {
