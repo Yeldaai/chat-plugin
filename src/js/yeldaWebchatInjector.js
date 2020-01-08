@@ -21,8 +21,9 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
+   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  createContainer () {
+  createContainer (data) {
     // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
     if (this.webChatContainer) {
       return true
@@ -37,14 +38,15 @@ class YeldaChat {
     this.parentContainer.appendChild(this.webChatContainer)
 
     if (this.parentContainer === document.body) {
-      this.addAssistantImage()
+      this.addAssistantImage(data)
     }
   }
 
   /**
   * Create assistantImage element and add it to webChatContainer element
+   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  addAssistantImage () {
+  addAssistantImage (data) {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementById('yelda_container')
     }
@@ -57,11 +59,48 @@ class YeldaChat {
     // Assistant Image Creation
     this.assistantImage = document.createElement('div')
     this.assistantImage.setAttribute('id', 'assistant_img')
-    this.assistantImage.setAttribute('class', 'assistant_img')
+    this.assistantImage.setAttribute('class', 'assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
     this.webChatContainer.appendChild(this.assistantImage)
+
     // Add click event to assistant image
     this.assistantImage.addEventListener('click', this.openChat)
+
+    // Get assistant settings from backend
+    this.updateAssistantImageWithAssistantSettings(data)
+  }
+
+  /**
+   * Update assistantImage with assistant settings from backend if any
+   * @param {Object} data { data.assistantUrl, data.assistantId }
+  */
+  updateAssistantImageWithAssistantSettings(data) {
+    const xhr = new XMLHttpRequest();
+    const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble`
+    xhr.open("GET", url);
+    xhr.send();
+
+    xhr.onreadystatechange = () => {
+      if (!xhr.responseText) {
+        return
+      }
+
+      try {
+        const settings = JSON.parse(xhr.responseText)
+        if (!settings || !settings.data || !settings.data.style|| !settings.data.image) {
+          return
+        }
+
+        // @TODO update with data.isDefaultStyle
+        if(settings.data.style === 'custom' && settings.data.image.url) {
+          document.getElementById('assistant_img').classList.remove('default', 'custom')
+          document.getElementById('assistant_img').classList.add('custom')
+          document.getElementById('assistant_img').style.backgroundImage = `url('${settings.data.image.url}')`
+        }
+      } catch (e) {
+        return
+      }
+    }
   }
 
   /**
@@ -145,25 +184,10 @@ class YeldaChat {
    * @param {event} event
    */
   messageListener (event) {
-    let data = event.data || event.message
-
-    try {
-      data = JSON.parse(data)
-    } catch(err) {}
-
-    if (data === 'closeChat') {
+    if (event.data === 'closeChat' || event.message === 'closeChat') {
       this.closeChat()
-    } else if (data === 'openChat') {
+    } else if (event.data === 'openChat' || event.message === 'openChat') {
       this.openChat()
-    } else if (typeof(data) === 'object' && data.type === 'chatBubbleStyle') {
-      document.getElementById('assistant_img').classList.remove('default', 'custom')
-
-      if (data.data.style === 'custom' && data.data.image) {
-        document.getElementById('assistant_img').classList.add('custom')
-        document.getElementById('assistant_img').style.backgroundImage = `url('${data.data.image}')`
-      } else {
-        document.getElementById('assistant_img').classList.add('default')
-      }
     }
   }
 
@@ -336,7 +360,7 @@ class YeldaChat {
     }
 
     // Create container for iframe
-    this.createContainer()
+    this.createContainer(data)
 
     // create the iframe and insert into iframe container
     this.setUpChatIFrame(data)

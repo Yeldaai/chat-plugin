@@ -97,6 +97,16 @@ When submitting a bug report, please include the following information :
 - Which OS and browser version your are using, e.g. Ubuntu 18.04 with Firefox Quantum 63.0.3
 - A minimum reproducible test case, i.e. a short snippet that demonstrates the bug, if applicable
 
+## Run it in local
+
+Build it
+
+```bash
+npm run build
+```
+
+and then open test/index.html in a browser
+
 License
 =======
 
