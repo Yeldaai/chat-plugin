@@ -1,8 +1,10 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
-.assistant_img{color:white;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1);font-size:32px;border-radius:50%;height:60px;width:60px;text-align:center;line-height:64px;cursor:pointer;box-shadow:0 5px 10px rgba(0,0,0,0.16)}
-.assistant_img i{opacity:.93;font-size:32px !important}
+.assistant_img{font-size:32px;border-radius:50%;height:60px;width:60px;text-align:center;line-height:64px;cursor:pointer;box-shadow:0 5px 10px rgba(0,0,0,0.16)}
+.assistant_img.default{color:white;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
+.assistant_img.custom i{display:none}
+.assistant_img.default i{opacity:.93;font-size:32px !important}
 .assistant_img:hover{font-size:35px !important;line-height:65px;height:60px;width:60px;animation-name:fonta;animation-duration:300ms}
-.assistant_img:hover i{font-size:35px !important;animation-name:fonta;animation-duration:300ms;opacity:1}
+.assistant_img.default:hover i{font-size:35px !important;animation-name:fonta;animation-duration:300ms;opacity:1}
 .yelda_container.inner{position:absolute !important;left:45px;top:80px}
 @keyframes fonta{from{font-size:32px}to{font-size:35px}}
 #web_chat_frame{height:100% !important;width:100% !important}

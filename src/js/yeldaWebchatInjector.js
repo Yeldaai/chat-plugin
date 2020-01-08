@@ -29,7 +29,7 @@ class YeldaChat {
     }
 
     // add inner class and assistant image if the parentContainer is not document.body
-    const classList =  this.parentContainer === document.body ? 'yelda_container' :  'yelda_container inner'
+    const classList = this.parentContainer === document.body ? 'yelda_container' : 'yelda_container inner'
 
     this.webChatContainer = document.createElement('div')
     this.webChatContainer.setAttribute('id', 'yelda_container')
@@ -141,13 +141,29 @@ class YeldaChat {
   }
   /**
    * handles communcation between parent window and iframe, mainly for open and closing the chat
+   * handles also the chat bubble style
    * @param {event} event
    */
   messageListener (event) {
-    if (event.data === 'closeChat' || event.message === 'closeChat') {
+    let data = event.data || event.message
+
+    try {
+      data = JSON.parse(data)
+    } catch(err) {}
+
+    if (data === 'closeChat') {
       this.closeChat()
-    } else if (event.data === 'openChat' || event.message === 'openChat') {
+    } else if (data === 'openChat') {
       this.openChat()
+    } else if (typeof(data) === 'object' && data.type === 'chatBubbleStyle') {
+      document.getElementById('assistant_img').classList.remove('default', 'custom')
+
+      if (data.data.style === 'custom' && data.data.image) {
+        document.getElementById('assistant_img').classList.add('custom')
+        document.getElementById('assistant_img').style.backgroundImage = `url('${data.data.image}')`
+      } else {
+        document.getElementById('assistant_img').classList.add('default')
+      }
     }
   }
 
