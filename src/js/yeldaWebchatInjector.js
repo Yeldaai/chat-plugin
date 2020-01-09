@@ -21,15 +21,16 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
+   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  createContainer () {
+  createContainer (data) {
     // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
     if (this.webChatContainer) {
       return true
     }
 
     // add inner class and assistant image if the parentContainer is not document.body
-    const classList =  this.parentContainer === document.body ? 'yelda_container' :  'yelda_container inner'
+    const classList = this.parentContainer === document.body ? 'yelda_container' : 'yelda_container inner'
 
     this.webChatContainer = document.createElement('div')
     this.webChatContainer.setAttribute('id', 'yelda_container')
@@ -37,14 +38,15 @@ class YeldaChat {
     this.parentContainer.appendChild(this.webChatContainer)
 
     if (this.parentContainer === document.body) {
-      this.addAssistantImage()
+      this.addAssistantImage(data)
     }
   }
 
   /**
   * Create assistantImage element and add it to webChatContainer element
+   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  addAssistantImage () {
+  addAssistantImage (data) {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementById('yelda_container')
     }
@@ -57,11 +59,52 @@ class YeldaChat {
     // Assistant Image Creation
     this.assistantImage = document.createElement('div')
     this.assistantImage.setAttribute('id', 'assistant_img')
-    this.assistantImage.setAttribute('class', 'assistant_img')
+    this.assistantImage.setAttribute('class', 'assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
-    this.webChatContainer.appendChild(this.assistantImage)
+
     // Add click event to assistant image
     this.assistantImage.addEventListener('click', this.openChat)
+
+    // Get assistant settings from backend & add assistantImage to webChatContainer
+    this.updateAssistantImageWithAssistantSettings(data)
+  }
+
+  /**
+   * Update assistantImage with assistant settings from backend if any
+   * @param {Object} data { data.assistantUrl, data.assistantId }
+  */
+  updateAssistantImageWithAssistantSettings(data) {
+    const xhr = new XMLHttpRequest();
+    const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble`
+    xhr.open("GET", url);
+    xhr.send();
+
+    xhr.onreadystatechange = () => {
+      if (!xhr.responseText) {
+        this.webChatContainer.appendChild(this.assistantImage)
+        return
+      }
+
+      try {
+        const settings = JSON.parse(xhr.responseText)
+        if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
+          this.webChatContainer.appendChild(this.assistantImage)
+          return
+        }
+
+        // If we dont use isDefaultStyle and have an image set
+        if(!settings.data.isDefaultStyle && settings.data.image.url) {
+          document.getElementById('assistant_img').classList.remove('default', 'custom')
+          this.assistantImage.innerHTML = `<img src="${settings.data.image.url}" alt="assistant">`
+          document.getElementById('assistant_img').classList.add('custom')
+          this.webChatContainer.appendChild(this.assistantImage)
+
+        }
+      } catch (e) {
+        this.webChatContainer.appendChild(this.assistantImage)
+        return
+      }
+    }
   }
 
   /**
@@ -141,6 +184,7 @@ class YeldaChat {
   }
   /**
    * handles communcation between parent window and iframe, mainly for open and closing the chat
+   * handles also the chat bubble style
    * @param {event} event
    */
   messageListener (event) {
@@ -320,7 +364,7 @@ class YeldaChat {
     }
 
     // Create container for iframe
-    this.createContainer()
+    this.createContainer(data)
 
     // create the iframe and insert into iframe container
     this.setUpChatIFrame(data)

@@ -139,11 +139,12 @@ var YeldaChat = function () {
     /**
      * Create webChatContainer, which is the main div containing image and webchat elements
      * and add it to the DOM
+     * @param {Object} data { data.assistantUrl, data.assistantId }
     */
 
   }, {
     key: 'createContainer',
-    value: function createContainer() {
+    value: function createContainer(data) {
       // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
       if (this.webChatContainer) {
         return true;
@@ -158,17 +159,18 @@ var YeldaChat = function () {
       this.parentContainer.appendChild(this.webChatContainer);
 
       if (this.parentContainer === document.body) {
-        this.addAssistantImage();
+        this.addAssistantImage(data);
       }
     }
 
     /**
     * Create assistantImage element and add it to webChatContainer element
+     * @param {Object} data { data.assistantUrl, data.assistantId }
     */
 
   }, {
     key: 'addAssistantImage',
-    value: function addAssistantImage() {
+    value: function addAssistantImage(data) {
       if (!this.webChatContainer) {
         this.webChatContainer = document.getElementById('yelda_container');
       }
@@ -181,11 +183,57 @@ var YeldaChat = function () {
       // Assistant Image Creation
       this.assistantImage = document.createElement('div');
       this.assistantImage.setAttribute('id', 'assistant_img');
-      this.assistantImage.setAttribute('class', 'assistant_img');
+      this.assistantImage.setAttribute('class', 'assistant_img default');
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
-      this.webChatContainer.appendChild(this.assistantImage);
+
       // Add click event to assistant image
       this.assistantImage.addEventListener('click', this.openChat);
+
+      // Get assistant settings from backend & add assistantImage to webChatContainer
+      this.updateAssistantImageWithAssistantSettings(data);
+    }
+
+    /**
+     * Update assistantImage with assistant settings from backend if any
+     * @param {Object} data { data.assistantUrl, data.assistantId }
+    */
+
+  }, {
+    key: 'updateAssistantImageWithAssistantSettings',
+    value: function updateAssistantImageWithAssistantSettings(data) {
+      var _this = this;
+
+      var xhr = new XMLHttpRequest();
+      var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble';
+      xhr.open("GET", url);
+      xhr.send();
+
+      xhr.onreadystatechange = function () {
+        if (!xhr.responseText) {
+          _this.webChatContainer.appendChild(_this.assistantImage);
+          return;
+        }
+
+        try {
+          var settings = JSON.parse(xhr.responseText);
+          console.log(settings);
+          if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
+            _this.webChatContainer.appendChild(_this.assistantImage);
+            return;
+          }
+
+          // If we dont use isDefaultStyle and have an image set
+          if (!settings.data.isDefaultStyle && settings.data.image.url) {
+            document.getElementById('assistant_img').classList.remove('default', 'custom');
+            _this.assistantImage.innerHTML = '<img src="' + settings.data.image.url + '" alt="assistant">';
+            document.getElementById('assistant_img').classList.add('custom');
+            _this.webChatContainer.appendChild(_this.assistantImage);
+          }
+        } catch (e) {
+          _this.webChatContainer.appendChild(_this.assistantImage);
+          return;
+        }
+      };
     }
 
     /**
@@ -270,6 +318,7 @@ var YeldaChat = function () {
     }
     /**
      * handles communcation between parent window and iframe, mainly for open and closing the chat
+     * handles also the chat bubble style
      * @param {event} event
      */
 
@@ -473,7 +522,7 @@ var YeldaChat = function () {
       }
 
       // Create container for iframe
-      this.createContainer();
+      this.createContainer(data);
 
       // create the iframe and insert into iframe container
       this.setUpChatIFrame(data);
@@ -507,14 +556,14 @@ var YeldaChat = function () {
   }, {
     key: 'init',
     value: function init(data) {
-      var _this = this;
+      var _this2 = this;
 
       if (data.assistantId === undefined || data.assistantSlug === undefined) {
         return null;
       }
 
       window.onload = function () {
-        _this.setupChat(data);
+        _this2.setupChat(data);
       };
     }
   }]);
