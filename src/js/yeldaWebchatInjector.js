@@ -87,13 +87,13 @@ class YeldaChat {
 
       try {
         const settings = JSON.parse(xhr.responseText)
-        if (!settings || !settings.data || !settings.data.style|| !settings.data.image) {
+        if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
           this.webChatContainer.appendChild(this.assistantImage)
           return
         }
 
-        // @TODO update with data.isDefaultStyle
-        if(settings.data.style === 'custom' && settings.data.image.url) {
+        // If we dont use isDefaultStyle and have an image set
+        if(!settings.data.isDefaultStyle && settings.data.image.url) {
           document.getElementById('assistant_img').classList.remove('default', 'custom')
           this.assistantImage.innerHTML = `<img src="${settings.data.image.url}" alt="assistant">`
           document.getElementById('assistant_img').classList.add('custom')
