@@ -216,7 +216,6 @@ var YeldaChat = function () {
 
         try {
           var settings = JSON.parse(xhr.responseText);
-          console.log(settings);
           if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
             _this.webChatContainer.appendChild(_this.assistantImage);
             return;
