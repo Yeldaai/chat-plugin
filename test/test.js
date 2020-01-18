@@ -11,8 +11,20 @@
  */
 
 const { expect, should, use, assert } = require('chai')
-should()
+const MockXMLHttpRequest = require('mock-xmlhttprequest')
+const MockXhr = MockXMLHttpRequest.newMockXhr()
 
+// Mock JSON response
+MockXhr.onSend = (xhr) => {
+  const responseHeaders = { 'Content-Type': 'application/json' }
+  const response = '{ "message": "Success!" }'
+  xhr.respond(200, responseHeaders, response)
+};
+
+// Install in the global context so "new XMLHttpRequest()" uses the XMLHttpRequest mock
+global.XMLHttpRequest = MockXhr
+
+should()
 use(require('chai-dom'))
 
 const jsdom = require('jsdom')
@@ -85,7 +97,7 @@ describe('YeldaChat', () => {
       })
     })
 
-    describe('yeldaChat.createContainer', () => {
+  describe('yeldaChat.createContainer', () => {
     it('should create webChatContainer dom element', () => {
       const mockData = {
         'assistantSlug': 'testClient',
@@ -94,7 +106,6 @@ describe('YeldaChat', () => {
       }
 
       yeldaChat.setupChat(mockData)
-
       expect(yeldaChat.webChatContainer).not.to.be.null
     })
 
@@ -133,7 +144,7 @@ describe('YeldaChat', () => {
     })
 
     it('assistantImage should have attribute class', () => {
-      expect(yeldaChat.assistantImage).to.have.attribute('class', 'assistant_img')
+      expect(yeldaChat.assistantImage).to.have.attribute('class', 'assistant_img default')
     })
   })
 
