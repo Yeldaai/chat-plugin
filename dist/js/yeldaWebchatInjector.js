@@ -408,7 +408,7 @@ var YeldaChat = function () {
       yeldaCss.rel = 'stylesheet';
       yeldaCss.type = 'text/css';
       yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = origin + '/static/css/injector.min.css';
+      yeldaCss.href = origin + '/static/css/yeldaWebchatInjector.min.css';
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
