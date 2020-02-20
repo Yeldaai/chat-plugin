@@ -175,6 +175,9 @@ class YeldaChat {
       iframe.name = 'frame'
       iframe.style.border = '0'
       iframe.setAttribute('allow', 'microphone;')
+      iframe.setAttribute('allowfullscreen', 'true')
+      iframe.setAttribute('webkitallowfullscreen', 'true')
+      iframe.setAttribute('mozallowfullscreen', 'true')
       this.iframeContainer.appendChild(iframe)
     } else {
       iframe = document.getElementById('web_chat_frame')
