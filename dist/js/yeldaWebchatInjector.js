@@ -475,7 +475,7 @@ var YeldaChat = function () {
     value: function isStyleSheetLoaded() {
       var sheets = document.styleSheets;
       var isFound = false;
-      var cssSelector = '.assistant_img i'; // Used to check style sheet loaded or not
+      var cssSelector = '.assistant_img'; // Used to check style sheet loaded or not
 
       if (typeof sheets != 'undefined' && sheets.length) {
         sheetsLoop: for (var i = 0; i < sheets.length; i++) {
@@ -807,7 +807,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.6.11' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 

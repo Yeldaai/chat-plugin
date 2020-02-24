@@ -1,6 +1,6 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
-.assistant_img{text-align:center;opacity:.93;cursor:pointer;box-shadow:0 5px 10px rgba(0,0,0,0.16)}
-.assistant_img.default{color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
+.assistant_img{opacity:.93;cursor:pointer}
+.assistant_img.default{box-shadow:0 5px 10px rgba(0,0,0,0.16);text-align:center;color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
 .assistant_img.custom{height:auto;width:auto}
 .assistant_img.custom img{max-height:100%;max-width:100%}
 .assistant_img.default i{font-size:32px !important}
