@@ -316,7 +316,7 @@ class YeldaChat {
   isStyleSheetLoaded () {
     const sheets = document.styleSheets
     let isFound = false
-    const cssSelector = '.assistant_img i' // Used to check style sheet loaded or not
+    const cssSelector = '.assistant_img' // Used to check style sheet loaded or not
 
     if (typeof sheets != 'undefined' && sheets.length) {
       sheetsLoop:
