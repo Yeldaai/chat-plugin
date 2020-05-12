@@ -456,8 +456,14 @@ var YeldaChat = function () {
       data.locale = data.locale || 'fr_FR';
       data.isAdmin = data.isAdmin ? true : false;
       data.isStartBtn = data.isStartBtn ? true : false;
-      data.shouldBeOpened = data.shouldBeOpened ? true : false;
-      data.canBeClosed = data.canBeClosed ? true : false;
+
+      if (data.hasOwnProperty('shouldBeOpened')) {
+        data.shouldBeOpened = data.shouldBeOpened ? true : false;
+      }
+
+      if (data.hasOwnProperty('canBeClosed')) {
+        data.canBeClosed = data.canBeClosed ? true : false;
+      }
 
       // default container
       this.parentContainer = document.body;
@@ -807,7 +813,7 @@ exports.default = function () {
 /***/ "WEpk":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
+var core = module.exports = { version: '2.6.1' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
