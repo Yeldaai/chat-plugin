@@ -119,8 +119,14 @@ class YeldaChat {
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
-    url = this.updateQueryStringParameter(url, 'canBeClosed', data.canBeClosed)
-    url = this.updateQueryStringParameter(url, 'shouldBeOpened', data.shouldBeOpened)
+
+    if (data.hasOwnProperty('canBeClosed')) {
+      url = this.updateQueryStringParameter(url, 'canBeClosed', data.canBeClosed)
+    }
+
+    if (data.hasOwnProperty('shouldBeOpened')) {
+      url = this.updateQueryStringParameter(url, 'shouldBeOpened', data.shouldBeOpened)
+    }
 
     if (data.isAdmin) {
       url = this.updateQueryStringParameter(url, 'isAdmin', data.isAdmin)

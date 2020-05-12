@@ -227,7 +227,7 @@ describe('YeldaChat', () => {
     })
 
     it('webChatIframe should have attribute url', () => {
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&canBeClosed=false&shouldBeOpened=false'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
