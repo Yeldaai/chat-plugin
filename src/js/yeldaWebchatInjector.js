@@ -298,8 +298,14 @@ class YeldaChat {
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
     data.isStartBtn = data.isStartBtn ? true : false
-    data.shouldBeOpened = data.shouldBeOpened ? true : false
-    data.canBeClosed = data.canBeClosed ? true : false
+
+    if(data.hasOwnProperty('shouldBeOpened')) {
+      data.shouldBeOpened = data.shouldBeOpened ? true : false
+    }
+
+    if(data.hasOwnProperty('canBeClosed')) {
+      data.canBeClosed = data.canBeClosed ? true : false
+    }
 
     // default container
     this.parentContainer = document.body
