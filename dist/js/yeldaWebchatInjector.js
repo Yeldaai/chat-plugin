@@ -193,6 +193,13 @@ var YeldaChat = function () {
       this.updateAssistantImageWithAssistantSettings(data);
     }
 
+    /** Check isMobile for user agent */
+
+  }, {
+    key: 'isMobile',
+    value: function isMobile() {
+      return navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/iPhone|iPad|iPod/i) || navigator.userAgent.match(/Opera Mini/i) || navigator.userAgent.match(/IEMobile/i);
+    }
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} data { data.assistantUrl, data.assistantId }
@@ -223,8 +230,10 @@ var YeldaChat = function () {
 
           // If we dont use isDefaultStyle and have an image set
           if (!settings.data.isDefaultStyle && settings.data.image.url) {
+            // If the device is mobile and mobile image url available then use it
+            var image = _this.isMobile() && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : settings.data.image.url;
             document.getElementById('assistant_img').classList.remove('default', 'custom');
-            _this.assistantImage.innerHTML = '<img src="' + settings.data.image.url + '" alt="assistant">';
+            _this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
             document.getElementById('assistant_img').classList.add('custom');
             _this.webChatContainer.appendChild(_this.assistantImage);
           }
