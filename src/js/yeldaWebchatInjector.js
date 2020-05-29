@@ -1,4 +1,5 @@
 import '../css/yeldaWebchatInjector.css'
+import MobileDetect from 'mobile-detect'
 
 class YeldaChat {
   /**
@@ -69,12 +70,6 @@ class YeldaChat {
     this.updateAssistantImageWithAssistantSettings(data)
   }
 
-  /** Check isMobile for user agent */
-  isMobile() {
-    return navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/iPhone|iPad|iPod/i) || navigator.userAgent.match(/Opera Mini/i) ||
-      navigator.userAgent.match(/IEMobile/i)
-  }
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} data { data.assistantUrl, data.assistantId }
@@ -101,7 +96,8 @@ class YeldaChat {
         // If we dont use isDefaultStyle and have an image set
         if(!settings.data.isDefaultStyle && settings.data.image.url) {
           // If the device is mobile and mobile image url exists then use it
-          const image = this.isMobile() && settings.data.mobileImage && settings.data.mobileImage.url
+          const md = new MobileDetect(navigator.userAgent)
+          const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
             ? settings.data.mobileImage.url
             : settings.data.image.url
           document.getElementById('assistant_img').classList.remove('default', 'custom')
