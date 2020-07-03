@@ -389,7 +389,7 @@ class YeldaChat {
     }
 
     if (!document.body || !this.parentContainer) {
-      console.info('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body')
+      console.warn('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body')
       return null
     }
 
