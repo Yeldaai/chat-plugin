@@ -1,6 +1,6 @@
 {
   "name": "yelda-webchat",
-  "version": "1.0.40",
+  "version": "1.0.41",
   "description": "Website Chat Plugin",
   "main": "./dist/js/yeldaWebchatInjector.min.js",
   "license": "MIT",
