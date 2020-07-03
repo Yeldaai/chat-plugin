@@ -71,7 +71,7 @@ Initialize the lib with the Yelda provided elements
 - canBeClosed: true (used to toggle the visible state of close button, if parentContainerId provided 'canBeClosed' set to false)
 
 ```javascript
-  yeldaChat.setupChat({
+  yeldaChat.init({
     'assistantSlug': '<assistantSlug>',
     'assistantId': '<assistantId>',
     'assistantUrl': '<assistantUrl>',
@@ -85,7 +85,7 @@ Initialize the lib with the Yelda provided elements
   })
 ```
 
-Note : you can replace _setupChat_ function by _init_ if you want to wait for window.onload event.
+To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)
 
 # Issues and Feature Requests
 

@@ -148,6 +148,11 @@ var YeldaChat = function () {
   }, {
     key: 'createContainer',
     value: function createContainer(data) {
+      // If the parentContainer (document.body) not loaded then do not proceed
+      if (!this.parentContainer) {
+        return null;
+      }
+
       // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
       if (this.webChatContainer) {
         return true;
@@ -539,6 +544,13 @@ var YeldaChat = function () {
       // Load Async css only if style sheet not found
       if (!this.isStyleSheetLoaded()) {
         this.loadCssAsync(data.assistantUrl);
+      }
+      console.log('HERE---------------');
+      if (!document.body) {
+        console.info('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body');
+        return null;
+      } else {
+        console.log('HERE 2-------');
       }
 
       // Create container for iframe
