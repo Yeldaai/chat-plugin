@@ -545,12 +545,10 @@ var YeldaChat = function () {
       if (!this.isStyleSheetLoaded()) {
         this.loadCssAsync(data.assistantUrl);
       }
-      console.log('HERE---------------');
-      if (!document.body) {
+
+      if (!document.body || !this.parentContainer) {
         console.info('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body');
         return null;
-      } else {
-        console.log('HERE 2-------');
       }
 
       // Create container for iframe
