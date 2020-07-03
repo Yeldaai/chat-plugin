@@ -25,6 +25,11 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.assistantId }
   */
   createContainer (data) {
+    // If the parentContainer (document.body) not loaded then do not proceed
+    if (!this.parentContainer) {
+      return null
+    }
+
     // webChatContainer is the parent div to append the webchat iframe. It should not be created twice.
     if (this.webChatContainer) {
       return true
@@ -381,6 +386,11 @@ class YeldaChat {
     // Load Async css only if style sheet not found
     if ( ! this.isStyleSheetLoaded()) {
       this.loadCssAsync(data.assistantUrl)
+    }
+
+    if (!document.body || !this.parentContainer) {
+      console.info('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body')
+      return null
     }
 
     // Create container for iframe
