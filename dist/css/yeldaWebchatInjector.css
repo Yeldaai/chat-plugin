@@ -88,6 +88,14 @@
   margin-bottom: 20px !important;
 }
 
+.lg-backdrop {
+  z-index: 10000000000 !important;
+}
+
+.lg-outer {
+  z-index: 10000000001 !important;
+}
+
 /* Desktop and Media Query for low resolution  Tablets, Ipads */
 @media only screen and (min-width: 768px) {
 
