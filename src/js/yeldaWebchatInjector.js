@@ -207,8 +207,57 @@ class YeldaChat {
 
     return iframe
   }
+
   /**
-   * handles communcation between parent window and iframe, mainly for open and closing the chat
+   * Format object with social media shareUrl
+   * @param {String} shareUrl url to share
+   * @return {Object} shareUrl properties { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+  */
+  getSharedUrlProperties(shareURL) {
+    return {
+      facebookShareUrl: shareURL,
+      twitterShareUrl: shareURL,
+      pinterestShareUrl: shareURL
+    }
+  }
+
+  /**
+   * Get Image related properties for lightGallery
+   * @param {String} mediaSource image url
+   * @return {Object} object of image needed properties {src, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+  */
+  getImageProperties(mediaSource) {
+    return {
+      src: mediaSource,
+      href: mediaSource,
+      ...this.getSharedUrlProperties(mediaSource)  // { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+    }
+  }
+
+  /**
+   * Get Video related properties for lightGallery
+   * @param {Object} mediaSource video properties
+   * @param {Array<String>} mediaSource.urls videos urls
+   * @param {String | null} mediaSource.cover image cover, optional
+   * @return {Object} object of video needed properties {html, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+   */
+  getVideoProperties(mediaSource) {
+    const videoSources =  mediaSource.urls.reduce((acc, url) => {
+      return `${acc}<source src="${url}"></source>`
+    }, '')
+
+    return {
+      html: `<video class="lg-video-object lg-html5" controls="true" preload="none">${videoSources}</video>`,
+      href: mediaSource.urls[0],
+      ...(mediaSource.cover && {
+        poster: mediaSource.cover // optional video cover preview
+      }),
+      ...this.getSharedUrlProperties(mediaSource.urls[0]) // { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+    }
+  }
+
+  /**
+   * Handles communcation between parent window and iframe, mainly for open and closing the chat
    * handles also the chat bubble style
    * @param {event} event
    */
@@ -230,13 +279,12 @@ class YeldaChat {
    * Create DynamicElements & Opens Light Gallery from the received mediaSources
    * @param {Object} data - iframe data sent from webchat window
    * @param {Array<String | Object>} data.mediaSources - Array of source for image or video
-   * @param {Object} data.labels - Labels for twitter & pinterest share text
    */
   handleLightGallery(data) {
     // Get lightgallery container
     let lightgalleryContainer = document.getElementById('lightgallery')
 
-    // If lightgalleryContainer not exits create it
+    // If lightgalleryContainer does not exit, then create it
     if (!lightgalleryContainer) {
       lightgalleryContainer = document.createElement('div')
       lightgalleryContainer.id = 'lightgallery'
@@ -245,38 +293,27 @@ class YeldaChat {
 
     // Create dynamic Elements from the mediaSources for the lightgallery
     const dynamicElements = data.mediaSources.map(mediaSource => {
-      const shareURL = typeof mediaSource === 'string' ? mediaSource : mediaSource.urls[0]
-      let videoSources = ''
+      let mediaDetails = {}
 
-      if (mediaSource.urls && mediaSource.urls.length) {
-        mediaSource.urls.forEach(url => {
-          videoSources += `<source src="${url}"></source>`
-        })
+      // For image the mediaSource is a simple string
+      if (typeof mediaSource === 'string') {
+        mediaDetails = this.getImageProperties(mediaSource)
+      } else if(mediaSource.urls && mediaSource.urls.length) {
+        // For video mediaSource will be object {urls: {Array<String>}, cover: {String}}
+        mediaDetails = this.getImageProperties(mediaSource)
       }
 
+
       return {
-        tweetText: data.labels.twitterText,
-        pinterestText: data.labels.pinterestText,
-        facebookShareUrl: shareURL,
-        twitterShareUrl: shareURL,
-        pinterestShareUrl: shareURL,
-        googleplusShareUrl: shareURL,
-        ...(typeof mediaSource === 'string' && {
-          src: mediaSource,
-          href: mediaSource,
-        }),
-        ...(mediaSource.urls && videoSources && {
-          html: `<video class="lg-video-object lg-html5" controls="true" preload="none">${videoSources}</video>`,
-          href: mediaSource.urls[0]
-        }),
-        ...(mediaSource.cover && {
-          poster: mediaSource.cover
-        })
+        tweetText: '', // Empty string used to avoid undefined message showed in the twitter share window
+        pinterestText: '',
+        ...mediaDetails
       }
     })
 
     // Open Light gallery
     window.lightGallery(lightgalleryContainer, {
+      googlePlus: false, //Don't show the googlePlus share button
       dynamic: true,
       dynamicEl: dynamicElements,
       index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
