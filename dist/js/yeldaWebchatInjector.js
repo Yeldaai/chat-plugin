@@ -931,6 +931,61 @@ var YeldaChat = function () {
 
       return iframe;
     }
+
+    /**
+     * format object with social media shareUrl
+     * @param {String} shareUrl url to share
+     * @return {Object} shareUrl properties { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+    */
+
+  }, {
+    key: 'getSharedUrlProperties',
+    value: function getSharedUrlProperties(shareURL) {
+      return {
+        facebookShareUrl: shareURL,
+        twitterShareUrl: shareURL,
+        pinterestShareUrl: shareURL
+      };
+    }
+
+    /**
+     * Return object of image needed properties
+     * @param {String} mediaSource image url
+     * @return {Object} object of image needed properties {src, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+    */
+
+  }, {
+    key: 'getImageProperties',
+    value: function getImageProperties(mediaSource) {
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
+        src: mediaSource,
+        href: mediaSource
+      }, this.getSharedUrlProperties(mediaSource));
+    }
+
+    /**
+     * Return object of video needed properties
+     * @param {Object} mediaSource video properties
+     * @param {Array<String>} mediaSource.urls videos urls
+     * @param {String | null} mediaSource.cover image cover, optional
+     * @return {Object} object of video needed properties {html, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+     */
+
+  }, {
+    key: 'getVideoProperties',
+    value: function getVideoProperties(mediaSource) {
+      var videoSources = mediaSource.urls.reduce(function (acc, url) {
+        return acc + '<source src="' + url + '"></source>';
+      }, '');
+
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
+        html: '<video class="lg-video-object lg-html5" controls="true" preload="none">' + videoSources + '</video>',
+        href: mediaSource.urls[0]
+      }, mediaSource.cover && {
+        poster: mediaSource.cover // optional video cover preview
+      }, this.getSharedUrlProperties(mediaSource.urls[0]));
+    }
+
     /**
      * handles communcation between parent window and iframe, mainly for open and closing the chat
      * handles also the chat bubble style
@@ -957,53 +1012,44 @@ var YeldaChat = function () {
      * Create DynamicElements & Opens Light Gallery from the received mediaSources
      * @param {Object} data - iframe data sent from webchat window
      * @param {Array<String | Object>} data.mediaSources - Array of source for image or video
-     * @param {Object} data.labels - Labels for twitter & pinterest share text
      */
 
   }, {
     key: 'handleLightGallery',
     value: function handleLightGallery(data) {
+      var _this2 = this;
+
       // Get lightgallery container
       var lightgalleryContainer = document.getElementById('lightgallery');
 
-      // If not exits create it
+      // If lightgalleryContainer does not exit, then create it
       if (!lightgalleryContainer) {
         lightgalleryContainer = document.createElement('div');
         lightgalleryContainer.id = 'lightgallery';
         document.getElementById('yelda_iframe_container').appendChild(lightgalleryContainer);
       }
 
-      // Create dynamic Elements from the mediaSources
+      // Create dynamic Elements from the mediaSources for the lightgallery
       var dynamicElements = data.mediaSources.map(function (mediaSource) {
-        var shareURL = typeof mediaSource === 'string' ? mediaSource : mediaSource.urls[0];
-        var videoSources = '';
+        var mediaDetails = {};
 
-        if (mediaSource.urls && mediaSource.urls.length) {
-          mediaSource.urls.forEach(function (url) {
-            videoSources += '<source src="' + url + '"></source>';
-          });
+        // For image the mediaSource is a simple string
+        if (typeof mediaSource === 'string') {
+          mediaDetails = _this2.getImageProperties(mediaSource);
+        } else if (mediaSource.urls && mediaSource.urls.length) {
+          // For video mediaSource will be object {urls: {Array<String>}, cover: {String}}
+          mediaDetails = _this2.getImageProperties(mediaSource);
         }
 
         return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
-          tweetText: data.labels.twitterText,
-          pinterestText: data.labels.pinterestText,
-          facebookShareUrl: shareURL,
-          twitterShareUrl: shareURL,
-          pinterestShareUrl: shareURL,
-          googleplusShareUrl: shareURL
-        }, typeof mediaSource === 'string' && {
-          src: mediaSource,
-          href: mediaSource
-        }, mediaSource.urls && videoSources && {
-          html: '<video class="lg-video-object lg-html5" controls="true" preload="none">' + videoSources + '</video>',
-          href: mediaSource.urls[0]
-        }, mediaSource.cover && {
-          poster: mediaSource.cover
-        });
+          tweetText: '', // Empty string used to avoid undefined message showed in the twitter share window
+          pinterestText: ''
+        }, mediaDetails);
       });
 
       // Open Light gallery
       window.lightGallery(lightgalleryContainer, {
+        googlePlus: false, //Don't show the googlePlus share button
         dynamic: true,
         dynamicEl: dynamicElements,
         index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
@@ -1245,14 +1291,14 @@ var YeldaChat = function () {
   }, {
     key: 'init',
     value: function init(data) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (data.assistantId === undefined || data.assistantSlug === undefined) {
         return null;
       }
 
       window.onload = function () {
-        _this2.setupChat(data);
+        _this3.setupChat(data);
       };
     }
   }]);
