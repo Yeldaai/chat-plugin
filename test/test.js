@@ -25,6 +25,10 @@ MockXhr.onSend = (xhr) => {
 // Install in the global context so "new XMLHttpRequest()" uses the XMLHttpRequest mock
 global.XMLHttpRequest = MockXhr
 
+global.navigator = {
+  userAgent: 'node.js'
+}
+
 should()
 use(require('chai-dom'))
 

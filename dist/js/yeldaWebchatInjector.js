@@ -933,7 +933,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * format object with social media shareUrl
+     * Format object with social media shareUrl
      * @param {String} shareUrl url to share
      * @return {Object} shareUrl properties { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
     */
@@ -949,7 +949,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * Return object of image needed properties
+     * Get Image related properties for lightGallery
      * @param {String} mediaSource image url
      * @return {Object} object of image needed properties {src, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
     */
@@ -964,7 +964,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * Return object of video needed properties
+     * Get Video related properties for lightGallery
      * @param {Object} mediaSource video properties
      * @param {Array<String>} mediaSource.urls videos urls
      * @param {String | null} mediaSource.cover image cover, optional
@@ -987,7 +987,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * handles communcation between parent window and iframe, mainly for open and closing the chat
+     * Handles communcation between parent window and iframe, mainly for open and closing the chat
      * handles also the chat bubble style
      * @param {event} event
      */
