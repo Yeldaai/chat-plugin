@@ -25,6 +25,7 @@ MockXhr.onSend = (xhr) => {
 // Install in the global context so "new XMLHttpRequest()" uses the XMLHttpRequest mock
 global.XMLHttpRequest = MockXhr
 
+// To Fix undefinied error on navigator while running the test
 global.navigator = {
   userAgent: 'node.js'
 }
