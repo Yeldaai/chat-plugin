@@ -1,5 +1,11 @@
 import '../css/yeldaWebchatInjector.css'
 import MobileDetect from 'mobile-detect'
+import 'lightgallery.js'
+import 'lg-fullscreen.js'
+import 'lg-zoom.js'
+import 'lg-video.js'
+import 'lg-share.js'
+import 'lightgallery.js/dist/css/lightgallery.css'
 
 class YeldaChat {
   /**
@@ -211,7 +217,70 @@ class YeldaChat {
       this.closeChat()
     } else if (event.data === 'openChat' || event.message === 'openChat') {
       this.openChat()
+    } else if (event.data && event.data.event && event.data.event === 'openLightGallery') {
+      if (!event.data.mediaSources || !event.data.mediaSources.length) {
+        return
+      }
+
+      this.handleLightGallery(event.data)
     }
+  }
+
+  /**
+   * Create DynamicElements & Opens Light Gallery from the received mediaSources
+   * @param {Object} data - iframe data sent from webchat window
+   * @param {Array<String | Object>} data.mediaSources - Array of source for image or video
+   * @param {Object} data.labels - Labels for twitter & pinterest share text
+   */
+  handleLightGallery(data) {
+    // Get lightgallery container
+    let lightgalleryContainer = document.getElementById('lightgallery')
+
+    // If lightgalleryContainer not exits create it
+    if (!lightgalleryContainer) {
+      lightgalleryContainer = document.createElement('div')
+      lightgalleryContainer.id = 'lightgallery'
+      document.getElementById('yelda_iframe_container').appendChild(lightgalleryContainer)
+    }
+
+    // Create dynamic Elements from the mediaSources for the lightgallery
+    const dynamicElements = data.mediaSources.map(mediaSource => {
+      const shareURL = typeof mediaSource === 'string' ? mediaSource : mediaSource.urls[0]
+      let videoSources = ''
+
+      if (mediaSource.urls && mediaSource.urls.length) {
+        mediaSource.urls.forEach(url => {
+          videoSources += `<source src="${url}"></source>`
+        })
+      }
+
+      return {
+        tweetText: data.labels.twitterText,
+        pinterestText: data.labels.pinterestText,
+        facebookShareUrl: shareURL,
+        twitterShareUrl: shareURL,
+        pinterestShareUrl: shareURL,
+        googleplusShareUrl: shareURL,
+        ...(typeof mediaSource === 'string' && {
+          src: mediaSource,
+          href: mediaSource,
+        }),
+        ...(mediaSource.urls && videoSources && {
+          html: `<video class="lg-video-object lg-html5" controls="true" preload="none">${videoSources}</video>`,
+          href: mediaSource.urls[0]
+        }),
+        ...(mediaSource.cover && {
+          poster: mediaSource.cover
+        })
+      }
+    })
+
+    // Open Light gallery
+    window.lightGallery(lightgalleryContainer, {
+      dynamic: true,
+      dynamicEl: dynamicElements,
+      index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
+    })
   }
 
   /**
