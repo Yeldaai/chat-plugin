@@ -318,6 +318,11 @@ class YeldaChat {
       dynamicEl: dynamicElements,
       index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
     })
+
+    // Clean the light gallery on close
+    lightgalleryContainer.addEventListener('onCloseAfter', function() {
+      lightgalleryContainer.remove()
+    })
   }
 
   /**
