@@ -49,7 +49,8 @@ class YeldaChat {
     this.webChatContainer.setAttribute('class', classList)
     this.parentContainer.appendChild(this.webChatContainer)
 
-    if (this.parentContainer === document.body) {
+    // Add assistant image if the webchat can be closed
+    if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
       this.addAssistantImage(data)
     }
   }
@@ -70,6 +71,12 @@ class YeldaChat {
 
     // Assistant Image Creation
     this.assistantImage = document.createElement('div')
+
+    // If the webchat should be opened directly, don't display the assistant image
+    if (data.shouldBeOpened) {
+      this.assistantImage.style.display = 'none'
+    }
+    
     this.assistantImage.setAttribute('id', 'assistant_img')
     this.assistantImage.setAttribute('class', 'assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
@@ -440,7 +447,8 @@ class YeldaChat {
     // If parentContainerId presents and valid one, set parentContainer
     if(data.parentContainerId && document.getElementById(data.parentContainerId)) {
       this.parentContainer = document.getElementById(data.parentContainerId)
-      data.canBeClosed = false
+      // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
+      data.canBeClosed = !data.hasOwnProperty('canBeClosed') ? false : data.canBeClosed
     }
 
     return data
