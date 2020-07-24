@@ -543,6 +543,13 @@ class YeldaChat {
       this.setupChat(data)
     }
   }
+
+  /**
+   * Send a user message to the webchat
+   */
+  sendMessageToChat(message) {
+    document.getElementById('web_chat_frame').contentWindow.postMessage({ event: 'sendUserMessage', data: message })
+  }
 }
 
 let yeldaChat = new YeldaChat()
