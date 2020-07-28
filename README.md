@@ -1,5 +1,4 @@
-Yelda Website Chat Plugin
-=====
+# Yelda Website Chat Plugin
 
 # Introduction
 
@@ -29,15 +28,22 @@ Node.JS 8+
 Or use import instruction
 
 ```javascript
-  import yeldaChat from 'yelda-webchat'
-  import 'yelda-webchat/dist/css/yeldaWebchatInjector.min.css'
+import yeldaChat from "yelda-webchat";
+import "yelda-webchat/dist/css/yeldaWebchatInjector.min.css";
 ```
 
 Or add the `<script>` in the `<body>`, and the `<link>` in the `<head>` tags
 
 ```html
-  <link rel="stylesheet" type="text/css" href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"/>
-  <script type="text/javascript" src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"></script>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/node_modules/yelda/dist/css/yeldaWebchatInjector.min.css"
+/>
+<script
+  type="text/javascript"
+  src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"
+></script>
 ```
 
 ## From Yelda website
@@ -46,8 +52,15 @@ Each time a new package version is published, we also update static minified ver
 You can directly load these files with classic script and link tags as explained above
 
 ```html
-  <link type="text/css" rel="stylesheet" href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css">
-  <script type="text/javascript" src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"></script>
+<link
+  type="text/css"
+  rel="stylesheet"
+  href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css"
+/>
+<script
+  type="text/javascript"
+  src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"
+></script>
 ```
 
 Using NPM give you the ownership on the Yelda plugin updates. For example you might want to test it in a preprod version to ensure that a CSS change would not affect your stylesheet (each new version is carefully tested, but you might want to check it yourself 😉)
@@ -59,30 +72,32 @@ We don't advise you to download a local version without using the NPM package : 
 
 Initialize the lib with the Yelda provided elements
 
-- assistantSlug : the webchat short name on Yelda
-- assistantId : the webchat id on Yelda
-- assistantUrl : `https://app.yelda.ai`
-- chatPath : `/chat`
-- locale : `fr_FR`
-- isAdmin : false (set to true only for intent analysis)
-- shouldBeOpened : false
-- parentContainerId : `container_id` DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body
-- isStartBtn: false (set to true only if need to show start button)
-- canBeClosed: true (used to toggle the visible state of close button, if parentContainerId provided 'canBeClosed' set to false)
+| Name              | Type    | Default                | Description                                                                                                                                                        |
+| ----------------- | ------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| assistantSlug     | String  |                        | The assistant short name on Yelda **Required**                                                                                                                     |
+| assistantId       | String  |                        | The assistant id on Yelda **Required**                                                                                                                             |
+| assistantUrl      | String  | `https://app.yelda.ai` |
+| chatPath          | String  | `/chat`                |
+| locale            | String  | `fr_FR`                |
+| isAdmin           | Boolean | `false`                | Set to `true` only to access the conversations analysis                                                                                                            |
+| shouldBeOpened    | Boolean | `false`                | Set to `true` to open the chat popin on load. With default `false` value, the webchat is closed and the user only see the assistant image or the start button      |
+| parentContainerId | String  |                        | DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body |
+| isStartBtn        | Boolean | `false`                | Set to `true` only if need to show 'start' button. ⚠️ This is an admin feature. It can only work if isAdmin is also set to `true`                                  |
+| canBeClosed       | Boolean | `true`                 | It is used to toggle the visible state of close button. ⚠️ If parentContainerId is provided and canBeClosed is not provided, canBeClosed is set to `false`         |
 
 ```javascript
-  yeldaChat.init({
-    'assistantSlug': '<assistantSlug>',
-    'assistantId': '<assistantId>',
-    'assistantUrl': '<assistantUrl>',
-    'chatPath': '<chatPath>',
-    'locale': '<locale>',
-    'isAdmin': true | false, // Used to see the NLP logs
-    'isStartBtn': true | false, // Used to show the start button on chat load
-    'shouldBeOpened': true | false, // open the chat window by default on loading the page if set to true
-    'parentContainerId' : 'chat_frame',
-    'canBeClosed': true | false
-  })
+yeldaChat.init({
+  assistantSlug: "<assistantSlug>",
+  assistantId: "<assistantId>",
+  assistantUrl: "<assistantUrl>",
+  chatPath: "<chatPath>",
+  locale: "<locale>",
+  isAdmin: true | false, // Used to see the NLP logs
+  isStartBtn: true | false, // Used to show the start button on chat load
+  shouldBeOpened: true | false, // open the chat window by default on loading the page if set to true
+  parentContainerId: "chat_frame",
+  canBeClosed: true | false,
+});
 ```
 
 To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)
@@ -107,8 +122,7 @@ npm run build
 
 and then open test/index.html in a browser
 
-License
-=======
+# License
 
 The MIT License (MIT)
 
