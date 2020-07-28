@@ -6,6 +6,7 @@ import 'lg-zoom.js'
 import 'lg-video.js'
 import 'lg-share.js'
 import 'lightgallery.js/dist/css/lightgallery.css'
+import config from '../config'
 
 class YeldaChat {
   /**
@@ -50,6 +51,8 @@ class YeldaChat {
     this.parentContainer.appendChild(this.webChatContainer)
 
     // Add assistant image if the webchat can be closed
+    // Otherwise we will be able to close the webchat but not open it again
+    // because the assistant image containing the openChat event wouldn't have been created
     if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
       this.addAssistantImage(data)
     }
@@ -73,6 +76,7 @@ class YeldaChat {
     this.assistantImage = document.createElement('div')
 
     // If the webchat should be opened directly, don't display the assistant image
+    // This avoids the assistant image to be displayed below the opened webchat instead of being hidden and only appear once the webchat is closed
     if (data.shouldBeOpened) {
       this.assistantImage.style.display = 'none'
     }
@@ -271,14 +275,34 @@ class YeldaChat {
   messageListener (event) {
     if (event.data === 'closeChat' || event.message === 'closeChat') {
       this.closeChat()
-    } else if (event.data === 'openChat' || event.message === 'openChat') {
+      return
+    }
+    
+    if (event.data === 'openChat' || event.message === 'openChat') {
       this.openChat()
-    } else if (event.data && event.data.event && event.data.event === 'openLightGallery') {
+      return
+    }
+    
+    if (event.data && event.data.event && event.data.event === 'openLightGallery') {
       if (!event.data.mediaSources || !event.data.mediaSources.length) {
         return
       }
 
       this.handleLightGallery(event.data)
+      return
+    }
+
+    /**
+     * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
+     * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and 
+     * is still waiting for an answer
+     * If isSendingMessage data is false, the webchat is ready to receive new user messages
+     */
+    if (event.data && event.data.event && event.data.event === 'isSendingMessage') {
+      if (event.data.hasOwnProperty('data')) {
+        window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }) )
+      }
+      return
     }
   }
 
@@ -448,7 +472,8 @@ class YeldaChat {
     if(data.parentContainerId && document.getElementById(data.parentContainerId)) {
       this.parentContainer = document.getElementById(data.parentContainerId)
       // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
-      data.canBeClosed = !data.hasOwnProperty('canBeClosed') ? false : data.canBeClosed
+      // However, if canBeClosed is not provided but the parentContainerId is provided, force it to false
+      data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : config.CAN_BE_CLOSED_WITH_PARENT_ID
     }
 
     return data
