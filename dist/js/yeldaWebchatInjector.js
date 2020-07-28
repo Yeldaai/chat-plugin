@@ -698,6 +698,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lg_share_js__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("fb6B");
 /* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("8SHQ");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_config__WEBPACK_IMPORTED_MODULE_11__);
+
 
 
 
@@ -762,7 +765,10 @@ var YeldaChat = function () {
       this.webChatContainer.setAttribute('class', classList);
       this.parentContainer.appendChild(this.webChatContainer);
 
-      if (this.parentContainer === document.body) {
+      // Add assistant image if the webchat can be closed
+      // Otherwise we will be able to close the webchat but not open it again
+      // because the assistant image containing the openChat event wouldn't have been created
+      if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
         this.addAssistantImage(data);
       }
     }
@@ -786,6 +792,13 @@ var YeldaChat = function () {
 
       // Assistant Image Creation
       this.assistantImage = document.createElement('div');
+
+      // If the webchat should be opened directly, don't display the assistant image
+      // This avoids the assistant image to be displayed below the opened webchat instead of being hidden and only appear once the webchat is closed
+      if (data.shouldBeOpened) {
+        this.assistantImage.style.display = 'none';
+      }
+
       this.assistantImage.setAttribute('id', 'assistant_img');
       this.assistantImage.setAttribute('class', 'assistant_img default');
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
@@ -997,14 +1010,34 @@ var YeldaChat = function () {
     value: function messageListener(event) {
       if (event.data === 'closeChat' || event.message === 'closeChat') {
         this.closeChat();
-      } else if (event.data === 'openChat' || event.message === 'openChat') {
+        return;
+      }
+
+      if (event.data === 'openChat' || event.message === 'openChat') {
         this.openChat();
-      } else if (event.data && event.data.event && event.data.event === 'openLightGallery') {
+        return;
+      }
+
+      if (event.data && event.data.event && event.data.event === 'openLightGallery') {
         if (!event.data.mediaSources || !event.data.mediaSources.length) {
           return;
         }
 
         this.handleLightGallery(event.data);
+        return;
+      }
+
+      /**
+       * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
+       * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and 
+       * is still waiting for an answer
+       * If isSendingMessage data is false, the webchat is ready to receive new user messages
+       */
+      if (event.data && event.data.event && event.data.event === 'isSendingMessage') {
+        if (event.data.hasOwnProperty('data')) {
+          window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }));
+        }
+        return;
       }
     }
 
@@ -1198,7 +1231,9 @@ var YeldaChat = function () {
       // If parentContainerId presents and valid one, set parentContainer
       if (data.parentContainerId && document.getElementById(data.parentContainerId)) {
         this.parentContainer = document.getElementById(data.parentContainerId);
-        data.canBeClosed = false;
+        // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
+        // However, if canBeClosed is not provided but the parentContainerId is provided, force it to false
+        data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : _config__WEBPACK_IMPORTED_MODULE_11___default.a.CAN_BE_CLOSED_WITH_PARENT_ID;
       }
 
       return data;
@@ -1305,6 +1340,16 @@ var YeldaChat = function () {
       window.onload = function () {
         _this3.setupChat(data);
       };
+    }
+
+    /**
+     * Send a user message to the webchat
+     */
+
+  }, {
+    key: 'sendMessageToChat',
+    value: function sendMessageToChat(message) {
+      document.getElementById('web_chat_frame').contentWindow.postMessage({ event: 'sendUserMessage', data: message });
     }
   }]);
 
@@ -1421,8 +1466,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N;
- * @license GPLv3
+ * Copyright (c) 2016 Sachin N; 
+ * @license GPLv3 
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -1690,11 +1735,12 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-            var firstImage = this.core.items[index].querySelector('img');
+        }
 
-            if (firstImage) {
-                videoTitle = videoTitle || firstImage.getAttribute('alt');
-            }
+        var firstImage = this.core.items[index].querySelector('img');
+
+        if (firstImage) {
+            videoTitle = videoTitle || firstImage.getAttribute('alt');
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
@@ -1777,6 +1823,15 @@ module.exports = function (object, names) {
   return result;
 };
 
+
+/***/ }),
+
+/***/ "8SHQ":
+/***/ (function(module, exports) {
+
+module.exports = {
+  CAN_BE_CLOSED_WITH_PARENT_ID: false
+};
 
 /***/ }),
 
