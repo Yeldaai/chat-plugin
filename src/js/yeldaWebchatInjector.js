@@ -567,11 +567,18 @@ class YeldaChat {
     this.parentContainer = null
   }
 
-  init (data) {
+  init(data) {
     if (data.assistantId === undefined || data.assistantSlug === undefined) {
       return null
     }
 
+    // if the DOM is already ready, call setupChat
+    if (document.readyState === 'complete') {
+      this.setupChat(data)
+      return 
+    }
+
+    // If the DOM is not yet ready, wait
     window.onload = () => {
       this.setupChat(data)
     }
