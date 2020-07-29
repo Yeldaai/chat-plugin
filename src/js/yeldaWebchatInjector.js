@@ -588,7 +588,10 @@ class YeldaChat {
    * Send a user message to the webchat
    */
   sendMessageToChat(message) {
-    document.getElementById('web_chat_frame').contentWindow.postMessage({ event: 'sendUserMessage', data: message })
+    const webchatFrame = document.getElementById('web_chat_frame')
+    if (webchatFrame) {
+      webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message })
+    }
   }
 }
 
