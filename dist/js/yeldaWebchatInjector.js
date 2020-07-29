@@ -1337,6 +1337,13 @@ var YeldaChat = function () {
         return null;
       }
 
+      // if the DOM is already ready, call setupChat
+      if (document.readyState === 'complete') {
+        this.setupChat(data);
+        return;
+      }
+
+      // If the DOM is not yet ready, wait
       window.onload = function () {
         _this3.setupChat(data);
       };
@@ -1349,7 +1356,10 @@ var YeldaChat = function () {
   }, {
     key: 'sendMessageToChat',
     value: function sendMessageToChat(message) {
-      document.getElementById('web_chat_frame').contentWindow.postMessage({ event: 'sendUserMessage', data: message });
+      var webchatFrame = document.getElementById('web_chat_frame');
+      if (webchatFrame) {
+        webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message });
+      }
     }
   }]);
 
