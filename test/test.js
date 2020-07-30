@@ -73,25 +73,24 @@ describe('YeldaChat', () => {
       const response = yeldaChat.init(mockData)
       assert.typeOf(response, 'undefined', 'init function returns undefined')
     })
-    
+
     it('should create webChatContainer DOM element if required data are passed', () => {
       const mockData = {
         'assistantSlug': 'sodebo',
         'assistantId': '5b7edb2b1060312cfeaa791f',
       }
-      
+
       yeldaChat.init(mockData)
       expect(yeldaChat.webChatContainer).not.to.be.null
     })
   })
 
-  // Reset the DOM
-  yeldaChat.unLoadChat()
-
   describe('yeldaChat.setupChat', () => {
 
     describe('yeldaChat.setupChat initial checks', () => {
       it('should return null if assistantId is missing', () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
         const mockData = {
           'assistantSlug': 'testClient',
           'chatPath': 'chat'
@@ -103,6 +102,8 @@ describe('YeldaChat', () => {
         expect(yeldaChat.webChatContainer).to.be.null
       })
       it('should return null if assistantSlug is missing', () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
         const mockData = {
           'assistantId': 'testClient',
           'chatPath': 'chat'
@@ -117,6 +118,8 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.createContainer', () => {
     it('should create webChatContainer dom element', () => {
+      // Reset the DOM
+      yeldaChat.unLoadChat()
       const mockData = {
         'assistantSlug': 'testClient',
         'assistantId': '12345678',
@@ -153,16 +156,27 @@ describe('YeldaChat', () => {
       yeldaChat.should.have.property('assistantImage')
     })
 
+    it('expect yelda_assistant_img exists in document', () => {
+      document.querySelector('#yelda_assistant_img').should.exist
+    })
+
+    it('assistantImage should have attribute id', () => {
+      expect(yeldaChat.assistantImage).to.have.attribute('id', 'yelda_assistant_img')
+    })
+
+    it('assistantImage should have attribute class', () => {
+      expect(yeldaChat.assistantImage).to.have.attribute('class', 'yelda_assistant_img default')
+    })
+  })
+
+
+  describe('yeldaChat.updateAssistantImageWithAssistantSettings', () => {
     it('expect assistantImage exists in document', () => {
       expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantImage)
     })
 
-    it('assistantImage should have attribute id', () => {
-      expect(yeldaChat.assistantImage).to.have.attribute('id', 'assistant_img')
-    })
-
-    it('assistantImage should have attribute class', () => {
-      expect(yeldaChat.assistantImage).to.have.attribute('class', 'assistant_img default')
+    it('expect yelda_assistant_img exists in document', () => {
+      document.querySelector('#yelda_assistant_img').should.exist
     })
   })
 
@@ -276,7 +290,7 @@ describe('YeldaChat', () => {
           'isAdmin': true
         }
 
-        document.getElementById('assistant_img').remove()
+        document.getElementById('yelda_assistant_img').remove()
 
         try {
           yeldaChat.resetChat(mockData)
