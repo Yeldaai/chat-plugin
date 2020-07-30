@@ -117,7 +117,6 @@ class YeldaChat {
    * @param {Object} responseText xhr response
   */
   updateAssistantImageWithAssistantSettings(responseText) {
-    console.log(this.responseText)
     if(!this.webChatContainer) {
       return
     }
@@ -187,10 +186,11 @@ class YeldaChat {
   /**
    * Create iframeContainer and it's child webchat iframe, and it to webChatContainer
    * @param {String} url webchat url
+   * @param {Boolean} shouldBeOpened
    * @return {Element} iframe HTML element
   */
 
-  createWebChatFrame (url) {
+  createWebChatFrame (url, shouldBeOpened) {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementsByClassName('yelda_container')[0]
     }
@@ -203,8 +203,9 @@ class YeldaChat {
       this.iframeContainer = document.createElement('div')
       this.iframeContainer.setAttribute('id', 'yelda_iframe_container')
 
-      if (this.parentContainer !== document.body) {
-        // CSS class which contols the opacity and positin of the frame container
+      // Display iframe if webchat should be opened on load, otherwise hide it
+      if (shouldBeOpened) {
+        // CSS class which contols the opacity and position of the frame container
         classList += ' y_active inner'
       } else {
         // If the iframe is inserted into the document body, hide it by default
@@ -445,11 +446,11 @@ class YeldaChat {
 
   /**
    * Gererate webchatURL and create webchatIframe
-   * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug }
+   * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug, data.shouldBeOpened }
   */
   setUpChatIFrame (data) {
     const webchatUrl = this.createWebChatURL(data)
-    this.webChatIframe = this.createWebChatFrame(webchatUrl)
+    this.webChatIframe = this.createWebChatFrame(webchatUrl, data.shouldBeOpened)
   }
 
   /**
@@ -531,7 +532,6 @@ class YeldaChat {
    * @param {object} data
   */
   setupChat (data) {
-    console.log('START SETUP')
     this.webChatContainer = null
     this.iframeContainer = null
     this.webChatIframe = null
