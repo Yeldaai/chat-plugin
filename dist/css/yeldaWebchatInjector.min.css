@@ -1,11 +1,11 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
-.assistant_img{opacity:.93;cursor:pointer}
-.assistant_img.default{box-shadow:0 5px 10px rgba(0,0,0,0.16);text-align:center;color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
-.assistant_img.custom{height:auto;width:auto}
-.assistant_img.custom img{max-height:100%;max-width:100%}
-.assistant_img.default i{font-size:32px !important}
-.assistant_img:hover{animation-name:fonta;animation-duration:300ms;opacity:1}
-.assistant_img.default:hover i{height:60px;width:60px;line-height:65px;font-size:35px !important}
+.yelda_assistant_img{opacity:.93;cursor:pointer}
+.yelda_assistant_img.default{box-shadow:0 5px 10px rgba(0,0,0,0.16);text-align:center;color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
+.yelda_assistant_img.custom{height:auto;width:auto}
+.yelda_assistant_img.custom img{max-height:100%;max-width:100%}
+.yelda_assistant_img.default i{font-size:32px !important}
+.yelda_assistant_img:hover{animation-name:fonta;animation-duration:300ms;opacity:1}
+.yelda_assistant_img.default:hover i{height:60px;width:60px;line-height:65px;font-size:35px !important}
 .yelda_container.inner{position:absolute !important;left:45px;top:80px}
 @keyframes fonta{from{font-size:32px}to{font-size:35px}}
 #web_chat_frame{height:100% !important;width:100% !important}
