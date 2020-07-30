@@ -1,12 +1,12 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
 
 
-.assistant_img {
+.yelda_assistant_img {
   opacity: 0.93;
   cursor: pointer;
 }
 
-.assistant_img.default {
+.yelda_assistant_img.default {
   box-shadow: 0 5px 10px rgba(0,0,0,.16);
   text-align: center;
   color: white;
@@ -22,26 +22,26 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#17a3d8', endColorstr='#1f60f2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-.assistant_img.custom {
+.yelda_assistant_img.custom {
   height: auto;
   width: auto;
 }
 
-.assistant_img.custom img {
+.yelda_assistant_img.custom img {
   max-height: 100%;
   max-width: 100%;
 }
 
-.assistant_img.default i{
+.yelda_assistant_img.default i{
   font-size: 32px !important;
 }
 
-.assistant_img:hover{
+.yelda_assistant_img:hover{
   animation-name: fonta;
   animation-duration: 300ms;
   opacity: 1;
 }
-.assistant_img.default:hover i{
+.yelda_assistant_img.default:hover i{
   height: 60px;
   width: 60px;
   line-height: 65px;
