@@ -68,7 +68,7 @@ class YeldaChat {
     }
 
     // If it's already set up, keep it
-    if (document.getElementById('assistant_img') !== null) {
+    if (document.getElementById('yelda_assistant_img') !== null) {
       return
     }
 
@@ -80,58 +80,75 @@ class YeldaChat {
     if (data.shouldBeOpened) {
       this.assistantImage.style.display = 'none'
     }
-    
-    this.assistantImage.setAttribute('id', 'assistant_img')
-    this.assistantImage.setAttribute('class', 'assistant_img default')
+
+    this.assistantImage.setAttribute('id', 'yelda_assistant_img')
+    this.assistantImage.setAttribute('class', 'yelda_assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
 
     // Add click event to assistant image
     this.assistantImage.addEventListener('click', this.openChat)
 
-    // Get assistant settings from backend & add assistantImage to webChatContainer
-    this.updateAssistantImageWithAssistantSettings(data)
+    // Get assistant settings from backend
+    // & add assistantImage to webChatContainer in xhr onreadystatechange callback
+    this.getAssistantSettings(data, this.updateAssistantImageWithAssistantSettings)
   }
 
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} data { data.assistantUrl, data.assistantId }
+   * @param {Object} callback callback function called on onreadystatechange
   */
-  updateAssistantImageWithAssistantSettings(data) {
+  getAssistantSettings(data, callback) {
     const xhr = new XMLHttpRequest();
     const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble`
     xhr.open("GET", url);
     xhr.send();
 
-    xhr.onreadystatechange = () => {
-      console.log('ADD IMAGE TO CONTAINER')
-      if (!xhr.responseText) {
+    // Bind and call are necessary to pass the "this" to the callback function
+    xhr.onreadystatechange = (function () {
+      if(xhr.readyState === 4) {
+        callback.call(this, xhr.responseText)
+      }
+    }).bind(this)
+  }
+
+  /**
+   * Update assistantImage with assistant settings from backend if any
+   * @param {Object} responseText xhr response
+  */
+  updateAssistantImageWithAssistantSettings(responseText) {
+    console.log(this.responseText)
+    if(!this.webChatContainer) {
+      return
+    }
+
+    if (!responseText) {
+      this.webChatContainer.appendChild(this.assistantImage)
+      return
+    }
+
+    try {
+      const settings = JSON.parse(responseText)
+      if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
         this.webChatContainer.appendChild(this.assistantImage)
         return
       }
 
-      try {
-        const settings = JSON.parse(xhr.responseText)
-        if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
-          this.webChatContainer.appendChild(this.assistantImage)
-          return
-        }
-
-        // If we dont use isDefaultStyle and have an image set
-        if(!settings.data.isDefaultStyle && settings.data.image.url) {
-          // If the device is mobile and mobile image url exists then use it
-          const md = new MobileDetect(navigator.userAgent)
-          const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
-            ? settings.data.mobileImage.url
-            : settings.data.image.url
-          document.getElementById('assistant_img').classList.remove('default', 'custom')
-          this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-          document.getElementById('assistant_img').classList.add('custom')
-          this.webChatContainer.appendChild(this.assistantImage)
-        }
-      } catch (e) {
+      // If we dont use isDefaultStyle and have an image set
+      if(!settings.data.isDefaultStyle && settings.data.image.url) {
+        // If the device is mobile and mobile image url exists then use it
+        const md = new MobileDetect(navigator.userAgent)
+        const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
+          ? settings.data.mobileImage.url
+          : settings.data.image.url
+        document.getElementById('yelda_assistant_img').classList.remove('default', 'custom')
+        this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+        document.getElementById('yelda_assistant_img').classList.add('custom')
         this.webChatContainer.appendChild(this.assistantImage)
-        return
       }
+    } catch (e) {
+      this.webChatContainer.appendChild(this.assistantImage)
+      return
     }
   }
 
@@ -192,7 +209,7 @@ class YeldaChat {
       } else {
         // If the iframe is inserted into the document body, hide it by default
         // If the webChatContainer is inserted into the document body, the iframeContainer should be hidden it by default
-        // assistant_img click event management will take care of showing and hiding the webchat
+        // yelda_assistant_img click event management will take care of showing and hiding the webchat
         this.iframeContainer.style.cssText = 'display: none;'
       }
 
@@ -278,12 +295,12 @@ class YeldaChat {
       this.closeChat()
       return
     }
-    
+
     if (event.data === 'openChat' || event.message === 'openChat') {
       this.openChat()
       return
     }
-    
+
     if (event.data && event.data.event && event.data.event === 'openLightGallery') {
       if (!event.data.mediaSources || !event.data.mediaSources.length) {
         return
@@ -295,7 +312,7 @@ class YeldaChat {
 
     /**
      * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
-     * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and 
+     * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
      * is still waiting for an answer
      * If isSendingMessage data is false, the webchat is ready to receive new user messages
      */
@@ -361,7 +378,7 @@ class YeldaChat {
    * Close the webchat window
    */
   closeChat() {
-    const assistantImgElement = document.getElementById('assistant_img')
+    const assistantImgElement = document.getElementById('yelda_assistant_img')
     if (assistantImgElement !== null) {
       assistantImgElement.style.display = 'block'
     }
@@ -377,7 +394,7 @@ class YeldaChat {
    * Open the webchat window
    */
   openChat () {
-    const assistantImgElement = document.getElementById('assistant_img')
+    const assistantImgElement = document.getElementById('yelda_assistant_img')
     if (assistantImgElement !== null) {
       assistantImgElement.style.display = 'none'
     }
@@ -483,7 +500,7 @@ class YeldaChat {
   isStyleSheetLoaded () {
     const sheets = document.styleSheets
     let isFound = false
-    const cssSelector = '.assistant_img' // Used to check style sheet loaded or not
+    const cssSelector = '.yelda_assistant_img' // Used to check style sheet loaded or not
 
     if (typeof sheets != 'undefined' && sheets.length) {
       sheetsLoop:
@@ -564,13 +581,20 @@ class YeldaChat {
         element.remove()
       }
     }
-    
+
+    if (this.assistantImage) {
+      for (const element of document.querySelectorAll("[id='yelda_assistant_img']")) {
+        element.remove()
+      }
+    }
+
     if (this.webChatContainer) {
       for (const element of document.querySelectorAll("[id='yelda_container']")) {
         element.remove()
       }
     }
-    
+
+    this.assistantImage = null
     this.iframeContainer = null
     this.webChatIframe = null
     this.webChatContainer = null
@@ -585,7 +609,7 @@ class YeldaChat {
     // if the DOM is already ready, call setupChat
     if (document.readyState === 'complete') {
       this.setupChat(data)
-      return 
+      return
     }
 
     // If the DOM is not yet ready, wait
