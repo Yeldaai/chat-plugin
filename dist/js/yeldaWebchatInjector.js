@@ -855,21 +855,29 @@ var YeldaChat = function () {
 
       try {
         var settings = JSON.parse(responseText);
-        if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
+
+        if (!settings || !settings.data) {
           this.webChatContainer.appendChild(this.assistantImage);
           return;
         }
 
-        // If we dont use isDefaultStyle and have an image set
-        if (!settings.data.isDefaultStyle && settings.data.image.url) {
-          // If the device is mobile and mobile image url exists then use it
-          var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
-          var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : settings.data.image.url;
-          this.assistantImage.classList.remove('default', 'custom');
-          this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
-          this.assistantImage.classList.add('custom');
+        var customImage = settings.data.image && settings.data.image.url;
+        var hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle;
+
+        if (!hasCustomStyle || !customImage) {
           this.webChatContainer.appendChild(this.assistantImage);
+          return;
         }
+
+        // If the device is mobile and mobile image url exists then use it
+        var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
+        var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : customImage;
+
+        this.assistantImage.classList.remove('default', 'custom');
+        this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
+        this.assistantImage.classList.add('custom');
+
+        this.webChatContainer.appendChild(this.assistantImage);
       } catch (e) {
         this.webChatContainer.appendChild(this.assistantImage);
         return;

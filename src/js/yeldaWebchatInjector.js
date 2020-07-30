@@ -128,23 +128,31 @@ class YeldaChat {
 
     try {
       const settings = JSON.parse(responseText)
-      if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
+
+      if (!settings || !settings.data ) {
         this.webChatContainer.appendChild(this.assistantImage)
         return
       }
 
-      // If we dont use isDefaultStyle and have an image set
-      if(!settings.data.isDefaultStyle && settings.data.image.url) {
-        // If the device is mobile and mobile image url exists then use it
-        const md = new MobileDetect(navigator.userAgent)
-        const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
-          ? settings.data.mobileImage.url
-          : settings.data.image.url
-        this.assistantImage.classList.remove('default', 'custom')
-        this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-        this.assistantImage.classList.add('custom')
+      const customImage =  settings.data.image && settings.data.image.url
+      const hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle
+
+      if (!hasCustomStyle || !customImage) {
         this.webChatContainer.appendChild(this.assistantImage)
+        return
       }
+
+      // If the device is mobile and mobile image url exists then use it
+      const md = new MobileDetect(navigator.userAgent)
+      const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
+        ? settings.data.mobileImage.url
+        : customImage
+
+      this.assistantImage.classList.remove('default', 'custom')
+      this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+      this.assistantImage.classList.add('custom')
+
+      this.webChatContainer.appendChild(this.assistantImage)
     } catch (e) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
