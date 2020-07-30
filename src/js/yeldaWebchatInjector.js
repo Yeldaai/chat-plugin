@@ -140,9 +140,9 @@ class YeldaChat {
         const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
           ? settings.data.mobileImage.url
           : settings.data.image.url
-        document.getElementById('yelda_assistant_img').classList.remove('default', 'custom')
+        this.assistantImage.classList.remove('default', 'custom')
         this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-        document.getElementById('yelda_assistant_img').classList.add('custom')
+        this.assistantImage.classList.add('custom')
         this.webChatContainer.appendChild(this.assistantImage)
       }
     } catch (e) {

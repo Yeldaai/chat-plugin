@@ -865,9 +865,9 @@ var YeldaChat = function () {
           // If the device is mobile and mobile image url exists then use it
           var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
           var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : settings.data.image.url;
-          document.getElementById('yelda_assistant_img').classList.remove('default', 'custom');
+          this.assistantImage.classList.remove('default', 'custom');
           this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
-          document.getElementById('yelda_assistant_img').classList.add('custom');
+          this.assistantImage.classList.add('custom');
           this.webChatContainer.appendChild(this.assistantImage);
         }
       } catch (e) {
