@@ -676,30 +676,33 @@ var require;var require;/**!
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("QbLZ");
-/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("iCc5");
-/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("V7oC");
-/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("c39r");
-/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("xsZ3");
-/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(mobile_detect__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("RolN");
-/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("yu08");
-/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("+KpT");
-/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lg_zoom_js__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("5vGx");
-/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lg_video_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("Wdqn");
-/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lg_share_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("fb6B");
-/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("8SHQ");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_config__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("FyfS");
+/* harmony import */ var babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("QbLZ");
+/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("iCc5");
+/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("V7oC");
+/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("c39r");
+/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("xsZ3");
+/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(mobile_detect__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("RolN");
+/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("yu08");
+/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("+KpT");
+/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lg_zoom_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("5vGx");
+/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lg_video_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("Wdqn");
+/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lg_share_js__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("fb6B");
+/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("8SHQ");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_config__WEBPACK_IMPORTED_MODULE_12__);
+
 
 
 
@@ -715,10 +718,10 @@ __webpack_require__.r(__webpack_exports__);
 
 var YeldaChat = function () {
   function YeldaChat() {
-    babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, YeldaChat);
+    babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, YeldaChat);
   }
 
-  babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(YeldaChat, [{
+  babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(YeldaChat, [{
     key: 'updateQueryStringParameter',
 
     /**
@@ -786,7 +789,7 @@ var YeldaChat = function () {
       }
 
       // If it's already set up, keep it
-      if (document.getElementById('assistant_img') !== null) {
+      if (document.getElementById('yelda_assistant_img') !== null) {
         return;
       }
 
@@ -799,60 +802,78 @@ var YeldaChat = function () {
         this.assistantImage.style.display = 'none';
       }
 
-      this.assistantImage.setAttribute('id', 'assistant_img');
-      this.assistantImage.setAttribute('class', 'assistant_img default');
+      this.assistantImage.setAttribute('id', 'yelda_assistant_img');
+      this.assistantImage.setAttribute('class', 'yelda_assistant_img default');
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
 
       // Add click event to assistant image
       this.assistantImage.addEventListener('click', this.openChat);
 
-      // Get assistant settings from backend & add assistantImage to webChatContainer
-      this.updateAssistantImageWithAssistantSettings(data);
+      // Get assistant settings from backend
+      // & add assistantImage to webChatContainer in xhr onreadystatechange callback
+      this.getAssistantSettings(data, this.updateAssistantImageWithAssistantSettings);
     }
 
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} data { data.assistantUrl, data.assistantId }
+     * @param {Object} callback callback function called on onreadystatechange
     */
 
   }, {
-    key: 'updateAssistantImageWithAssistantSettings',
-    value: function updateAssistantImageWithAssistantSettings(data) {
-      var _this = this;
-
+    key: 'getAssistantSettings',
+    value: function getAssistantSettings(data, callback) {
       var xhr = new XMLHttpRequest();
       var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble';
       xhr.open("GET", url);
       xhr.send();
 
+      // Bind and call are necessary to pass the "this" to the callback function
       xhr.onreadystatechange = function () {
-        if (!xhr.responseText) {
-          _this.webChatContainer.appendChild(_this.assistantImage);
+        if (xhr.readyState === 4) {
+          callback.call(this, xhr.responseText);
+        }
+      }.bind(this);
+    }
+
+    /**
+     * Update assistantImage with assistant settings from backend if any
+     * @param {Object} responseText xhr response
+    */
+
+  }, {
+    key: 'updateAssistantImageWithAssistantSettings',
+    value: function updateAssistantImageWithAssistantSettings(responseText) {
+      if (!this.webChatContainer) {
+        return;
+      }
+
+      if (!responseText) {
+        this.webChatContainer.appendChild(this.assistantImage);
+        return;
+      }
+
+      try {
+        var settings = JSON.parse(responseText);
+        if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
+          this.webChatContainer.appendChild(this.assistantImage);
           return;
         }
 
-        try {
-          var settings = JSON.parse(xhr.responseText);
-          if (!settings || !settings.data || !settings.data.hasOwnProperty('isDefaultStyle') || !settings.data.image) {
-            _this.webChatContainer.appendChild(_this.assistantImage);
-            return;
-          }
-
-          // If we dont use isDefaultStyle and have an image set
-          if (!settings.data.isDefaultStyle && settings.data.image.url) {
-            // If the device is mobile and mobile image url exists then use it
-            var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_4___default.a(navigator.userAgent);
-            var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : settings.data.image.url;
-            document.getElementById('assistant_img').classList.remove('default', 'custom');
-            _this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
-            document.getElementById('assistant_img').classList.add('custom');
-            _this.webChatContainer.appendChild(_this.assistantImage);
-          }
-        } catch (e) {
-          _this.webChatContainer.appendChild(_this.assistantImage);
-          return;
+        // If we dont use isDefaultStyle and have an image set
+        if (!settings.data.isDefaultStyle && settings.data.image.url) {
+          // If the device is mobile and mobile image url exists then use it
+          var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
+          var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : settings.data.image.url;
+          document.getElementById('yelda_assistant_img').classList.remove('default', 'custom');
+          this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
+          document.getElementById('yelda_assistant_img').classList.add('custom');
+          this.webChatContainer.appendChild(this.assistantImage);
         }
-      };
+      } catch (e) {
+        this.webChatContainer.appendChild(this.assistantImage);
+        return;
+      }
     }
 
     /**
@@ -893,12 +914,13 @@ var YeldaChat = function () {
     /**
      * Create iframeContainer and it's child webchat iframe, and it to webChatContainer
      * @param {String} url webchat url
+     * @param {Boolean} shouldBeOpened
      * @return {Element} iframe HTML element
     */
 
   }, {
     key: 'createWebChatFrame',
-    value: function createWebChatFrame(url) {
+    value: function createWebChatFrame(url, shouldBeOpened) {
       if (!this.webChatContainer) {
         this.webChatContainer = document.getElementsByClassName('yelda_container')[0];
       }
@@ -911,13 +933,14 @@ var YeldaChat = function () {
         this.iframeContainer = document.createElement('div');
         this.iframeContainer.setAttribute('id', 'yelda_iframe_container');
 
-        if (this.parentContainer !== document.body) {
-          // CSS class which contols the opacity and positin of the frame container
+        // Display iframe if webchat should be opened on load, otherwise hide it
+        if (shouldBeOpened) {
+          // CSS class which contols the opacity and position of the frame container
           classList += ' y_active inner';
         } else {
           // If the iframe is inserted into the document body, hide it by default
           // If the webChatContainer is inserted into the document body, the iframeContainer should be hidden it by default
-          // assistant_img click event management will take care of showing and hiding the webchat
+          // yelda_assistant_img click event management will take care of showing and hiding the webchat
           this.iframeContainer.style.cssText = 'display: none;';
         }
 
@@ -970,7 +993,7 @@ var YeldaChat = function () {
   }, {
     key: 'getImageProperties',
     value: function getImageProperties(mediaSource) {
-      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1___default()({
         src: mediaSource,
         href: mediaSource
       }, this.getSharedUrlProperties(mediaSource));
@@ -991,7 +1014,7 @@ var YeldaChat = function () {
         return acc + '<source src="' + url + '"></source>';
       }, '');
 
-      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1___default()({
         html: '<video class="lg-video-object lg-html5" controls="true" preload="none">' + videoSources + '</video>',
         href: mediaSource.urls[0]
       }, mediaSource.cover && {
@@ -1029,7 +1052,7 @@ var YeldaChat = function () {
 
       /**
        * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
-       * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and 
+       * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
        * is still waiting for an answer
        * If isSendingMessage data is false, the webchat is ready to receive new user messages
        */
@@ -1050,7 +1073,7 @@ var YeldaChat = function () {
   }, {
     key: 'handleLightGallery',
     value: function handleLightGallery(data) {
-      var _this2 = this;
+      var _this = this;
 
       // Get lightgallery container
       var lightgalleryContainer = document.getElementById('lightgallery');
@@ -1068,13 +1091,13 @@ var YeldaChat = function () {
 
         // For image the mediaSource is a simple string
         if (typeof mediaSource === 'string') {
-          mediaDetails = _this2.getImageProperties(mediaSource);
+          mediaDetails = _this.getImageProperties(mediaSource);
         } else if (mediaSource.urls && mediaSource.urls.length) {
           // For video mediaSource will be object {urls: {Array<String>}, cover: {String}}
-          mediaDetails = _this2.getImageProperties(mediaSource);
+          mediaDetails = _this.getImageProperties(mediaSource);
         }
 
-        return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0___default()({
+        return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_1___default()({
           tweetText: '', // Empty string used to avoid undefined message showed in the twitter share window
           pinterestText: ''
         }, mediaDetails);
@@ -1101,7 +1124,7 @@ var YeldaChat = function () {
   }, {
     key: 'closeChat',
     value: function closeChat() {
-      var assistantImgElement = document.getElementById('assistant_img');
+      var assistantImgElement = document.getElementById('yelda_assistant_img');
       if (assistantImgElement !== null) {
         assistantImgElement.style.display = 'block';
       }
@@ -1120,7 +1143,7 @@ var YeldaChat = function () {
   }, {
     key: 'openChat',
     value: function openChat() {
-      var assistantImgElement = document.getElementById('assistant_img');
+      var assistantImgElement = document.getElementById('yelda_assistant_img');
       if (assistantImgElement !== null) {
         assistantImgElement.style.display = 'none';
       }
@@ -1178,14 +1201,14 @@ var YeldaChat = function () {
 
     /**
      * Gererate webchatURL and create webchatIframe
-     * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug }
+     * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug, data.shouldBeOpened }
     */
 
   }, {
     key: 'setUpChatIFrame',
     value: function setUpChatIFrame(data) {
       var webchatUrl = this.createWebChatURL(data);
-      this.webChatIframe = this.createWebChatFrame(webchatUrl);
+      this.webChatIframe = this.createWebChatFrame(webchatUrl, data.shouldBeOpened);
     }
 
     /**
@@ -1233,7 +1256,7 @@ var YeldaChat = function () {
         this.parentContainer = document.getElementById(data.parentContainerId);
         // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
         // However, if canBeClosed is not provided but the parentContainerId is provided, force it to false
-        data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : _config__WEBPACK_IMPORTED_MODULE_11___default.a.CAN_BE_CLOSED_WITH_PARENT_ID;
+        data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : _config__WEBPACK_IMPORTED_MODULE_12___default.a.CAN_BE_CLOSED_WITH_PARENT_ID;
       }
 
       return data;
@@ -1243,7 +1266,7 @@ var YeldaChat = function () {
     value: function isStyleSheetLoaded() {
       var sheets = document.styleSheets;
       var isFound = false;
-      var cssSelector = '.assistant_img'; // Used to check style sheet loaded or not
+      var cssSelector = '.yelda_assistant_img'; // Used to check style sheet loaded or not
 
       if (typeof sheets != 'undefined' && sheets.length) {
         sheetsLoop: for (var i = 0; i < sheets.length; i++) {
@@ -1315,14 +1338,92 @@ var YeldaChat = function () {
     value: function unLoadChat() {
       this.toggleFrameListener(true);
 
+      /**
+       * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
+       * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
+       */
       if (this.iframeContainer) {
-        this.iframeContainer.remove(); // Remove the element from the DOM tree its belongs
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_iframe_container']")), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var element = _step.value;
+
+            element.remove();
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+
+      if (this.assistantImage) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_assistant_img']")), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _element = _step2.value;
+
+            _element.remove();
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
       }
 
       if (this.webChatContainer) {
-        this.webChatContainer.remove();
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_container']")), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var _element2 = _step3.value;
+
+            _element2.remove();
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
+        }
       }
 
+      this.assistantImage = null;
       this.iframeContainer = null;
       this.webChatIframe = null;
       this.webChatContainer = null;
@@ -1331,7 +1432,7 @@ var YeldaChat = function () {
   }, {
     key: 'init',
     value: function init(data) {
-      var _this3 = this;
+      var _this2 = this;
 
       if (data.assistantId === undefined || data.assistantSlug === undefined) {
         return null;
@@ -1345,7 +1446,7 @@ var YeldaChat = function () {
 
       // If the DOM is not yet ready, wait
       window.onload = function () {
-        _this3.setupChat(data);
+        _this2.setupChat(data);
       };
     }
 
@@ -1890,6 +1991,31 @@ module.exports = function (index, length) {
 
 /***/ }),
 
+/***/ "FlQf":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $at = __webpack_require__("ccE7")(true);
+
+// 21.1.3.27 String.prototype[@@iterator]()
+__webpack_require__("MPFp")(String, 'String', function (iterated) {
+  this._t = String(iterated); // target
+  this._i = 0;                // next index
+// 21.1.5.2.1 %StringIteratorPrototype%.next()
+}, function () {
+  var O = this._t;
+  var index = this._i;
+  var point;
+  if (index >= O.length) return { value: undefined, done: true };
+  point = $at(O, index);
+  this._i += point.length;
+  return { value: point, done: false };
+});
+
+
+/***/ }),
+
 /***/ "FpHa":
 /***/ (function(module, exports) {
 
@@ -1898,6 +2024,13 @@ module.exports = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
 
+
+/***/ }),
+
+/***/ "FyfS":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__("Rp86"), __esModule: true };
 
 /***/ }),
 
@@ -1985,6 +2118,92 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 /***/ }),
 
+/***/ "MPFp":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__("uOPS");
+var $export = __webpack_require__("Y7ZC");
+var redefine = __webpack_require__("kTiW");
+var hide = __webpack_require__("NegM");
+var Iterators = __webpack_require__("SBuE");
+var $iterCreate = __webpack_require__("j2DC");
+var setToStringTag = __webpack_require__("RfKB");
+var getPrototypeOf = __webpack_require__("U+KD");
+var ITERATOR = __webpack_require__("UWiX")('iterator');
+var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
+var FF_ITERATOR = '@@iterator';
+var KEYS = 'keys';
+var VALUES = 'values';
+
+var returnThis = function () { return this; };
+
+module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
+  $iterCreate(Constructor, NAME, next);
+  var getMethod = function (kind) {
+    if (!BUGGY && kind in proto) return proto[kind];
+    switch (kind) {
+      case KEYS: return function keys() { return new Constructor(this, kind); };
+      case VALUES: return function values() { return new Constructor(this, kind); };
+    } return function entries() { return new Constructor(this, kind); };
+  };
+  var TAG = NAME + ' Iterator';
+  var DEF_VALUES = DEFAULT == VALUES;
+  var VALUES_BUG = false;
+  var proto = Base.prototype;
+  var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
+  var $default = $native || getMethod(DEFAULT);
+  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
+  var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
+  var methods, key, IteratorPrototype;
+  // Fix native
+  if ($anyNative) {
+    IteratorPrototype = getPrototypeOf($anyNative.call(new Base()));
+    if (IteratorPrototype !== Object.prototype && IteratorPrototype.next) {
+      // Set @@toStringTag to native iterators
+      setToStringTag(IteratorPrototype, TAG, true);
+      // fix for some old engines
+      if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != 'function') hide(IteratorPrototype, ITERATOR, returnThis);
+    }
+  }
+  // fix Array#{values, @@iterator}.name in V8 / FF
+  if (DEF_VALUES && $native && $native.name !== VALUES) {
+    VALUES_BUG = true;
+    $default = function values() { return $native.call(this); };
+  }
+  // Define iterator
+  if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) {
+    hide(proto, ITERATOR, $default);
+  }
+  // Plug for library
+  Iterators[NAME] = $default;
+  Iterators[TAG] = returnThis;
+  if (DEFAULT) {
+    methods = {
+      values: DEF_VALUES ? $default : getMethod(VALUES),
+      keys: IS_SET ? $default : getMethod(KEYS),
+      entries: $entries
+    };
+    if (FORCED) for (key in methods) {
+      if (!(key in proto)) redefine(proto, key, methods[key]);
+    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+  }
+  return methods;
+};
+
+
+/***/ }),
+
+/***/ "MvwC":
+/***/ (function(module, exports, __webpack_require__) {
+
+var document = __webpack_require__("5T2Y").document;
+module.exports = document && document.documentElement;
+
+
+/***/ }),
+
 /***/ "NV0k":
 /***/ (function(module, exports) {
 
@@ -2041,6 +2260,36 @@ module.exports = { "default": __webpack_require__("UbbE"), __esModule: true };
 
 /***/ }),
 
+/***/ "QMMT":
+/***/ (function(module, exports, __webpack_require__) {
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = __webpack_require__("a0xu");
+var TAG = __webpack_require__("UWiX")('toStringTag');
+// ES3 wrong here
+var ARG = cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+module.exports = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+
+
+/***/ }),
+
 /***/ "QbLZ":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2078,6 +2327,20 @@ __webpack_require__("Rqdy");
 var $Object = __webpack_require__("WEpk").Object;
 module.exports = function defineProperty(it, key, desc) {
   return $Object.defineProperty(it, key, desc);
+};
+
+
+/***/ }),
+
+/***/ "RfKB":
+/***/ (function(module, exports, __webpack_require__) {
+
+var def = __webpack_require__("2faE").f;
+var has = __webpack_require__("B+OT");
+var TAG = __webpack_require__("UWiX")('toStringTag');
+
+module.exports = function (it, tag, stat) {
+  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
 };
 
 
@@ -3522,6 +3785,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "Rp86":
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__("bBy9");
+__webpack_require__("FlQf");
+module.exports = __webpack_require__("fXsU");
+
+
+/***/ }),
+
 /***/ "Rqdy":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3532,10 +3805,66 @@ $export($export.S + $export.F * !__webpack_require__("jmDH"), 'Object', { define
 
 /***/ }),
 
+/***/ "SBuE":
+/***/ (function(module, exports) {
+
+module.exports = {};
+
+
+/***/ }),
+
 /***/ "SEkw":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__("RU/L"), __esModule: true };
+
+/***/ }),
+
+/***/ "U+KD":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
+var has = __webpack_require__("B+OT");
+var toObject = __webpack_require__("JB68");
+var IE_PROTO = __webpack_require__("VVlx")('IE_PROTO');
+var ObjectProto = Object.prototype;
+
+module.exports = Object.getPrototypeOf || function (O) {
+  O = toObject(O);
+  if (has(O, IE_PROTO)) return O[IE_PROTO];
+  if (typeof O.constructor == 'function' && O instanceof O.constructor) {
+    return O.constructor.prototype;
+  } return O instanceof Object ? ObjectProto : null;
+};
+
+
+/***/ }),
+
+/***/ "UO39":
+/***/ (function(module, exports) {
+
+module.exports = function (done, value) {
+  return { value: value, done: !!done };
+};
+
+
+/***/ }),
+
+/***/ "UWiX":
+/***/ (function(module, exports, __webpack_require__) {
+
+var store = __webpack_require__("29s/")('wks');
+var uid = __webpack_require__("YqAc");
+var Symbol = __webpack_require__("5T2Y").Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+};
+
+$exports.store = store;
+
 
 /***/ }),
 
@@ -3871,10 +4200,60 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "bBy9":
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__("w2d+");
+var global = __webpack_require__("5T2Y");
+var hide = __webpack_require__("NegM");
+var Iterators = __webpack_require__("SBuE");
+var TO_STRING_TAG = __webpack_require__("UWiX")('toStringTag');
+
+var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
+  'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
+  'MediaList,MimeTypeArray,NamedNodeMap,NodeList,PaintRequestList,Plugin,PluginArray,SVGLengthList,SVGNumberList,' +
+  'SVGPathSegList,SVGPointList,SVGStringList,SVGTransformList,SourceBufferList,StyleSheetList,TextTrackCueList,' +
+  'TextTrackList,TouchList').split(',');
+
+for (var i = 0; i < DOMIterables.length; i++) {
+  var NAME = DOMIterables[i];
+  var Collection = global[NAME];
+  var proto = Collection && Collection.prototype;
+  if (proto && !proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
+  Iterators[NAME] = Iterators.Array;
+}
+
+
+/***/ }),
+
 /***/ "c39r":
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "ccE7":
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__("Ojgd");
+var defined = __webpack_require__("Jes0");
+// true  -> String#at
+// false -> String#codePointAt
+module.exports = function (TO_STRING) {
+  return function (that, pos) {
+    var s = String(defined(that));
+    var i = toInteger(pos);
+    var l = s.length;
+    var a, b;
+    if (i < 0 || i >= l) return TO_STRING ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? TO_STRING ? s.charAt(i) : a
+      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  };
+};
+
 
 /***/ }),
 
@@ -3899,10 +4278,67 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "fNZA":
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof = __webpack_require__("QMMT");
+var ITERATOR = __webpack_require__("UWiX")('iterator');
+var Iterators = __webpack_require__("SBuE");
+module.exports = __webpack_require__("WEpk").getIteratorMethod = function (it) {
+  if (it != undefined) return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
+
+
+/***/ }),
+
+/***/ "fXsU":
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__("5K7Z");
+var get = __webpack_require__("fNZA");
+module.exports = __webpack_require__("WEpk").getIterator = function (it) {
+  var iterFn = get(it);
+  if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
+  return anObject(iterFn.call(it));
+};
+
+
+/***/ }),
+
 /***/ "fb6B":
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "fpC5":
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__("2faE");
+var anObject = __webpack_require__("5K7Z");
+var getKeys = __webpack_require__("w6GO");
+
+module.exports = __webpack_require__("jmDH") ? Object.defineProperties : function defineProperties(O, Properties) {
+  anObject(O);
+  var keys = getKeys(Properties);
+  var length = keys.length;
+  var i = 0;
+  var P;
+  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
+  return O;
+};
+
+
+/***/ }),
+
+/***/ "hDam":
+/***/ (function(module, exports) {
+
+module.exports = function () { /* empty */ };
+
 
 /***/ }),
 
@@ -3922,6 +4358,27 @@ exports.default = function (instance, Constructor) {
 
 /***/ }),
 
+/***/ "j2DC":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var create = __webpack_require__("oVml");
+var descriptor = __webpack_require__("rr1i");
+var setToStringTag = __webpack_require__("RfKB");
+var IteratorPrototype = {};
+
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+__webpack_require__("NegM")(IteratorPrototype, __webpack_require__("UWiX")('iterator'), function () { return this; });
+
+module.exports = function (Constructor, NAME, next) {
+  Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
+  setToStringTag(Constructor, NAME + ' Iterator');
+};
+
+
+/***/ }),
+
 /***/ "jmDH":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3929,6 +4386,14 @@ exports.default = function (instance, Constructor) {
 module.exports = !__webpack_require__("KUxP")(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
+
+
+/***/ }),
+
+/***/ "kTiW":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__("NegM");
 
 
 /***/ }),
@@ -3994,6 +4459,54 @@ $export($export.S + $export.F, 'Object', { assign: __webpack_require__("kwZ1") }
 
 /***/ }),
 
+/***/ "oVml":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
+var anObject = __webpack_require__("5K7Z");
+var dPs = __webpack_require__("fpC5");
+var enumBugKeys = __webpack_require__("FpHa");
+var IE_PROTO = __webpack_require__("VVlx")('IE_PROTO');
+var Empty = function () { /* empty */ };
+var PROTOTYPE = 'prototype';
+
+// Create object with fake `null` prototype: use iframe Object with cleared prototype
+var createDict = function () {
+  // Thrash, waste and sodomy: IE GC bug
+  var iframe = __webpack_require__("Hsns")('iframe');
+  var i = enumBugKeys.length;
+  var lt = '<';
+  var gt = '>';
+  var iframeDocument;
+  iframe.style.display = 'none';
+  __webpack_require__("MvwC").appendChild(iframe);
+  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
+  // createDict = iframe.contentWindow.Object;
+  // html.removeChild(iframe);
+  iframeDocument = iframe.contentWindow.document;
+  iframeDocument.open();
+  iframeDocument.write(lt + 'script' + gt + 'document.F=Object' + lt + '/script' + gt);
+  iframeDocument.close();
+  createDict = iframeDocument.F;
+  while (i--) delete createDict[PROTOTYPE][enumBugKeys[i]];
+  return createDict();
+};
+
+module.exports = Object.create || function create(O, Properties) {
+  var result;
+  if (O !== null) {
+    Empty[PROTOTYPE] = anObject(O);
+    result = new Empty();
+    Empty[PROTOTYPE] = null;
+    // add "__proto__" for Object.getPrototypeOf polyfill
+    result[IE_PROTO] = O;
+  } else result = createDict();
+  return Properties === undefined ? result : dPs(result, Properties);
+};
+
+
+/***/ }),
+
 /***/ "rr1i":
 /***/ (function(module, exports) {
 
@@ -4026,6 +4539,48 @@ module.exports = function (it) {
 /***/ (function(module, exports) {
 
 module.exports = true;
+
+
+/***/ }),
+
+/***/ "w2d+":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var addToUnscopables = __webpack_require__("hDam");
+var step = __webpack_require__("UO39");
+var Iterators = __webpack_require__("SBuE");
+var toIObject = __webpack_require__("NsO/");
+
+// 22.1.3.4 Array.prototype.entries()
+// 22.1.3.13 Array.prototype.keys()
+// 22.1.3.29 Array.prototype.values()
+// 22.1.3.30 Array.prototype[@@iterator]()
+module.exports = __webpack_require__("MPFp")(Array, 'Array', function (iterated, kind) {
+  this._t = toIObject(iterated); // target
+  this._i = 0;                   // next index
+  this._k = kind;                // kind
+// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+}, function () {
+  var O = this._t;
+  var kind = this._k;
+  var index = this._i++;
+  if (!O || index >= O.length) {
+    this._t = undefined;
+    return step(1);
+  }
+  if (kind == 'keys') return step(0, index);
+  if (kind == 'values') return step(0, O[index]);
+  return step(0, [index, O[index]]);
+}, 'values');
+
+// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+Iterators.Arguments = Iterators.Array;
+
+addToUnscopables('keys');
+addToUnscopables('values');
+addToUnscopables('entries');
 
 
 /***/ }),
