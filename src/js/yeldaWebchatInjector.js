@@ -182,6 +182,10 @@ class YeldaChat {
       url = this.updateQueryStringParameter(url, 'isStartBtn', (data.isAdmin && data.isStartBtn))
     }
 
+    if (data.isDemo) {
+      url = this.updateQueryStringParameter(url, 'isDemo', data.isDemo)
+    }
+
     return url
   }
 
@@ -492,6 +496,7 @@ class YeldaChat {
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
     data.isStartBtn = data.isStartBtn ? true : false
+    data.isDemo = data.isDemo ? true : false
 
     if(data.hasOwnProperty('shouldBeOpened')) {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
