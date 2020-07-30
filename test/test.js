@@ -64,7 +64,7 @@ describe('YeldaChat', () => {
       assert.typeOf(response, 'null', 'init function returns null')
     })
 
-    it('should return nothing(undfined) if required data passed', () => {
+    it('should return nothing(undefined) if required data passed', () => {
       const mockData = {
         'assistantSlug': 'sodebo',
         'assistantId': '5b7edb2b1060312cfeaa791f',
@@ -73,8 +73,20 @@ describe('YeldaChat', () => {
       const response = yeldaChat.init(mockData)
       assert.typeOf(response, 'undefined', 'init function returns undefined')
     })
-
+    
+    it('should create webChatContainer DOM element if required data are passed', () => {
+      const mockData = {
+        'assistantSlug': 'sodebo',
+        'assistantId': '5b7edb2b1060312cfeaa791f',
+      }
+      
+      yeldaChat.init(mockData)
+      expect(yeldaChat.webChatContainer).not.to.be.null
+    })
   })
+
+  // Reset the DOM
+  yeldaChat.unLoadChat()
 
   describe('yeldaChat.setupChat', () => {
 

@@ -103,6 +103,7 @@ class YeldaChat {
     xhr.send();
 
     xhr.onreadystatechange = () => {
+      console.log('ADD IMAGE TO CONTAINER')
       if (!xhr.responseText) {
         this.webChatContainer.appendChild(this.assistantImage)
         return
@@ -513,6 +514,7 @@ class YeldaChat {
    * @param {object} data
   */
   setupChat (data) {
+    console.log('START SETUP')
     this.webChatContainer = null
     this.iframeContainer = null
     this.webChatIframe = null
@@ -553,14 +555,22 @@ class YeldaChat {
   unLoadChat () {
     this.toggleFrameListener(true)
 
+    /**
+     * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
+     * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
+     */
     if (this.iframeContainer) {
-      this.iframeContainer.remove() // Remove the element from the DOM tree its belongs
+      for (const element of document.querySelectorAll("[id='yelda_iframe_container']")) {
+        element.remove()
+      }
     }
-
+    
     if (this.webChatContainer) {
-      this.webChatContainer.remove()
+      for (const element of document.querySelectorAll("[id='yelda_container']")) {
+        element.remove()
+      }
     }
-
+    
     this.iframeContainer = null
     this.webChatIframe = null
     this.webChatContainer = null
