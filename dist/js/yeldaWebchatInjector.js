@@ -770,6 +770,7 @@ var YeldaChat = function () {
 
       // Add assistant image if the webchat can be closed
       // Otherwise we will be able to close the webchat but not open it again
+      // Or the image will not be initialized on load at all
       // because the assistant image containing the openChat event wouldn't have been created
       if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
         this.addAssistantImage(data);
@@ -795,13 +796,6 @@ var YeldaChat = function () {
 
       // Assistant Image Creation
       this.assistantImage = document.createElement('div');
-
-      // If the webchat should be opened directly, don't display the assistant image
-      // This avoids the assistant image to be displayed below the opened webchat instead of being hidden and only appear once the webchat is closed
-      if (data.shouldBeOpened) {
-        this.assistantImage.style.display = 'none';
-      }
-
       this.assistantImage.setAttribute('id', 'yelda_assistant_img');
       this.assistantImage.setAttribute('class', 'yelda_assistant_img default');
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
@@ -920,15 +914,17 @@ var YeldaChat = function () {
     }
 
     /**
-     * Create iframeContainer and it's child webchat iframe, and it to webChatContainer
+     * Create iframeContainer and it's child webchat iframe, and add it to webChatContainer
      * @param {String} url webchat url
-     * @param {Boolean} shouldBeOpened
+     * @param {Boolean} data.shouldBeOpened
+     * @param {Boolean} data.isStartBtn
+     * @param {Boolean} data.canBeClosed
      * @return {Element} iframe HTML element
     */
 
   }, {
     key: 'createWebChatFrame',
-    value: function createWebChatFrame(url, shouldBeOpened) {
+    value: function createWebChatFrame(url, data) {
       if (!this.webChatContainer) {
         this.webChatContainer = document.getElementsByClassName('yelda_container')[0];
       }
@@ -941,14 +937,27 @@ var YeldaChat = function () {
         this.iframeContainer = document.createElement('div');
         this.iframeContainer.setAttribute('id', 'yelda_iframe_container');
 
-        // Display iframe if webchat should be opened on load, otherwise hide it
-        if (shouldBeOpened) {
-          // CSS class which contols the opacity and position of the frame container
-          classList += ' y_active inner';
+        // Add the inner class that controls the position of the iframe container if the parent container is not document.body
+        if (this.parentContainer !== document.body) {
+          classList += ' inner';
+        }
+
+        /**
+         * add CSS class which controls the opacity of the frame container if the iframe:
+         * - should be opened on load OR has a start button
+         * - cannot be closed (canBeClosed explicitely set to false)
+         * 
+         * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
+         * Otherwise, 
+         */
+        if ((data.shouldBeOpened || data.isStartBtn) && data.hasOwnProperty('canBeClosed') && !data.canBeClosed) {
+          classList += ' y_active';
         } else {
-          // If the iframe is inserted into the document body, hide it by default
-          // If the webChatContainer is inserted into the document body, the iframeContainer should be hidden it by default
-          // yelda_assistant_img click event management will take care of showing and hiding the webchat
+          /**
+           * If the iframe can be closed, hide it by default
+           * yelda_assistant_img click event management will take care of showing and hiding the webchat
+           * And if it should be opened, the webchat will trigger the 'openChat' event on its own
+           */
           this.iframeContainer.style.cssText = 'display: none;';
         }
 
@@ -1209,14 +1218,14 @@ var YeldaChat = function () {
 
     /**
      * Gererate webchatURL and create webchatIframe
-     * @param {Object} data { data.chatUrl, data.assistantId, data.assistantSlug, data.shouldBeOpened }
+     * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
     */
 
   }, {
     key: 'setUpChatIFrame',
     value: function setUpChatIFrame(data) {
       var webchatUrl = this.createWebChatURL(data);
-      this.webChatIframe = this.createWebChatFrame(webchatUrl, data.shouldBeOpened);
+      this.webChatIframe = this.createWebChatFrame(webchatUrl, data);
     }
 
     /**
