@@ -84,6 +84,7 @@ Initialize the lib with the Yelda provided elements
 | parentContainerId | String  |                        | DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body |
 | isStartBtn        | Boolean | `false`                | Set to `true` only if need to show 'start' button. ⚠️ This is an admin feature. It can only work if isAdmin is also set to `true`                                  |
 | canBeClosed       | Boolean | `true`                 | It is used to toggle the visible state of close button. ⚠️ If parentContainerId is provided and canBeClosed is not provided, canBeClosed is set to `false`         |
+| isDemo            | Boolean | `false`                | Set to `true` only if the webchat is on a demo page                                                                                                                |
 
 ```javascript
 yeldaChat.init({
@@ -97,6 +98,7 @@ yeldaChat.init({
   shouldBeOpened: true | false, // open the chat window by default on loading the page if set to true
   parentContainerId: "chat_frame",
   canBeClosed: true | false,
+  isDemo: true | false, // Only useful if the webchat is on a demo page
 });
 ```
 
