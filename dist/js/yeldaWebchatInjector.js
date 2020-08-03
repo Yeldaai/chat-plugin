@@ -818,7 +818,7 @@ var YeldaChat = function () {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data, callback) {
       var xhr = new XMLHttpRequest();
-      var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble';
+      var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
       xhr.open("GET", url);
       xhr.send();
 
