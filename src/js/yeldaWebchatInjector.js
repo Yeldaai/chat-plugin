@@ -220,9 +220,9 @@ class YeldaChat {
          * add CSS class which controls the opacity of the frame container if the iframe:
          * - should be opened on load OR has a start button
          * - cannot be closed (canBeClosed explicitely set to false)
-         * 
+         *
          * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
-         * Otherwise, 
+         * Otherwise,
          */
       if ((data.shouldBeOpened || data.isStartBtn) && (data.hasOwnProperty('canBeClosed') && !data.canBeClosed)) {
         classList += ' y_active'
@@ -646,6 +646,7 @@ class YeldaChat {
   sendMessageToChat(message) {
     const webchatFrame = document.getElementById('web_chat_frame')
     if (webchatFrame) {
+      this.openChat()
       webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message })
     }
   }
