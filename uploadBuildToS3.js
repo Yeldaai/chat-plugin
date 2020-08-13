@@ -6,7 +6,7 @@
  *
  * To copy dist folder to Yelda repo include the yelda repo static folder path in the command
  * Like this
- * npm run uploadBuildToS3 '/home/Documents/www/yelda/git/yelda/frontend/static'
+ * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch
  * This command uploadBuildToS3 runs build, test, upload to s3, npm version update, push to git and move dist folder to yelda repo
  */
 
@@ -19,6 +19,23 @@ const fs = require('fs')
 const path = require('path')
 const mime = require('mime')
 const { exec } = require('child_process')
+const yargs = require('yargs')
+
+// Parse the command line arguments
+const argv = yargs
+    .command('build', 'Increments the version number based on semver & copies dest folder to Yelda repo', {
+      semver: {
+        description: 'Semantic versioning for the npm',
+        alias: 's',
+        choices: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease']
+      },
+      destinationPath: {
+        description: 'Destination path to copy',
+        alias: 'd',
+        type: 'string',
+      }
+    })
+    .argv
 
 const main = async () => {
   try {
@@ -72,7 +89,9 @@ const getCurrentBranch = async() => {
  */
 const updateNPMVersion = async () => {
   console.info('Updating npm version ...')
-  return await executeCommand('npm -no-git-tag-version version patch')
+  // Get the Semantic Versioning from argument if found or else use the default 'patch'
+  const semver = (argv._.includes('build') && argv.semver) || 'patch'
+  return await executeCommand(`npm -no-git-tag-version version ${semver}`)
 }
 
 /**
@@ -159,14 +178,14 @@ const uploadToS3 = async () => {
  * Copy html to dist folder
  */
 const copyDistToYelda = async () => {
-  if (!process.argv || !process.argv.length || !process.argv[2]) {
-    console.info('destination is not provided in the option')
+  const destFolderPath = (argv._.includes('build') && argv.destinationPath) || false
+
+  if (!destFolderPath) {
+    console.info('destinationPath is not provided in the option')
     return
   }
 
   console.info('Copying dist folder content to the destination folder')
-
-  const destFolderPath = process.argv[2]
 
   if (!fs.existsSync(destFolderPath)) {
     throw new Error('Provided folder in the argument does not exists')
