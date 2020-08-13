@@ -67,7 +67,16 @@ const getCurrentBranch = async() => {
  *  @return {Promise<string>} stdout
  */
 const updateNPMVersion = async () => {
+  console.info('Updating npm version ...')
   return await executeCommand('npm -no-git-tag-version version patch')
+}
+
+/**
+ * Publishes the package
+ */
+const publishPackage = async () => {
+  console.info('Publishing the package ...')
+  return await executeCommand('npm publish')
 }
 
 /**
@@ -76,14 +85,8 @@ const updateNPMVersion = async () => {
  * @return {Promise<string>} stdout
  */
 const pushToGit = async (branchName) => {
+  await executeCommand(`git commit -am "npm version update"`)
   return await executeCommand(`git push origin ${branchName}`)
-}
-
-/**
- * Publishes the package
- */
-const publishPackage = async () => {
-  return await executeCommand('npm publish')
 }
 
 /**
