@@ -126,12 +126,12 @@ and then open test/index.html in a browser
 
 ## Version update & upload to S3 command
 
-Run this command to build, test, increment the npm version, publish the package, upload to s3 bucket & finally copy the content of dest folder to Yelda repo if the yelda static folder path passed as argument
+Run this command to build, test, increment the npm version, publish the package, upload to s3 bucket & finally copy the content of dest folder to Yelda repo if the yelda static folder path passed as argument. Default value for semver is patch
 
 It requires AWS creds, bucket & region information in .env to upload the build files to s3 bucket and npm version command requires git working directory to be clean otherwise it throws error
 
 ```shell
-npm run uploadBuildToS3 '/home/Documents/www/yelda/git/yelda/frontend/static'
+npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static
 ```
 
 ## License

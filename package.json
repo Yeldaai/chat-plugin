@@ -21,7 +21,7 @@
     "lint:check": "eslint --ext .js src",
     "lint:fix": "eslint --fix --ext .js src",
     "test": "mocha",
-    "uploadBuildToS3": "npm run prepack && node uploadBuildToS3"
+    "uploadBuildToS3": "npm run prepack && node uploadBuildToS3 build -s $npm_config_semver -d $npm_config_destinationPath"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -59,7 +59,8 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "^1.1.1",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "yargs": "^15.4.1"
   },
   "dependencies": {
     "lg-fullscreen.js": "^1.2.0",
