@@ -55,11 +55,11 @@ You can directly load these files with classic script and link tags as explained
 <link
   type="text/css"
   rel="stylesheet"
-  href="https://app.yelda.ai/static/css/yeldaWebchatInjector.min.css"
+  href="https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css"
 />
 <script
   type="text/javascript"
-  src="https://app.yelda.ai/static/js/yeldaWebchatInjector.min.js"
+  src="https://yelda-webchat.s3.eu-west-3.amazonaws.com/js/yeldaWebchatInjector.min.js"
 ></script>
 ```
 
