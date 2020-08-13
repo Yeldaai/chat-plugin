@@ -1,12 +1,12 @@
 # Yelda Website Chat Plugin
 
-# Introduction
+## Introduction
 
 Yelda Website Chat Plugin is a library that enables your website to load [yelda.ai](https://yelda.ai) webchat in an iframe integrated into your website
 
 ![Demo](https://github.com/Yeldaai/chat-plugin/blob/master/screencast-yelda.gif?raw=true "Demo")
 
-# Load the scripts
+## Load the scripts
 
 You can load the scripts from yelda-webchat NPM package or from yelda website
 
@@ -68,7 +68,7 @@ Loading direct link from Yelda ensure to always use the latest version in produc
 
 We don't advise you to download a local version without using the NPM package : you might miss an important update.
 
-# Init the library
+## Init the library
 
 Initialize the lib with the Yelda provided elements
 
@@ -104,7 +104,7 @@ yeldaChat.init({
 
 To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)
 
-# Issues and Feature Requests
+## Issues and Feature Requests
 
 If you have a bug report, feature request, or wish to contribute code, please [open an issue](https://github.com/Yeldaai/chat-plugin/issues).
 
@@ -124,7 +124,17 @@ npm run build
 
 and then open test/index.html in a browser
 
-# License
+## Version update & upload to S3 command
+
+Run this command to build, test, increment the npm version, publish the package, upload to s3 bucket & finally copy the content of dest folder to Yelda repo if the yelda static folder path passed as argument
+
+It requires AWS creds, bucket & region information in .env to upload the build files to s3 bucket and npm version command requires git working directory to be clean otherwise it throws error
+
+```shell
+npm run uploadBuildToS3 '/home/Documents/www/yelda/git/yelda/frontend/static'
+```
+
+## License
 
 The MIT License (MIT)
 
