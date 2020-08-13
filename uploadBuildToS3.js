@@ -24,11 +24,13 @@ const main = async () => {
   try {
     const branchName = await getCurrentBranch()
 
-    const output = await updateNPMVersion()
-    console.log(output)
-    const stdout = await publishPackage()
-    console.log(stdout)
-    // await pushToGit(branchName)
+    const version = await updateNPMVersion()
+    console.info(version)
+
+    const publishResponse = await publishPackage()
+    console.info(publishResponse)
+
+    await pushToGit(branchName)
     await uploadToS3()
     await copyDistToYelda()
 
