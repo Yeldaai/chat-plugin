@@ -744,7 +744,7 @@ var YeldaChat = function () {
     /**
      * gets all the url get parameters
      * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
-     * @return {Object} vars
+     * @return {Object} key value list of GET parameters {parameterName: parameterValue}
      */
 
   }, {
@@ -761,13 +761,14 @@ var YeldaChat = function () {
     /**
      * get Specific parameter from the url
      * @param {*} parameter
-     * @param {*} defaultValue
+     * @param {*} defaultValue, default empty string
      * @return {String} urlParamter
      */
 
   }, {
     key: 'getUrlParam',
-    value: function getUrlParam(parameter, defaultValue) {
+    value: function getUrlParam(parameter) {
+      var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
       var url = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : window.location.href;
 
       var urlParameter = defaultValue;
@@ -776,7 +777,7 @@ var YeldaChat = function () {
         urlParameter = this.getUrlVars(url)[parameter];
       }
 
-      return urlParameter || false;
+      return urlParameter || defaultValue;
     }
 
     /**
@@ -1311,7 +1312,7 @@ var YeldaChat = function () {
       // Check if the YELDA_PARAMETER(yparam) parameter exists in the url then add it to the data
       var yeldaParam = this.getUrlParam(_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER, null);
 
-      if (yeldaParam) {
+      if (yeldaParam && yeldaParam !== '') {
         data[_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER] = yeldaParam;
       }
 
