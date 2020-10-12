@@ -27,26 +27,11 @@ class YeldaChat {
   }
 
   /**
- * gets all the url get parameters
- * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
- * @return {Object} vars
- */
-  getUrlVars(url) {
-    const vars = {}
-    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(match, key, value) {
-      vars[key] = value
-    })
-
-    return vars
-  }
-
-  /**
    * get Specific parameter from the url
    * @param {*} parameter
    * @return {String} urlParamter
    */
   isUrlParamExists(parameter, url = window.location.href) {
-
     return url.indexOf(parameter) > -1
   }
 
