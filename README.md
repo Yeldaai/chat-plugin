@@ -85,6 +85,7 @@ Initialize the lib with the Yelda provided elements
 | isStartBtn        | Boolean | `false`                | Set to `true` only if need to show 'start' button. ⚠️ This is an admin feature. It can only work if isAdmin is also set to `true`                                  |
 | canBeClosed       | Boolean | `true`                 | It is used to toggle the visible state of close button. ⚠️ If parentContainerId is provided and canBeClosed is not provided, canBeClosed is set to `false`         |
 | isDemo            | Boolean | `false`                | Set to `true` to flag the conversation as "demo" in conversations list and training inbox and force the webchat to be opened on page load, even if shouldBeOpened is set to false |
+| yparam            | String  | `null`                 | If the parent of iframe contains yparam parameter in its url then it will be passed into the settings. Now the param value yshowbot is used to open the webchat on page load if the yparam exits with the value 'yshowbot' |
 
 ```javascript
 yeldaChat.init({
