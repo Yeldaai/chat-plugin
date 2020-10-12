@@ -27,14 +27,34 @@ class YeldaChat {
   }
 
   /**
-   * get Specific parameter from the url
-   * @param {*} parameter
-   * @return {String} urlParamter
+   * gets all the url get parameters
+   * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
+   * @return {Object} vars
    */
-  isUrlParamExists(parameter, url = window.location.href) {
-    return url.indexOf(parameter) > -1
+  getUrlVars(url) {
+    const vars = {}
+    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(match, key, value) {
+      vars[key] = value
+    })
+
+    return vars
   }
 
+  /**
+   * get Specific parameter from the url
+   * @param {*} parameter
+   * @param {*} defaultValue
+   * @return {String} urlParamter
+   */
+  getUrlParam(parameter, defaultValue, url = window.location.href) {
+    let urlParameter = defaultValue
+
+    if (url.indexOf(parameter) > -1) {
+      urlParameter = this.getUrlVars(url)[parameter]
+    }
+
+    return urlParameter || false
+  }
 
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
@@ -194,6 +214,10 @@ class YeldaChat {
 
     if (data.isDemo) {
       url = this.updateQueryStringParameter(url, 'isDemo', data.isDemo)
+    }
+
+    if (data.hasOwnProperty(config.YELDA_PARAMETER)) {
+      url = this.updateQueryStringParameter(url, config.YELDA_PARAMETER, data[config.YELDA_PARAMETER])
     }
 
     return url
@@ -512,10 +536,11 @@ class YeldaChat {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
     }
 
-    // Check if the SHOW_BOT_PARAMETER(yshowbot) parameter exists in the url
-    if (!data.shouldBeOpened) {
-      // if exists then assign true to shouldBeOpened parameter
-      data.shouldBeOpened = this.isUrlParamExists(config.SHOW_BOT_PARAMETER)
+    // Check if the YELDA_PARAMETER(yparam) parameter exists in the url then add it to the data
+    const yeldaParam = this.getUrlParam(config.YELDA_PARAMETER, null)
+
+    if (yeldaParam) {
+      data[config.YELDA_PARAMETER] = yeldaParam
     }
 
     if(data.hasOwnProperty('canBeClosed')) {
