@@ -27,6 +27,31 @@ class YeldaChat {
   }
 
   /**
+ * gets all the url get parameters
+ * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
+ * @return {Object} vars
+ */
+  getUrlVars(url) {
+    const vars = {}
+    url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(match, key, value) {
+      vars[key] = value
+    })
+
+    return vars
+  }
+
+  /**
+   * get Specific parameter from the url
+   * @param {*} parameter
+   * @return {String} urlParamter
+   */
+  isUrlParamExists(parameter, url = window.location.href) {
+
+    return url.indexOf(parameter) > -1
+  }
+
+
+  /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
    * @param {Object} data { data.assistantUrl, data.assistantId }
@@ -500,6 +525,10 @@ class YeldaChat {
 
     if(data.hasOwnProperty('shouldBeOpened')) {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
+    }
+
+    if (!data.shouldBeOpened) {
+      data.shouldBeOpened = this.isUrlParamExists(config.SHOW_BOT_PARAMETER)
     }
 
     if(data.hasOwnProperty('canBeClosed')) {
