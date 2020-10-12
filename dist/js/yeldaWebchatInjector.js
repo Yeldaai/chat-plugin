@@ -742,10 +742,10 @@ var YeldaChat = function () {
     }
 
     /**
-    * gets all the url get parameters
-    * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
-    * @return {Object} vars
-    */
+     * gets all the url get parameters
+     * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
+     * @return {Object} vars
+     */
 
   }, {
     key: 'getUrlVars',
@@ -761,16 +761,22 @@ var YeldaChat = function () {
     /**
      * get Specific parameter from the url
      * @param {*} parameter
+     * @param {*} defaultValue
      * @return {String} urlParamter
      */
 
   }, {
-    key: 'isUrlParamExists',
-    value: function isUrlParamExists(parameter) {
-      var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.location.href;
+    key: 'getUrlParam',
+    value: function getUrlParam(parameter, defaultValue) {
+      var url = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : window.location.href;
 
+      var urlParameter = defaultValue;
 
-      return url.indexOf(parameter) > -1;
+      if (url.indexOf(parameter) > -1) {
+        urlParameter = this.getUrlVars(url)[parameter];
+      }
+
+      return urlParameter || false;
     }
 
     /**
@@ -944,6 +950,10 @@ var YeldaChat = function () {
 
       if (data.isDemo) {
         url = this.updateQueryStringParameter(url, 'isDemo', data.isDemo);
+      }
+
+      if (data.hasOwnProperty(_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER)) {
+        url = this.updateQueryStringParameter(url, _config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER, data[_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER]);
       }
 
       return url;
@@ -1298,9 +1308,11 @@ var YeldaChat = function () {
         data.shouldBeOpened = data.shouldBeOpened ? true : false;
       }
 
-      if (!data.shouldBeOpened) {
-        console.log('exists', this.isUrlParamExists(_config__WEBPACK_IMPORTED_MODULE_12___default.a.SHOW_BOT_PARAMETER));
-        data.shouldBeOpened = this.isUrlParamExists(_config__WEBPACK_IMPORTED_MODULE_12___default.a.SHOW_BOT_PARAMETER);
+      // Check if the YELDA_PARAMETER(yparam) parameter exists in the url then add it to the data
+      var yeldaParam = this.getUrlParam(_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER, null);
+
+      if (yeldaParam) {
+        data[_config__WEBPACK_IMPORTED_MODULE_12___default.a.YELDA_PARAMETER] = yeldaParam;
       }
 
       if (data.hasOwnProperty('canBeClosed')) {
@@ -2001,7 +2013,7 @@ module.exports = function (object, names) {
 
 module.exports = {
   CAN_BE_CLOSED_WITH_PARENT_ID: false,
-  SHOW_BOT_PARAMETER: 'yshowbot'
+  YELDA_PARAMETER: 'yparam'
 };
 
 /***/ }),
