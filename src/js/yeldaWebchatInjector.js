@@ -29,7 +29,7 @@ class YeldaChat {
   /**
    * gets all the url get parameters
    * @param {String} url current URL (document.location.href) or iframe parent url (document.referrer) if different from current location
-   * @return {Object} vars
+   * @return {Object} key value list of GET parameters {parameterName: parameterValue}
    */
   getUrlVars(url) {
     const vars = {}
@@ -43,17 +43,17 @@ class YeldaChat {
   /**
    * get Specific parameter from the url
    * @param {*} parameter
-   * @param {*} defaultValue
+   * @param {*} defaultValue, default empty string
    * @return {String} urlParamter
    */
-  getUrlParam(parameter, defaultValue, url = window.location.href) {
+  getUrlParam(parameter, defaultValue = '', url = window.location.href) {
     let urlParameter = defaultValue
 
     if (url.indexOf(parameter) > -1) {
       urlParameter = this.getUrlVars(url)[parameter]
     }
 
-    return urlParameter || false
+    return urlParameter || defaultValue
   }
 
   /**
@@ -539,7 +539,7 @@ class YeldaChat {
     // Check if the YELDA_PARAMETER(yparam) parameter exists in the url then add it to the data
     const yeldaParam = this.getUrlParam(config.YELDA_PARAMETER, null)
 
-    if (yeldaParam) {
+    if (yeldaParam && yeldaParam !== '') {
       data[config.YELDA_PARAMETER] = yeldaParam
     }
 
