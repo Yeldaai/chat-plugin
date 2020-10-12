@@ -512,7 +512,9 @@ class YeldaChat {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
     }
 
+    // Check if the SHOW_BOT_PARAMETER(yshowbot) parameter exists in the url
     if (!data.shouldBeOpened) {
+      // if exists then assign true to shouldBeOpened parameter
       data.shouldBeOpened = this.isUrlParamExists(config.SHOW_BOT_PARAMETER)
     }
 
