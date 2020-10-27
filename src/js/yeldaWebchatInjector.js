@@ -196,6 +196,9 @@ class YeldaChat {
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
 
+    if (data.platformSimulated) {
+      url = this.updateQueryStringParameter(url, 'platformSimulated', data.platformSimulated)
+    }
     if (data.hasOwnProperty('canBeClosed')) {
       url = this.updateQueryStringParameter(url, 'canBeClosed', data.canBeClosed)
     }
