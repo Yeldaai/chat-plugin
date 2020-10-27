@@ -189,10 +189,11 @@ describe('YeldaChat', () => {
         'locale': 'fr_FR',
         'isAdmin': true,
         'shouldBeOpened': true,
-        'canBeClosed': true
+        'canBeClosed': true,
+        'platformSimulated': 'alexa'
       }
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
 
