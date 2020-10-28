@@ -131,7 +131,7 @@ class YeldaChat {
     // Bind and call are necessary to pass the "this" to the callback function
     xhr.onreadystatechange = (function () {
       if(xhr.readyState === 4) {
-        callback.call(this, xhr.responseText, data)
+        callback.call(this, xhr.responseText)
       }
     }).bind(this)
   }
@@ -139,9 +139,8 @@ class YeldaChat {
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} responseText xhr response
-   * @param {Object} data { data.assistantUrl, data.assistantId, data.isDemo, ... }
   */
-  updateAssistantImageWithAssistantSettings(responseText, data) {
+  updateAssistantImageWithAssistantSettings(responseText) {
     if(!this.webChatContainer) {
       return
     }
@@ -164,14 +163,20 @@ class YeldaChat {
       const hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle
 
       /**
-       * when isVoiceFirstUI is true, instead of adding the assistant image open the chat here,
-       * website-chat will take care rendering the voice first UI
+       * in isVoiceFirstUI mode
+       * - the assistant should be opened directly and will never be closed
+       * => we call directly openChat and do not add the assistant image
+       * - we don't want the box-shadow css style
+       *    => we add voiceFirstUI to iframeContainer
+       * - /chat vue render the voice first UI
+       *   => nothing more to do here
        */
-      if (!data.isDemo && isVoiceFirstUI) {
+      if (isVoiceFirstUI) {
         // voiceFirstUI added to the iframeContainer to remove box-shadow css style
         // other styles can be added for voice first UI based on this class in the future if needed
         this.iframeContainer.classList.add('voiceFirstUI')
         this.openChat()
+        return
       } else {
         if (!hasCustomStyle || !customImage) {
           this.webChatContainer.appendChild(this.assistantImage)
