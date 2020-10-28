@@ -131,7 +131,7 @@ class YeldaChat {
     // Bind and call are necessary to pass the "this" to the callback function
     xhr.onreadystatechange = (function () {
       if(xhr.readyState === 4) {
-        callback.call(this, xhr.responseText)
+        callback.call(this, xhr.responseText, data)
       }
     }).bind(this)
   }
@@ -139,8 +139,9 @@ class YeldaChat {
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} responseText xhr response
+   * @param {Object} data { data.assistantUrl, data.assistantId, data.isDemo, ... }
   */
-  updateAssistantImageWithAssistantSettings(responseText) {
+  updateAssistantImageWithAssistantSettings(responseText, data) {
     if(!this.webChatContainer) {
       return
     }
@@ -158,25 +159,37 @@ class YeldaChat {
         return
       }
 
-      const customImage =  settings.data.image && settings.data.image.url
+      const isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') || false
+      const customImage = settings.data.image && settings.data.image.url
       const hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle
 
-      if (!hasCustomStyle || !customImage) {
+      /**
+       * when isVoiceFirstUI is true, instead of adding the assistant image open the chat here,
+       * website-chat will take care rendering the voice first UI
+       */
+      if (!data.isDemo && isVoiceFirstUI) {
+        // voiceFirstUI added to the iframeContainer to remove box-shadow css style
+        // other styles can be added for voice first UI based on this class in the future if needed
+        this.iframeContainer.classList.add('voiceFirstUI')
+        this.openChat()
+      } else {
+        if (!hasCustomStyle || !customImage) {
+          this.webChatContainer.appendChild(this.assistantImage)
+          return
+        }
+
+        // If the device is mobile and mobile image url exists then use it
+        const md = new MobileDetect(navigator.userAgent)
+        const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
+          ? settings.data.mobileImage.url
+          : customImage
+
+        this.assistantImage.classList.remove('default', 'custom')
+        this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+        this.assistantImage.classList.add('custom')
+
         this.webChatContainer.appendChild(this.assistantImage)
-        return
       }
-
-      // If the device is mobile and mobile image url exists then use it
-      const md = new MobileDetect(navigator.userAgent)
-      const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
-        ? settings.data.mobileImage.url
-        : customImage
-
-      this.assistantImage.classList.remove('default', 'custom')
-      this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-      this.assistantImage.classList.add('custom')
-
-      this.webChatContainer.appendChild(this.assistantImage)
     } catch (e) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
