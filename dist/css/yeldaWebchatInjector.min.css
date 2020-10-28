@@ -10,7 +10,8 @@
 @keyframes fonta{from{font-size:32px}to{font-size:35px}}
 #web_chat_frame{height:100% !important;width:100% !important}
 .yelda_container:not(.inner){position:fixed;right:20px;bottom:20px;z-index:2147483647}
-.yelda_iframe_container{width:430px;height:calc(100vh - 170px);max-height:600px;box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px;transition-duration:1s;margin:0px 20px 0 0px;overflow:hidden;opacity:0}
+.yelda_iframe_container{width:430px;height:calc(100vh - 170px);max-height:600px;transition-duration:1s;margin:0px 20px 0 0px;overflow:hidden;opacity:0}
+.yelda_iframe_container:not(.voiceFirstUI){box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px}
 .yelda_iframe_container.y_active{opacity:1 !important;margin-bottom:20px !important}
 .lg-backdrop{z-index:10000000000 !important}
 .lg-outer{z-index:10000000001 !important}

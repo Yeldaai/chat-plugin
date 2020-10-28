@@ -864,7 +864,7 @@ var YeldaChat = function () {
       // Bind and call are necessary to pass the "this" to the callback function
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
-          callback.call(this, xhr.responseText);
+          callback.call(this, xhr.responseText, data);
         }
       }.bind(this);
     }
@@ -872,11 +872,12 @@ var YeldaChat = function () {
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} responseText xhr response
+     * @param {Object} data { data.assistantUrl, data.assistantId, data.isDemo, ... }
     */
 
   }, {
     key: 'updateAssistantImageWithAssistantSettings',
-    value: function updateAssistantImageWithAssistantSettings(responseText) {
+    value: function updateAssistantImageWithAssistantSettings(responseText, data) {
       if (!this.webChatContainer) {
         return;
       }
@@ -894,23 +895,35 @@ var YeldaChat = function () {
           return;
         }
 
+        var isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') || false;
         var customImage = settings.data.image && settings.data.image.url;
         var hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle;
 
-        if (!hasCustomStyle || !customImage) {
+        /**
+         * when isVoiceFirstUI is true, instead of adding the assistant image open the chat here,
+         * website-chat will take care rendering the voice first UI
+         */
+        if (!data.isDemo && isVoiceFirstUI) {
+          // voiceFirstUI added to the iframeContainer to remove box-shadow css style
+          // other styles can be added for voice first UI based on this class in the future if needed
+          this.iframeContainer.classList.add('voiceFirstUI');
+          this.openChat();
+        } else {
+          if (!hasCustomStyle || !customImage) {
+            this.webChatContainer.appendChild(this.assistantImage);
+            return;
+          }
+
+          // If the device is mobile and mobile image url exists then use it
+          var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
+          var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : customImage;
+
+          this.assistantImage.classList.remove('default', 'custom');
+          this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
+          this.assistantImage.classList.add('custom');
+
           this.webChatContainer.appendChild(this.assistantImage);
-          return;
         }
-
-        // If the device is mobile and mobile image url exists then use it
-        var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
-        var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : customImage;
-
-        this.assistantImage.classList.remove('default', 'custom');
-        this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
-        this.assistantImage.classList.add('custom');
-
-        this.webChatContainer.appendChild(this.assistantImage);
       } catch (e) {
         this.webChatContainer.appendChild(this.assistantImage);
         return;
@@ -1653,8 +1666,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N; 
- * @license GPLv3 
+ * Copyright (c) 2016 Sachin N;
+ * @license GPLv3
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -1922,12 +1935,11 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-        }
+            var firstImage = this.core.items[index].querySelector('img');
 
-        var firstImage = this.core.items[index].querySelector('img');
-
-        if (firstImage) {
-            videoTitle = videoTitle || firstImage.getAttribute('alt');
+            if (firstImage) {
+                videoTitle = videoTitle || firstImage.getAttribute('alt');
+            }
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
