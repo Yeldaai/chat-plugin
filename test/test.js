@@ -13,9 +13,11 @@
 
 import { expect, should, use, assert } from 'chai'
 import mock from 'xhr-mock'
+
+const testAPIUrl = 'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR'
 // mock.setup() sets global.XMLHttpRequest with mock xhr
 mock.setup()
-mock.get('https://app.yelda.ai//assistants/12345678/chatBubble/fr_FR', {
+mock.get(testAPIUrl, {
   status: 201,
   body: JSON.stringify({ data: {} })
 })
@@ -183,7 +185,7 @@ describe('YeldaChat', () => {
       // resets previous response
       mock.reset()
       // Mock JSON response
-      mock.get('https://app.yelda.ai//assistants/12345678/chatBubble/fr_FR', {
+      mock.get(testAPIUrl, {
         status: 201,
         body: JSON.stringify({ data: {isVoiceFirstUI: true} })
       })

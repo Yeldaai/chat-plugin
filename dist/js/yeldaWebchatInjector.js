@@ -857,9 +857,10 @@ var YeldaChat = function () {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data, callback) {
       var xhr = new XMLHttpRequest();
-      var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
+      var url = data.assistantUrl + 'assistants/' + data.assistantId + '/chatBubble/' + data.locale;
       xhr.open("GET", url);
       xhr.send();
+
       // Bind and call are necessary to pass the "this" to the callback function
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
@@ -908,7 +909,6 @@ var YeldaChat = function () {
          */
         if (isVoiceFirstUI) {
           this.iframeContainer.classList.add('voiceFirstUI');
-
           this.openChat();
           this.assistantImage = null;
           return;
