@@ -124,7 +124,7 @@ class YeldaChat {
   */
   getAssistantSettings(data, callback) {
     const xhr = new XMLHttpRequest();
-    const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+    const url= `${data.assistantUrl}assistants/${data.assistantId}/chatBubble/${data.locale}`
     xhr.open("GET", url);
     xhr.send();
 
