@@ -860,11 +860,10 @@ var YeldaChat = function () {
       var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
       xhr.open("GET", url);
       xhr.send();
-
       // Bind and call are necessary to pass the "this" to the callback function
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
-          callback.call(this, xhr.responseText, data);
+          callback.call(this, xhr.responseText);
         }
       }.bind(this);
     }
@@ -872,12 +871,11 @@ var YeldaChat = function () {
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} responseText xhr response
-     * @param {Object} data { data.assistantUrl, data.assistantId, data.isDemo, ... }
     */
 
   }, {
     key: 'updateAssistantImageWithAssistantSettings',
-    value: function updateAssistantImageWithAssistantSettings(responseText, data) {
+    value: function updateAssistantImageWithAssistantSettings(responseText) {
       if (!this.webChatContainer) {
         return;
       }
@@ -895,35 +893,41 @@ var YeldaChat = function () {
           return;
         }
 
-        var isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') || false;
+        var isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') ? settings.data.isVoiceFirstUI : false;
         var customImage = settings.data.image && settings.data.image.url;
         var hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle;
 
         /**
-         * when isVoiceFirstUI is true, instead of adding the assistant image open the chat here,
-         * website-chat will take care rendering the voice first UI
+         * in isVoiceFirstUI mode
+         * - the assistant should be opened directly and will never be closed
+         * => we call directly openChat and do not add the assistant image
+         * - we don't want the box-shadow css style
+         *    => we add voiceFirstUI to iframeContainer
+         * - /chat vue render the voice first UI
+         *   => nothing more to do here
          */
-        if (!data.isDemo && isVoiceFirstUI) {
-          // voiceFirstUI added to the iframeContainer to remove box-shadow css style
-          // other styles can be added for voice first UI based on this class in the future if needed
+        if (isVoiceFirstUI) {
           this.iframeContainer.classList.add('voiceFirstUI');
+
           this.openChat();
-        } else {
-          if (!hasCustomStyle || !customImage) {
-            this.webChatContainer.appendChild(this.assistantImage);
-            return;
-          }
-
-          // If the device is mobile and mobile image url exists then use it
-          var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
-          var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : customImage;
-
-          this.assistantImage.classList.remove('default', 'custom');
-          this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
-          this.assistantImage.classList.add('custom');
-
-          this.webChatContainer.appendChild(this.assistantImage);
+          this.assistantImage = null;
+          return;
         }
+
+        if (!hasCustomStyle || !customImage) {
+          this.webChatContainer.appendChild(this.assistantImage);
+          return;
+        }
+
+        // If the device is mobile and mobile image url exists then use it
+        var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_5___default.a(navigator.userAgent);
+        var image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url ? settings.data.mobileImage.url : customImage;
+
+        this.assistantImage.classList.remove('default', 'custom');
+        this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
+        this.assistantImage.classList.add('custom');
+
+        this.webChatContainer.appendChild(this.assistantImage);
       } catch (e) {
         this.webChatContainer.appendChild(this.assistantImage);
         return;

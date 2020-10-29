@@ -158,7 +158,7 @@ class YeldaChat {
         return
       }
 
-      const isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') || false
+      const isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') ? settings.data.isVoiceFirstUI : false
       const customImage = settings.data.image && settings.data.image.url
       const hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle
 
@@ -172,29 +172,29 @@ class YeldaChat {
        *   => nothing more to do here
        */
       if (isVoiceFirstUI) {
-        // voiceFirstUI added to the iframeContainer to remove box-shadow css style
-        // other styles can be added for voice first UI based on this class in the future if needed
         this.iframeContainer.classList.add('voiceFirstUI')
         this.openChat()
+        this.assistantImage = null
         return
-      } else {
-        if (!hasCustomStyle || !customImage) {
-          this.webChatContainer.appendChild(this.assistantImage)
-          return
-        }
-
-        // If the device is mobile and mobile image url exists then use it
-        const md = new MobileDetect(navigator.userAgent)
-        const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
-          ? settings.data.mobileImage.url
-          : customImage
-
-        this.assistantImage.classList.remove('default', 'custom')
-        this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-        this.assistantImage.classList.add('custom')
-
-        this.webChatContainer.appendChild(this.assistantImage)
       }
+
+      if (!hasCustomStyle || !customImage) {
+        this.webChatContainer.appendChild(this.assistantImage)
+        return
+      }
+
+      // If the device is mobile and mobile image url exists then use it
+      const md = new MobileDetect(navigator.userAgent)
+      const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
+        ? settings.data.mobileImage.url
+        : customImage
+
+      this.assistantImage.classList.remove('default', 'custom')
+      this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+      this.assistantImage.classList.add('custom')
+
+      this.webChatContainer.appendChild(this.assistantImage)
+
     } catch (e) {
       this.webChatContainer.appendChild(this.assistantImage)
       return

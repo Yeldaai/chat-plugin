@@ -11,19 +11,14 @@
  * 6. test createWebChatFrame function should create iframeContainer
  */
 
-const { expect, should, use, assert } = require('chai')
-const MockXMLHttpRequest = require('mock-xmlhttprequest')
-const MockXhr = MockXMLHttpRequest.newMockXhr()
-
-// Mock JSON response
-MockXhr.onSend = (xhr) => {
-  const responseHeaders = { 'Content-Type': 'application/json' }
-  const response = '{ "message": "Success!" }'
-  xhr.respond(200, responseHeaders, response)
-};
-
-// Install in the global context so "new XMLHttpRequest()" uses the XMLHttpRequest mock
-global.XMLHttpRequest = MockXhr
+import { expect, should, use, assert } from 'chai'
+import mock from 'xhr-mock'
+// mock.setup() sets global.XMLHttpRequest with mock xhr
+mock.setup()
+mock.get('https://app.yelda.ai//assistants/12345678/chatBubble/fr_FR', {
+  status: 201,
+  body: JSON.stringify({ data: {} })
+})
 
 // To Fix undefined error on navigator while running the test
 global.navigator = {
@@ -67,7 +62,7 @@ describe('YeldaChat', () => {
     it('should return nothing(undefined) if required data passed', () => {
       const mockData = {
         'assistantSlug': 'sodebo',
-        'assistantId': '5b7edb2b1060312cfeaa791f',
+        'assistantId': '12345678'
       }
 
       const response = yeldaChat.init(mockData)
@@ -77,7 +72,7 @@ describe('YeldaChat', () => {
     it('should create webChatContainer DOM element if required data are passed', () => {
       const mockData = {
         'assistantSlug': 'sodebo',
-        'assistantId': '5b7edb2b1060312cfeaa791f',
+        'assistantId': '12345678'
       }
 
       yeldaChat.init(mockData)
@@ -180,18 +175,64 @@ describe('YeldaChat', () => {
     })
   })
 
-  describe('yeldaChat.createWebChatURL', () => {
-    it('should return valid iframe url', () => {
+  describe('yeldaChat.voiceFirstUI', () => {
+    it('should contain voiceFirstUI class', () => {
+      // Reset the DOM
+      yeldaChat.unLoadChat()
+
+      // resets previous response
+      mock.reset()
+      // Mock JSON response
+      mock.get('https://app.yelda.ai//assistants/12345678/chatBubble/fr_FR', {
+        status: 201,
+        body: JSON.stringify({ data: {isVoiceFirstUI: true} })
+      })
+
       const mockData = {
         'assistantSlug': 'testClient',
         'assistantId': '12345678',
-        'chatUrl': 'https://app.yelda.ai/chat',
+        'chatPath': 'chat'
+      }
+
+      yeldaChat.setupChat(mockData)
+      // setTimeout used to wait the for the mock response
+      setTimeout(() => {
+        expect(yeldaChat.iframeContainer).to.have.attribute('class', 'yelda_iframe_container voiceFirstUI y_active')
+      })
+    })
+
+    it('expect assistantImage not exists in document', () => {
+      expect(yeldaChat.assistantImage).to.be.null
+    })
+
+    it('should not contain assistant image', () => {
+      expect(document.querySelector('#yelda_assistant_img')).to.be.null
+    })
+
+  })
+
+  describe('yeldaChat.createWebChatURL', () => {
+    it('should return valid iframe url', () => {
+      // resets the previous isVoiceFirstUI response
+      mock.reset()
+      mock.get('https://app.yelda.ai//assistants/12345678/chatBubble/fr_FR', {
+        status: 201,
+        body: JSON.stringify({ data: {} })
+      })
+
+      const mockData = {
+        'assistantSlug': 'testClient',
+        'assistantId': '12345678',
+        'chatPath': 'chat',
         'locale': 'fr_FR',
         'isAdmin': true,
         'shouldBeOpened': true,
         'canBeClosed': true,
         'platformSimulated': 'alexa'
       }
+
+      yeldaChat.unLoadChat()
+      yeldaChat.setupChat(mockData)
 
       const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
@@ -202,6 +243,7 @@ describe('YeldaChat', () => {
         'assistantSlug': 'testClient',
         'assistantId': '12345678',
         'chatUrl': 'https://app.yelda.ai/chat',
+        'chatPath': 'chat',
         'locale': 'fr_FR',
         'isAdmin': false,
         'isStartBtn': true,
@@ -218,6 +260,7 @@ describe('YeldaChat', () => {
         'assistantSlug': 'testClient',
         'assistantId': '12345678',
         'chatUrl': 'https://app.yelda.ai/chat',
+        'chatPath': 'chat',
         'locale': 'fr_FR',
         'isAdmin': true,
         'shouldBeOpened': true,
@@ -260,7 +303,7 @@ describe('YeldaChat', () => {
     })
 
     it('webChatIframe should have attribute url', () => {
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
@@ -272,7 +315,7 @@ describe('YeldaChat', () => {
         const mockData = {
           'assistantSlug': 'testClient',
           'assistantId': '12345678',
-          'chatUrl': 'https://app.yelda.ai/chat',
+          'chatPath': 'chat',
           'locale': 'fr_FR',
           'isAdmin': true
         }
@@ -286,7 +329,7 @@ describe('YeldaChat', () => {
         const mockData = {
           'assistantSlug': 'testClient',
           'assistantId': '12345678',
-          'chatUrl': 'https://app.yelda.ai/chat',
+          'chatPath': 'chat',
           'locale': 'fr_FR',
           'isAdmin': true
         }
