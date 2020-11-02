@@ -39,6 +39,11 @@ const argv = yargs
 
 const main = async () => {
   try {
+    // Check if there are any change that has not been committed before starting the script
+    if (!(await checkIfAllChangesCommitted())) {
+      throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
+    }
+
     const branchName = await getCurrentBranch()
 
     const version = await updateNPMVersion()
@@ -56,6 +61,16 @@ const main = async () => {
     console.error('Error while uploading to s3:', err)
     process.exit()
   }
+}
+
+
+/**
+ * Check if they are any change that has not been committed to avoid uploading to S3 unwanted changes
+ * @returns {Promise<Boolean>}
+ */
+const checkIfAllChangesCommitted = async () => {
+  const output = await executeCommand('git status --porcelain')
+  return !output || !output.length
 }
 
 /**
