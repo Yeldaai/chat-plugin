@@ -213,6 +213,7 @@ class YeldaChat {
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
+    url = this.updateQueryStringParameter(url, 'location', data.location)
 
     if (data.platformSimulated) {
       url = this.updateQueryStringParameter(url, 'platformSimulated', data.platformSimulated)
@@ -552,6 +553,7 @@ class YeldaChat {
     data.isAdmin = data.isAdmin ? true : false
     data.isStartBtn = data.isStartBtn ? true : false
     data.isDemo = data.isDemo ? true : false
+    data.location = encodeURIComponent(window.location.href)
 
     if(data.hasOwnProperty('shouldBeOpened')) {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
