@@ -34,7 +34,7 @@ const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 
 describe('YeldaChat', () => {
-  const { window } = new JSDOM(`...`)
+  const { window } = new JSDOM(`...`, { url: 'https://yelda.ai' })
 
   global.window = window
   global.document = window.document
@@ -236,7 +236,7 @@ describe('YeldaChat', () => {
       yeldaChat.unLoadChat()
       yeldaChat.setupChat(mockData)
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&location=https%3A%2F%2Fyelda.ai%2F&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
 
@@ -253,7 +253,10 @@ describe('YeldaChat', () => {
         'canBeClosed': true
       }
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&canBeClosed=true&shouldBeOpened=true&isStartBtn=false'
+      yeldaChat.unLoadChat()
+      yeldaChat.setupChat(mockData)
+
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&location=https%3A%2F%2Fyelda.ai%2F&canBeClosed=true&shouldBeOpened=true&isStartBtn=false'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
 
@@ -270,7 +273,10 @@ describe('YeldaChat', () => {
         'canBeClosed': true
       }
 
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&canBeClosed=true&shouldBeOpened=true&isAdmin=true&isStartBtn=true'
+      yeldaChat.unLoadChat()
+      yeldaChat.setupChat(mockData)
+
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&location=https%3A%2F%2Fyelda.ai%2F&canBeClosed=true&shouldBeOpened=true&isAdmin=true&isStartBtn=true'
       expect(yeldaChat.createWebChatURL(mockData)).to.deep.equal(result)
     })
   })
@@ -305,7 +311,7 @@ describe('YeldaChat', () => {
     })
 
     it('webChatIframe should have attribute url', () => {
-      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&platformSimulated=alexa&canBeClosed=true&shouldBeOpened=true&isAdmin=true'
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=fr_FR&location=https%3A%2F%2Fyelda.ai%2F&canBeClosed=true&shouldBeOpened=true&isAdmin=true&isStartBtn=true'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
   })
