@@ -44,17 +44,20 @@ const main = async () => {
       throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
 
+    await uploadToS3()
+
+    await copyDistToYelda()
+    
     const branchName = await getCurrentBranch()
 
     const version = await updateNPMVersion()
     console.info(version)
 
+    await pushToGit(branchName)
+
+    // Publish the package last to ensure that if an error occurs before, the package won't be published
     const publishResponse = await publishPackage()
     console.info(publishResponse)
-
-    await pushToGit(branchName)
-    await uploadToS3()
-    await copyDistToYelda()
 
     process.exit()
   } catch (err) {
