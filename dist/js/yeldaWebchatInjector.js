@@ -857,7 +857,7 @@ var YeldaChat = function () {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data, callback) {
       var xhr = new XMLHttpRequest();
-      var url = data.assistantUrl + 'assistants/' + data.assistantId + '/chatBubble/' + data.locale;
+      var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
       xhr.open("GET", url);
       xhr.send();
 
@@ -1318,9 +1318,16 @@ var YeldaChat = function () {
   }, {
     key: 'formatData',
     value: function formatData(data) {
-      data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/';
-      data.chatPath = data.chatPath || '';
-      data.chatUrl = data.assistantUrl + data.chatPath;
+      var assistantUrl = data.assistantUrl || 'https://app.yelda.ai';
+      var chatPath = data.chatPath || '';
+
+      /*
+        Formatting the url to remove trailing slash
+        This avoids problems with missing or duplicating slashes when composing other urls with them
+      */
+      data.assistantUrl = assistantUrl.replace(/\/$/, '');
+      data.chatPath = chatPath.replace(/^\//, '');
+      data.chatUrl = data.assistantUrl + '/' + data.chatPath;
       data.locale = data.locale || 'fr_FR';
       data.isAdmin = data.isAdmin ? true : false;
       data.isStartBtn = data.isStartBtn ? true : false;

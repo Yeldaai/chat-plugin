@@ -124,7 +124,7 @@ class YeldaChat {
   */
   getAssistantSettings(data, callback) {
     const xhr = new XMLHttpRequest();
-    const url= `${data.assistantUrl}assistants/${data.assistantId}/chatBubble/${data.locale}`
+    const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
     xhr.open("GET", url);
     xhr.send();
 
@@ -546,9 +546,16 @@ class YeldaChat {
    * @param {Object} data
   */
   formatData (data) {
-    data.assistantUrl = data.assistantUrl || 'https://app.yelda.ai/'
-    data.chatPath = data.chatPath || ''
-    data.chatUrl = data.assistantUrl + data.chatPath
+    const assistantUrl = data.assistantUrl || 'https://app.yelda.ai'
+    const chatPath = data.chatPath || ''
+
+    /*
+      Formatting the url to remove trailing slash
+      This avoids problems with missing or duplicating slashes when composing other urls with them
+    */
+    data.assistantUrl = assistantUrl.replace(/\/$/,'')
+    data.chatPath = chatPath.replace(/^\//,'')
+    data.chatUrl = `${data.assistantUrl}/${data.chatPath}`
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
     data.isStartBtn = data.isStartBtn ? true : false
