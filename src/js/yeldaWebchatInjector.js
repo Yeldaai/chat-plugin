@@ -61,7 +61,7 @@ class YeldaChat {
    * and add it to the DOM
    * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  createContainer (data) {
+  createContainer () {
     // If the parentContainer (document.body) not loaded then do not proceed
     if (!this.parentContainer) {
       return null
@@ -79,21 +79,12 @@ class YeldaChat {
     this.webChatContainer.setAttribute('id', 'yelda_container')
     this.webChatContainer.setAttribute('class', classList)
     this.parentContainer.appendChild(this.webChatContainer)
-
-    // Add assistant image if the webchat can be closed
-    // Otherwise we will be able to close the webchat but not open it again
-    // Or the image will not be initialized on load at all
-    // because the assistant image containing the openChat event wouldn't have been created
-    if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
-      this.addAssistantImage(data)
-    }
   }
 
   /**
   * Create assistantImage element and add it to webChatContainer element
-   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
-  addAssistantImage (data) {
+  addAssistantImage () {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementById('yelda_container')
     }
@@ -112,93 +103,61 @@ class YeldaChat {
     // Add click event to assistant image
     this.assistantImage.addEventListener('click', this.openChat)
 
-    // Get assistant settings from backend
-    // & add assistantImage to webChatContainer in xhr onreadystatechange callback
-    this.getAssistantSettings(data, this.updateAssistantImageWithAssistantSettings)
+    // add assistantImage to webChatContainer using the webchatSettings
+    this.updateAssistantImageWithAssistantSettings()
   }
 
   /**
    * Update assistantImage with assistant settings from backend if any
-   * @param {Object} data { data.assistantUrl, data.assistantId }
-   * @param {Object} callback callback function called on onreadystatechange
   */
-  getAssistantSettings(data, callback) {
-    const xhr = new XMLHttpRequest();
-    const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
-    xhr.open("GET", url);
-    xhr.send();
-
-    // Bind and call are necessary to pass the "this" to the callback function
-    xhr.onreadystatechange = (function () {
-      if(xhr.readyState === 4) {
-        callback.call(this, xhr.responseText)
-      }
-    }).bind(this)
-  }
-
-  /**
-   * Update assistantImage with assistant settings from backend if any
-   * @param {Object} responseText xhr response
-  */
-  updateAssistantImageWithAssistantSettings(responseText) {
+  updateAssistantImageWithAssistantSettings() {
     if(!this.webChatContainer) {
       return
     }
 
-    if (!responseText) {
+    if (!this.webchatSettings || !this.webchatSettings.data ) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
     }
 
-    try {
-      const settings = JSON.parse(responseText)
+    const isVoiceFirstUI = this.webchatSettings.data.hasOwnProperty('isVoiceFirstUI')
+      ? this.webchatSettings.data.isVoiceFirstUI
+      : false
+    const customImage = this.webchatSettings.data.image && this.webchatSettings.data.image.url
+    const hasCustomStyle = this.webchatSettings.data.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.data.isDefaultStyle
 
-      if (!settings || !settings.data ) {
-        this.webChatContainer.appendChild(this.assistantImage)
-        return
-      }
+    /**
+     * in isVoiceFirstUI mode
+     * - the assistant should be opened directly and will never be closed
+     * => we call directly openChat and do not add the assistant image
+     * - we don't want the box-shadow css style
+     *    => we add voiceFirstUI to iframeContainer
+     * - /chat vue render the voice first UI
+     *   => nothing more to do here
+     */
+    if (isVoiceFirstUI) {
+      this.iframeContainer.classList.add('voiceFirstUI')
+      this.openChat()
+      this.assistantImage = null
+      return
+    }
 
-      const isVoiceFirstUI = settings.data.hasOwnProperty('isVoiceFirstUI') ? settings.data.isVoiceFirstUI : false
-      const customImage = settings.data.image && settings.data.image.url
-      const hasCustomStyle = settings.data.hasOwnProperty('isDefaultStyle') && !settings.data.isDefaultStyle
-
-      /**
-       * in isVoiceFirstUI mode
-       * - the assistant should be opened directly and will never be closed
-       * => we call directly openChat and do not add the assistant image
-       * - we don't want the box-shadow css style
-       *    => we add voiceFirstUI to iframeContainer
-       * - /chat vue render the voice first UI
-       *   => nothing more to do here
-       */
-      if (isVoiceFirstUI) {
-        this.iframeContainer.classList.add('voiceFirstUI')
-        this.openChat()
-        this.assistantImage = null
-        return
-      }
-
-      if (!hasCustomStyle || !customImage) {
-        this.webChatContainer.appendChild(this.assistantImage)
-        return
-      }
-
-      // If the device is mobile and mobile image url exists then use it
-      const md = new MobileDetect(navigator.userAgent)
-      const image = md.mobile() !== null && settings.data.mobileImage && settings.data.mobileImage.url
-        ? settings.data.mobileImage.url
-        : customImage
-
-      this.assistantImage.classList.remove('default', 'custom')
-      this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
-      this.assistantImage.classList.add('custom')
-
-      this.webChatContainer.appendChild(this.assistantImage)
-
-    } catch (e) {
+    if (!hasCustomStyle || !customImage) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
     }
+
+    // If the device is mobile and mobile image url exists then use it
+    const md = new MobileDetect(navigator.userAgent)
+    const image = md.mobile() !== null && this.webchatSettings.data.mobileImage && this.webchatSettings.data.mobileImage.url
+      ? this.webchatSettings.data.mobileImage.url
+      : customImage
+
+    this.assistantImage.classList.remove('default', 'custom')
+    this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+    this.assistantImage.classList.add('custom')
+
+    this.webChatContainer.appendChild(this.assistantImage)
   }
 
   /**
@@ -534,10 +493,14 @@ class YeldaChat {
    * Delete old webchat element and create new webchat
    * @param {Object} data { data.assistantUrl, data.chatPath }
    * @param {Element} container webchat container
+   * @returns {Promise}
   */
   resetChat (data) {
-    this.unLoadChat()
-    this.setupChat(data)
+    return new Promise(async resolve => {
+      this.unLoadChat()
+      await this.setupChat(data)
+      resolve()
+    })
   }
 
   /**
@@ -620,23 +583,90 @@ class YeldaChat {
 
     return isFound
   }
+
+
+  /**
+   * Update assistantImage with assistant settings from backend if any
+   * @param {Object} data { data.assistantUrl, data.assistantId }
+   * @param {Object} callback callback function called on onreadystatechange
+   * @return {Promise}
+  */
+  getAssistantSettings(data, callback) {
+    return new Promise(resolve => {
+      try {
+        const xhr = new XMLHttpRequest();
+        const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+
+        xhr.open("GET", url);
+        xhr.send();
+
+        // Bind and call are necessary to pass the "this" to the callback function
+        xhr.onreadystatechange = (function () {
+          if(xhr.readyState === 4) {
+            this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText) : null
+            callback.call(this, data)
+            resolve()
+          }
+        }).bind(this)
+      } catch (e) { // when json.parse fails or xhr onerror catch will be called
+        this.webchatSettings = null
+        callback.call(this, data)
+        resolve()
+      }
+    })
+  }
+
   /**
    * Initialize the chat window
    * @param {object} data
   */
-  setupChat (data) {
-    this.webChatContainer = null
-    this.iframeContainer = null
-    this.webChatIframe = null
+  async setupChat (data) {
+    return new Promise(async (resolve) => {
+      this.webChatContainer = null
+      this.iframeContainer = null
+      this.webChatIframe = null
+      this.webchatSettings = null
 
-    // Format the data with default values if not exists
-    data = this.formatData(data)
+      // Format the data with default values if not exists
+      data = this.formatData(data)
 
-    if (
-      data.assistantId === undefined ||
-      data.assistantSlug === undefined
-    ) {
-      return null
+      if (
+        data.assistantId === undefined ||
+        data.assistantSlug === undefined
+      ) {
+        resolve()
+        return
+      }
+
+      // Get assistant settings from backend
+      await this.getAssistantSettings(data, this.loadChat)
+      resolve()
+    })
+  }
+
+  /**
+   * Load the chat after getting the webchat settings if publication is enabled
+   * @param {Object} data { data.assistantUrl, data.assistantId }
+   */
+  loadChat(data) {
+    let publicationStatus = config.DEFAULT_PUBLICATION_STATUS
+
+    // Get the publicationStatus from the webchatSettings
+    if (this.webchatSettings && this.webchatSettings.data) {
+      publicationStatus = this.webchatSettings.data.hasOwnProperty('publicationStatus')
+        ? this.webchatSettings.data.publicationStatus
+        : config.DEFAULT_PUBLICATION_STATUS
+    }
+
+    const currentHost = window.location.hostname
+
+    /**
+     * If publication is disabled and the current host is not in PUBLICATION_STATUS_EXCLUDED_SITES
+     * then unload the chat
+     */
+    if (!publicationStatus && !config.PUBLICATION_STATUS_EXCLUDED_SITES.includes(currentHost)) {
+      this.unLoadChat()
+      return
     }
 
     // Load Async css only if style sheet not found
@@ -650,10 +680,18 @@ class YeldaChat {
     }
 
     // Create container for iframe
-    this.createContainer(data)
+    this.createContainer()
 
     // create the iframe and insert into iframe container
     this.setUpChatIFrame(data)
+
+    // Add assistant image if the webchat can be closed
+    // Otherwise we will be able to close the webchat but not open it again
+    // Or the image will not be initialized on load at all
+    // because the assistant image containing the openChat event wouldn't have been created
+    if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
+      this.addAssistantImage()
+    }
 
     // add the frame lister to receive message from iframe to the parent
     this.toggleFrameListener()
@@ -692,6 +730,7 @@ class YeldaChat {
     this.webChatIframe = null
     this.webChatContainer = null
     this.parentContainer = null
+    this.webchatSettings = null
   }
 
   init(data) {
