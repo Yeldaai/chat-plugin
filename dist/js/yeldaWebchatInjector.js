@@ -1670,20 +1670,65 @@ var YeldaChat = function () {
     value: function init(data) {
       var _this5 = this;
 
-      if (data.assistantId === undefined || data.assistantSlug === undefined) {
-        return null;
-      }
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
+        var _ref4 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee5$(_context5) {
+            while (1) {
+              switch (_context5.prev = _context5.next) {
+                case 0:
+                  if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
+                    _context5.next = 2;
+                    break;
+                  }
 
-      // if the DOM is already ready, call setupChat
-      if (document.readyState === 'complete') {
-        this.setupChat(data);
-        return;
-      }
+                  return _context5.abrupt('return', resolve());
 
-      // If the DOM is not yet ready, wait
-      window.onload = function () {
-        _this5.setupChat(data);
-      };
+                case 2:
+                  if (!(document.readyState === 'complete')) {
+                    _context5.next = 6;
+                    break;
+                  }
+
+                  _context5.next = 5;
+                  return _this5.setupChat(data);
+
+                case 5:
+                  return _context5.abrupt('return', resolve());
+
+                case 6:
+
+                  // If the DOM is not yet ready, wait
+                  window.onload = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
+                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            _context4.next = 2;
+                            return _this5.setupChat(data);
+
+                          case 2:
+                            return _context4.abrupt('return', resolve());
+
+                          case 3:
+                          case 'end':
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, _this5);
+                  }));
+
+                case 7:
+                case 'end':
+                  return _context5.stop();
+              }
+            }
+          }, _callee5, _this5);
+        }));
+
+        return function (_x7) {
+          return _ref4.apply(this, arguments);
+        };
+      }());
     }
 
     /**

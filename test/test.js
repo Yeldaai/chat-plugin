@@ -58,35 +58,24 @@ describe('YeldaChat', () => {
       assert.typeOf(yeldaChat.init, 'function', 'init function exists')
     })
 
-    it('should return null if assistantId or assistantSlug are not passed', () => {
+    it('should webChatContainer is null if assistantId or assistantSlug are not passed', async () => {
       const mockData = {
         'locale': 'fr_FR'
       }
 
-      const response = yeldaChat.init(mockData)
-      assert.typeOf(response, 'null', 'init function returns null')
+      yeldaChat.unLoadChat()
+      await yeldaChat.init(mockData)
+      expect(yeldaChat.webChatContainer).to.be.null
     })
 
-    it('should return nothing(undefined) if required data passed', () => {
+    it('should create webChatContainer DOM element if required data are passed', async () => {
       const mockData = {
         'assistantSlug': 'sodebo',
         'assistantId': '12345678'
       }
-
-      const response = yeldaChat.init(mockData)
-      assert.typeOf(response, 'undefined', 'init function returns undefined')
-    })
-
-    it('should create webChatContainer DOM element if required data are passed', () => {
-      const mockData = {
-        'assistantSlug': 'sodebo',
-        'assistantId': '12345678'
-      }
-
-      yeldaChat.init(mockData)
-      setTimeout(() => {
-        expect(yeldaChat.webChatContainer).not.to.be.null
-      })
+      yeldaChat.unLoadChat()
+      await yeldaChat.init(mockData)
+      expect(yeldaChat.webChatContainer).not.to.be.null
     })
   })
 
