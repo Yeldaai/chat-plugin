@@ -92,7 +92,7 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.setupChat', () => {
     describe('yeldaChat.setupChat initial checks', () => {
-      it('should return null if assistantId is missing', async () => {
+      it('should webChatContainer is null if assistantId is missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
@@ -104,7 +104,7 @@ describe('YeldaChat', () => {
         expect(yeldaChat.webChatContainer).to.be.null
       })
 
-      it('should return null if assistantSlug is missing', async () => {
+      it('should webChatContainer is null if assistantSlug is missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
@@ -329,10 +329,11 @@ describe('YeldaChat', () => {
   })
 
   /**
-   * Since we are resetting and updating the mockRequest if platformSettings test cases run with
-   * other test cases parallely it causes error due to asynchronous nature.
-   * So "after" root level hook used to run the platformSettings test cases after
-   * all other test cases are finished
+   * Since we are resetting and updating the mockRequest(voiceFirstUI & isActivated settings),
+   * if platformSettings test cases runs parallel with other test cases,
+   * it causes error due to asynchronous nature.
+   * So "after" root level hook is used to run the platformSettings test cases after
+   * all other test cases are executed
    */
   after(() => {
     describe('yeldaChat.platformSettings', async () => {
@@ -362,12 +363,12 @@ describe('YeldaChat', () => {
         })
       })
 
-      describe('yeldaChat.publicationStatus', () => {
-        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when publicationStatus is disabled', async () => {
+      describe('yeldaChat.isActivated', () => {
+        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', async () => {
           mock.reset()
           mock.get(testAPIUrl, {
             status: 201,
-            body: JSON.stringify({ data: {publicationStatus: false} })
+            body: JSON.stringify({ data: {isActivated: false} })
           })
 
           // Reset the DOM
