@@ -59,7 +59,6 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
-   * @param {Object} data { data.assistantUrl, data.assistantId }
   */
   createContainer () {
     // If the parentContainer (document.body) not loaded then do not proceed
@@ -115,16 +114,16 @@ class YeldaChat {
       return
     }
 
-    if (!this.webchatSettings || !this.webchatSettings.data ) {
+    if (!this.webchatSettings ) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
     }
 
-    const isVoiceFirstUI = this.webchatSettings.data.hasOwnProperty('isVoiceFirstUI')
-      ? this.webchatSettings.data.isVoiceFirstUI
+    const isVoiceFirstUI = this.webchatSettings.hasOwnProperty('isVoiceFirstUI')
+      ? this.webchatSettings.isVoiceFirstUI
       : false
-    const customImage = this.webchatSettings.data.image && this.webchatSettings.data.image.url
-    const hasCustomStyle = this.webchatSettings.data.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.data.isDefaultStyle
+    const customImage = this.webchatSettings.image && this.webchatSettings.image.url
+    const hasCustomStyle = this.webchatSettings.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.isDefaultStyle
 
     /**
      * in isVoiceFirstUI mode
@@ -149,8 +148,8 @@ class YeldaChat {
 
     // If the device is mobile and mobile image url exists then use it
     const md = new MobileDetect(navigator.userAgent)
-    const image = md.mobile() !== null && this.webchatSettings.data.mobileImage && this.webchatSettings.data.mobileImage.url
-      ? this.webchatSettings.data.mobileImage.url
+    const image = md.mobile() !== null && this.webchatSettings.mobileImage && this.webchatSettings.mobileImage.url
+      ? this.webchatSettings.mobileImage.url
       : customImage
 
     this.assistantImage.classList.remove('default', 'custom')
@@ -588,10 +587,9 @@ class YeldaChat {
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} data { data.assistantUrl, data.assistantId }
-   * @param {Object} callback callback function called on onreadystatechange
    * @return {Promise}
   */
-  getAssistantSettings(data, callback) {
+  getAssistantSettings(data) {
     return new Promise(resolve => {
       try {
         const xhr = new XMLHttpRequest();
@@ -603,14 +601,12 @@ class YeldaChat {
         // Bind and call are necessary to pass the "this" to the callback function
         xhr.onreadystatechange = (function () {
           if(xhr.readyState === 4) {
-            this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText) : null
-            callback.call(this, data)
+            this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null
             resolve()
           }
         }).bind(this)
       } catch (e) { // when json.parse fails or xhr onerror catch will be called
         this.webchatSettings = null
-        callback.call(this, data)
         resolve()
       }
     })
@@ -634,37 +630,48 @@ class YeldaChat {
         data.assistantId === undefined ||
         data.assistantSlug === undefined
       ) {
-        resolve()
-        return
+        return resolve()
       }
 
       // Get assistant settings from backend
-      await this.getAssistantSettings(data, this.loadChat)
-      resolve()
+      await this.getAssistantSettings(data)
+      this.loadChat(data)
+      return resolve()
     })
   }
+
+  /**
+   * Check the webchat can be loaded
+   * @param {Object} webchatSettings
+   * @returns {Boolean}
+   */
+  shouldChatBeLoaded(webchatSettings) {
+    // if webchatSettings is null load the chat
+    if (!webchatSettings) {
+      return true
+    }
+
+    // Chat should always be loaded on ALWAYS_ALLOWED_SITES list of domain
+    const currentHost = window.location.hostname
+    if(config.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
+      return true
+    }
+
+    // if webchat publication status is set to false, we should not load it
+    if(webchatSettings.hasOwnProperty('isActivated') && !webchatSettings.isActivated) {
+      return false
+    }
+
+    return true
+  }
+
 
   /**
    * Load the chat after getting the webchat settings if publication is enabled
    * @param {Object} data { data.assistantUrl, data.assistantId }
    */
   loadChat(data) {
-    let publicationStatus = config.DEFAULT_PUBLICATION_STATUS
-
-    // Get the publicationStatus from the webchatSettings
-    if (this.webchatSettings && this.webchatSettings.data) {
-      publicationStatus = this.webchatSettings.data.hasOwnProperty('publicationStatus')
-        ? this.webchatSettings.data.publicationStatus
-        : config.DEFAULT_PUBLICATION_STATUS
-    }
-
-    const currentHost = window.location.hostname
-
-    /**
-     * If publication is disabled and the current host is not in PUBLICATION_STATUS_EXCLUDED_SITES
-     * then unload the chat
-     */
-    if (!publicationStatus && !config.PUBLICATION_STATUS_EXCLUDED_SITES.includes(currentHost)) {
+    if( !this.shouldChatBeLoaded(this.webchatSettings)) {
       this.unLoadChat()
       return
     }

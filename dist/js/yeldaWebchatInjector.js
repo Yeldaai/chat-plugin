@@ -800,7 +800,6 @@ var YeldaChat = function () {
     /**
      * Create webChatContainer, which is the main div containing image and webchat elements
      * and add it to the DOM
-     * @param {Object} data { data.assistantUrl, data.assistantId }
     */
 
   }, {
@@ -865,14 +864,14 @@ var YeldaChat = function () {
         return;
       }
 
-      if (!this.webchatSettings || !this.webchatSettings.data) {
+      if (!this.webchatSettings) {
         this.webChatContainer.appendChild(this.assistantImage);
         return;
       }
 
-      var isVoiceFirstUI = this.webchatSettings.data.hasOwnProperty('isVoiceFirstUI') ? this.webchatSettings.data.isVoiceFirstUI : false;
-      var customImage = this.webchatSettings.data.image && this.webchatSettings.data.image.url;
-      var hasCustomStyle = this.webchatSettings.data.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.data.isDefaultStyle;
+      var isVoiceFirstUI = this.webchatSettings.hasOwnProperty('isVoiceFirstUI') ? this.webchatSettings.isVoiceFirstUI : false;
+      var customImage = this.webchatSettings.image && this.webchatSettings.image.url;
+      var hasCustomStyle = this.webchatSettings.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.isDefaultStyle;
 
       /**
        * in isVoiceFirstUI mode
@@ -897,7 +896,7 @@ var YeldaChat = function () {
 
       // If the device is mobile and mobile image url exists then use it
       var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_8___default.a(navigator.userAgent);
-      var image = md.mobile() !== null && this.webchatSettings.data.mobileImage && this.webchatSettings.data.mobileImage.url ? this.webchatSettings.data.mobileImage.url : customImage;
+      var image = md.mobile() !== null && this.webchatSettings.mobileImage && this.webchatSettings.mobileImage.url ? this.webchatSettings.mobileImage.url : customImage;
 
       this.assistantImage.classList.remove('default', 'custom');
       this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
@@ -1393,13 +1392,12 @@ var YeldaChat = function () {
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} data { data.assistantUrl, data.assistantId }
-     * @param {Object} callback callback function called on onreadystatechange
      * @return {Promise}
     */
 
   }, {
     key: 'getAssistantSettings',
-    value: function getAssistantSettings(data, callback) {
+    value: function getAssistantSettings(data) {
       var _this3 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function (resolve) {
@@ -1413,15 +1411,13 @@ var YeldaChat = function () {
           // Bind and call are necessary to pass the "this" to the callback function
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-              this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-              callback.call(this, data);
+              this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null;
               resolve();
             }
           }.bind(_this3);
         } catch (e) {
           // when json.parse fails or xhr onerror catch will be called
           _this3.webchatSettings = null;
-          callback.call(_this3, data);
           resolve();
         }
       });
@@ -1457,19 +1453,19 @@ var YeldaChat = function () {
                             data = _this4.formatData(data);
 
                             if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
-                              _context2.next = 8;
+                              _context2.next = 7;
                               break;
                             }
 
-                            resolve();
-                            return _context2.abrupt('return');
+                            return _context2.abrupt('return', resolve());
 
-                          case 8:
-                            _context2.next = 10;
-                            return _this4.getAssistantSettings(data, _this4.loadChat);
+                          case 7:
+                            _context2.next = 9;
+                            return _this4.getAssistantSettings(data);
 
-                          case 10:
-                            resolve();
+                          case 9:
+                            _this4.loadChat(data);
+                            return _context2.abrupt('return', resolve());
 
                           case 11:
                           case 'end':
@@ -1500,6 +1496,34 @@ var YeldaChat = function () {
     }()
 
     /**
+     * Check the webchat can be loaded
+     * @param {Object} webchatSettings
+     * @returns {Boolean}
+     */
+
+  }, {
+    key: 'shouldChatBeLoaded',
+    value: function shouldChatBeLoaded(webchatSettings) {
+      // if webchatSettings is null load the chat
+      if (!webchatSettings) {
+        return true;
+      }
+
+      // Chat should always be loaded on ALWAYS_ALLOWED_SITES list of domain
+      var currentHost = window.location.hostname;
+      if (_config__WEBPACK_IMPORTED_MODULE_15___default.a.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
+        return true;
+      }
+
+      // if webchat publication status is set to false, we should not load it
+      if (webchatSettings.hasOwnProperty('isActivated') && !webchatSettings.isActivated) {
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
      * Load the chat after getting the webchat settings if publication is enabled
      * @param {Object} data { data.assistantUrl, data.assistantId }
      */
@@ -1507,20 +1531,7 @@ var YeldaChat = function () {
   }, {
     key: 'loadChat',
     value: function loadChat(data) {
-      var publicationStatus = _config__WEBPACK_IMPORTED_MODULE_15___default.a.DEFAULT_PUBLICATION_STATUS;
-
-      // Get the publicationStatus from the webchatSettings
-      if (this.webchatSettings && this.webchatSettings.data) {
-        publicationStatus = this.webchatSettings.data.hasOwnProperty('publicationStatus') ? this.webchatSettings.data.publicationStatus : _config__WEBPACK_IMPORTED_MODULE_15___default.a.DEFAULT_PUBLICATION_STATUS;
-      }
-
-      var currentHost = window.location.hostname;
-
-      /**
-       * If publication is disabled and the current host is not in PUBLICATION_STATUS_EXCLUDED_SITES
-       * then unload the chat
-       */
-      if (!publicationStatus && !_config__WEBPACK_IMPORTED_MODULE_15___default.a.PUBLICATION_STATUS_EXCLUDED_SITES.includes(currentHost)) {
+      if (!this.shouldChatBeLoaded(this.webchatSettings)) {
         this.unLoadChat();
         return;
       }
@@ -2177,15 +2188,7 @@ module.exports = {
   CAN_BE_CLOSED_WITH_PARENT_ID: false,
   YELDA_PARAMETER: 'yparam',
   DEFAULT_PUBLICATION_STATUS: true,
-  PUBLICATION_STATUS_EXCLUDED_SITES: [
-  // Production Yelda site
-  'app.yelda.ai',
-  // Staging yelda site
-  'staging.yelda.ai',
-  // Demo page
-  'web.yelda.ai',
-  // Localhost
-  'localhost']
+  ALWAYS_ALLOWED_SITES_REGEX: /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/
 };
 
 /***/ }),
