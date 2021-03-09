@@ -741,20 +741,23 @@ class YeldaChat {
   }
 
   init(data) {
-    if (data.assistantId === undefined || data.assistantSlug === undefined) {
-      return null
-    }
+    return new Promise(async (resolve) => {
+      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+        return resolve()
+      }
 
-    // if the DOM is already ready, call setupChat
-    if (document.readyState === 'complete') {
-      this.setupChat(data)
-      return
-    }
+      // if the DOM is already ready, call setupChat
+      if (document.readyState === 'complete') {
+        await this.setupChat(data)
+        return resolve()
+      }
 
-    // If the DOM is not yet ready, wait
-    window.onload = () => {
-      this.setupChat(data)
-    }
+      // If the DOM is not yet ready, wait
+      window.onload = async () => {
+        await this.setupChat(data)
+        return resolve()
+      }
+    })
   }
 
   /**
