@@ -606,7 +606,6 @@ class YeldaChat {
           }
         })
       } catch (e) { // when json.parse fails or xhr onerror catch will be called
-        this.webchatSettings = null
         reject()
       }
     })
@@ -676,13 +675,13 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.assistantId }
    */
   loadChat(data) {
-    if ( !this.shouldChatBeLoaded(this.webchatSettings)) {
+    if (!this.shouldChatBeLoaded(this.webchatSettings)) {
       this.unLoadChat()
       return
     }
 
     // Load Async css only if style sheet not found
-    if ( ! this.isStyleSheetLoaded()) {
+    if (!this.isStyleSheetLoaded()) {
       this.loadCssAsync(data.assistantUrl)
     }
 

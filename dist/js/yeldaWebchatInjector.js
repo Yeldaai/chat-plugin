@@ -1398,8 +1398,6 @@ var YeldaChat = function () {
   }, {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data) {
-      var _this3 = this;
-
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function (resolve, reject) {
         try {
           var xhr = new XMLHttpRequest();
@@ -1417,7 +1415,6 @@ var YeldaChat = function () {
           };
         } catch (e) {
           // when json.parse fails or xhr onerror catch will be called
-          _this3.webchatSettings = null;
           reject();
         }
       });
@@ -1432,7 +1429,7 @@ var YeldaChat = function () {
     key: 'setupChat',
     value: function () {
       var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee3(data) {
-        var _this4 = this;
+        var _this3 = this;
 
         return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee3$(_context3) {
           while (1) {
@@ -1444,13 +1441,13 @@ var YeldaChat = function () {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            _this4.webChatContainer = null;
-                            _this4.iframeContainer = null;
-                            _this4.webChatIframe = null;
-                            _this4.webchatSettings = null;
+                            _this3.webChatContainer = null;
+                            _this3.iframeContainer = null;
+                            _this3.webChatIframe = null;
+                            _this3.webchatSettings = null;
 
                             // Format the data with default values if not exists
-                            data = _this4.formatData(data);
+                            data = _this3.formatData(data);
 
                             if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
                               _context2.next = 7;
@@ -1462,10 +1459,10 @@ var YeldaChat = function () {
                           case 7:
                             _context2.prev = 7;
                             _context2.next = 10;
-                            return _this4.getAssistantSettings(data);
+                            return _this3.getAssistantSettings(data);
 
                           case 10:
-                            _this4.webchatSettings = _context2.sent;
+                            _this3.webchatSettings = _context2.sent;
                             _context2.next = 16;
                             break;
 
@@ -1473,11 +1470,11 @@ var YeldaChat = function () {
                             _context2.prev = 13;
                             _context2.t0 = _context2['catch'](7);
 
-                            _this4.webchatSettings = null;
+                            _this3.webchatSettings = null;
 
                           case 16:
 
-                            _this4.loadChat(data);
+                            _this3.loadChat(data);
                             return _context2.abrupt('return', resolve());
 
                           case 18:
@@ -1485,7 +1482,7 @@ var YeldaChat = function () {
                             return _context2.stop();
                         }
                       }
-                    }, _callee2, _this4, [[7, 13]]);
+                    }, _callee2, _this3, [[7, 13]]);
                   }));
 
                   return function (_x6) {
@@ -1681,7 +1678,7 @@ var YeldaChat = function () {
   }, {
     key: 'init',
     value: function init(data) {
-      var _this5 = this;
+      var _this4 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
         var _ref4 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5(resolve) {
@@ -1703,7 +1700,7 @@ var YeldaChat = function () {
                   }
 
                   _context5.next = 5;
-                  return _this5.setupChat(data);
+                  return _this4.setupChat(data);
 
                 case 5:
                   return _context5.abrupt('return', resolve());
@@ -1717,7 +1714,7 @@ var YeldaChat = function () {
                         switch (_context4.prev = _context4.next) {
                           case 0:
                             _context4.next = 2;
-                            return _this5.setupChat(data);
+                            return _this4.setupChat(data);
 
                           case 2:
                             return _context4.abrupt('return', resolve());
@@ -1727,7 +1724,7 @@ var YeldaChat = function () {
                             return _context4.stop();
                         }
                       }
-                    }, _callee4, _this5);
+                    }, _callee4, _this4);
                   }));
 
                 case 7:
@@ -1735,7 +1732,7 @@ var YeldaChat = function () {
                   return _context5.stop();
               }
             }
-          }, _callee5, _this5);
+          }, _callee5, _this4);
         }));
 
         return function (_x7) {
