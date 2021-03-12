@@ -615,7 +615,7 @@ class YeldaChat {
    * Initialize the chat window
    * @param {object} data
   */
-  async setupChat (data) {
+  setupChat (data) {
     return new Promise(async (resolve) => {
       this.webChatContainer = null
       this.iframeContainer = null
