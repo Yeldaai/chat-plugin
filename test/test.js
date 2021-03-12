@@ -107,9 +107,13 @@ describe('YeldaChat', () => {
     })
 
     describe('yeldaChat.createContainer', async() => {
-      // Reset the DOM
-      yeldaChat.unLoadChat()
-      await yeldaChat.setupChat(validMockData)
+      before(async () => {
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+      })
+
+      /*yeldaChat.unLoadChat()
+      await yeldaChat.setupChat(validMockData)*/
       it('should create webChatContainer dom element', () => {
         expect(yeldaChat.webChatContainer).not.to.be.null
       })
@@ -136,9 +140,11 @@ describe('YeldaChat', () => {
 
 
       describe('yeldaChat.addAssistantImage', async () => {
-        // Reset the DOM
-        yeldaChat.unLoadChat()
-        await yeldaChat.setupChat(validMockData)
+        before(async () => {
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+        })
+
         it('should create assistantImage dom element', () => {
           yeldaChat.should.have.property('assistantImage')
         })
@@ -157,8 +163,11 @@ describe('YeldaChat', () => {
       })
 
       describe('yeldaChat.updateAssistantImageWithAssistantSettings', async () => {
-        yeldaChat.unLoadChat()
-        await yeldaChat.setupChat(validMockData)
+        before(async () => {
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+        })
+
         it('expect assistantImage exists in document', () => {
           expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantImage)
         })
@@ -232,8 +241,10 @@ describe('YeldaChat', () => {
     })
 
     describe('yeldaChat.createWebChatFrame', async () => {
-      yeldaChat.unLoadChat()
-      await yeldaChat.setupChat(validMockData)
+      before(async () => {
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+      })
 
       it('should create iframeContainer dom element', () => {
         yeldaChat.should.have.property('iframeContainer')
@@ -272,8 +283,11 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.resetChat', () => {
     describe('yeldaChat.resetChat', async () => {
-      yeldaChat.unLoadChat()
-      await yeldaChat.setupChat(validMockData)
+      before(async () => {
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+      })
+
       it('iframeContainer should not be empty after reset', async () => {
         await yeldaChat.resetChat(validMockData)
         document.querySelector('#yelda_iframe_container').should.exist
@@ -327,14 +341,16 @@ describe('YeldaChat', () => {
   after(() => {
     describe('yeldaChat.platformSettings', async () => {
       describe('yeldaChat.voiceFirstUI', async () => {
-        mock.reset()
-        mock.get(testAPIUrl, {
-          status: 201,
-          body: JSON.stringify({ data: {isVoiceFirstUI: true} })
-        })
+        before(async () => {
+          mock.reset()
+          mock.get(testAPIUrl, {
+            status: 201,
+            body: JSON.stringify({ data: {isVoiceFirstUI: true} })
+          })
 
-        yeldaChat.unLoadChat()
-        yeldaChat.setupChat(validMockData)
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+        })
 
         it('should contain voiceFirstUI class', (done) => {
           expect(yeldaChat.iframeContainer).to.have.attribute('class', 'yelda_iframe_container voiceFirstUI y_active')
@@ -353,16 +369,19 @@ describe('YeldaChat', () => {
       })
 
       describe('yeldaChat.isActivated', () => {
-        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', async () => {
+        before(async () => {
           mock.reset()
           mock.get(testAPIUrl, {
             status: 201,
             body: JSON.stringify({ data: {isActivated: false} })
           })
 
-          // Reset the DOM
           yeldaChat.unLoadChat()
           await yeldaChat.setupChat(validMockData)
+        })
+
+        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', async () => {
+
           expect(yeldaChat.iframeContainer).to.be.null
           expect(yeldaChat.webChatIframe).to.be.null
           expect(yeldaChat.webChatContainer).to.be.null
