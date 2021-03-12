@@ -1427,83 +1427,64 @@ var YeldaChat = function () {
 
   }, {
     key: 'setupChat',
-    value: function () {
-      var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee3(data) {
-        var _this3 = this;
+    value: function setupChat(data) {
+      var _this3 = this;
 
-        return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                return _context3.abrupt('return', new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
-                  var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee2(resolve) {
-                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee2$(_context2) {
-                      while (1) {
-                        switch (_context2.prev = _context2.next) {
-                          case 0:
-                            _this3.webChatContainer = null;
-                            _this3.iframeContainer = null;
-                            _this3.webChatIframe = null;
-                            _this3.webchatSettings = null;
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
+        var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee2(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _this3.webChatContainer = null;
+                  _this3.iframeContainer = null;
+                  _this3.webChatIframe = null;
+                  _this3.webchatSettings = null;
 
-                            // Format the data with default values if not exists
-                            data = _this3.formatData(data);
+                  // Format the data with default values if not exists
+                  data = _this3.formatData(data);
 
-                            if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
-                              _context2.next = 7;
-                              break;
-                            }
+                  if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
+                    _context2.next = 7;
+                    break;
+                  }
 
-                            return _context2.abrupt('return', resolve());
+                  return _context2.abrupt('return', resolve());
 
-                          case 7:
-                            _context2.prev = 7;
-                            _context2.next = 10;
-                            return _this3.getAssistantSettings(data);
+                case 7:
+                  _context2.prev = 7;
+                  _context2.next = 10;
+                  return _this3.getAssistantSettings(data);
 
-                          case 10:
-                            _this3.webchatSettings = _context2.sent;
-                            _context2.next = 16;
-                            break;
+                case 10:
+                  _this3.webchatSettings = _context2.sent;
+                  _context2.next = 16;
+                  break;
 
-                          case 13:
-                            _context2.prev = 13;
-                            _context2.t0 = _context2['catch'](7);
+                case 13:
+                  _context2.prev = 13;
+                  _context2.t0 = _context2['catch'](7);
 
-                            _this3.webchatSettings = null;
+                  _this3.webchatSettings = null;
 
-                          case 16:
+                case 16:
 
-                            _this3.loadChat(data);
-                            return _context2.abrupt('return', resolve());
+                  _this3.loadChat(data);
+                  return _context2.abrupt('return', resolve());
 
-                          case 18:
-                          case 'end':
-                            return _context2.stop();
-                        }
-                      }
-                    }, _callee2, _this3, [[7, 13]]);
-                  }));
-
-                  return function (_x6) {
-                    return _ref3.apply(this, arguments);
-                  };
-                }()));
-
-              case 1:
-              case 'end':
-                return _context3.stop();
+                case 18:
+                case 'end':
+                  return _context2.stop();
+              }
             }
-          }
-        }, _callee3, this);
-      }));
+          }, _callee2, _this3, [[7, 13]]);
+        }));
 
-      function setupChat(_x5) {
-        return _ref2.apply(this, arguments);
-      }
-
-      return setupChat;
-    }()
+        return function (_x5) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
 
     /**
      * Check the webchat can be loaded
@@ -1681,62 +1662,62 @@ var YeldaChat = function () {
       var _this4 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
-        var _ref4 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5(resolve) {
-          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee5$(_context5) {
+        var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context4.prev = _context4.next) {
                 case 0:
                   if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
-                    _context5.next = 2;
+                    _context4.next = 2;
                     break;
                   }
 
-                  return _context5.abrupt('return', resolve());
+                  return _context4.abrupt('return', resolve());
 
                 case 2:
                   if (!(document.readyState === 'complete')) {
-                    _context5.next = 6;
+                    _context4.next = 6;
                     break;
                   }
 
-                  _context5.next = 5;
+                  _context4.next = 5;
                   return _this4.setupChat(data);
 
                 case 5:
-                  return _context5.abrupt('return', resolve());
+                  return _context4.abrupt('return', resolve());
 
                 case 6:
 
                   // If the DOM is not yet ready, wait
-                  window.onload = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
-                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
+                  window.onload = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee3() {
+                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee3$(_context3) {
                       while (1) {
-                        switch (_context4.prev = _context4.next) {
+                        switch (_context3.prev = _context3.next) {
                           case 0:
-                            _context4.next = 2;
+                            _context3.next = 2;
                             return _this4.setupChat(data);
 
                           case 2:
-                            return _context4.abrupt('return', resolve());
+                            return _context3.abrupt('return', resolve());
 
                           case 3:
                           case 'end':
-                            return _context4.stop();
+                            return _context3.stop();
                         }
                       }
-                    }, _callee4, _this4);
+                    }, _callee3, _this4);
                   }));
 
                 case 7:
                 case 'end':
-                  return _context5.stop();
+                  return _context4.stop();
               }
             }
-          }, _callee5, _this4);
+          }, _callee4, _this4);
         }));
 
-        return function (_x7) {
-          return _ref4.apply(this, arguments);
+        return function (_x6) {
+          return _ref3.apply(this, arguments);
         };
       }());
     }

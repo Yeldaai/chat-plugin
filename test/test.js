@@ -106,14 +106,12 @@ describe('YeldaChat', () => {
       })
     })
 
-    describe('yeldaChat.createContainer', async() => {
+    describe('yeldaChat.createContainer', () => {
       before(async () => {
         yeldaChat.unLoadChat()
         await yeldaChat.setupChat(validMockData)
       })
 
-      /*yeldaChat.unLoadChat()
-      await yeldaChat.setupChat(validMockData)*/
       it('should create webChatContainer dom element', () => {
         expect(yeldaChat.webChatContainer).not.to.be.null
       })
@@ -139,7 +137,7 @@ describe('YeldaChat', () => {
       })
 
 
-      describe('yeldaChat.addAssistantImage', async () => {
+      describe('yeldaChat.addAssistantImage', () => {
         before(async () => {
           yeldaChat.unLoadChat()
           await yeldaChat.setupChat(validMockData)
@@ -162,7 +160,7 @@ describe('YeldaChat', () => {
         })
       })
 
-      describe('yeldaChat.updateAssistantImageWithAssistantSettings', async () => {
+      describe('yeldaChat.updateAssistantImageWithAssistantSettings', () => {
         before(async () => {
           yeldaChat.unLoadChat()
           await yeldaChat.setupChat(validMockData)
@@ -240,7 +238,7 @@ describe('YeldaChat', () => {
       })
     })
 
-    describe('yeldaChat.createWebChatFrame', async () => {
+    describe('yeldaChat.createWebChatFrame', () => {
       before(async () => {
         yeldaChat.unLoadChat()
         await yeldaChat.setupChat(validMockData)
@@ -282,7 +280,7 @@ describe('YeldaChat', () => {
   })
 
   describe('yeldaChat.resetChat', () => {
-    describe('yeldaChat.resetChat', async () => {
+    describe('yeldaChat.resetChat', () => {
       before(async () => {
         yeldaChat.unLoadChat()
         await yeldaChat.setupChat(validMockData)
@@ -339,8 +337,8 @@ describe('YeldaChat', () => {
    * all other test cases are executed
    */
   after(() => {
-    describe('yeldaChat.platformSettings', async () => {
-      describe('yeldaChat.voiceFirstUI', async () => {
+    describe('yeldaChat.platformSettings', () => {
+      describe('yeldaChat.voiceFirstUI', () => {
         before(async () => {
           mock.reset()
           mock.get(testAPIUrl, {
@@ -380,8 +378,7 @@ describe('YeldaChat', () => {
           await yeldaChat.setupChat(validMockData)
         })
 
-        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', async () => {
-
+        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', () => {
           expect(yeldaChat.iframeContainer).to.be.null
           expect(yeldaChat.webChatIframe).to.be.null
           expect(yeldaChat.webChatContainer).to.be.null
