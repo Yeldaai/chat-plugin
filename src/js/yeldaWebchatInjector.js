@@ -110,7 +110,7 @@ class YeldaChat {
    * Update assistantImage with assistant settings from backend if any
   */
   updateAssistantImageWithAssistantSettings() {
-    if(!this.webChatContainer) {
+    if (!this.webChatContainer) {
       return
     }
 
@@ -383,7 +383,7 @@ class YeldaChat {
       // For image the mediaSource is a simple string
       if (typeof mediaSource === 'string') {
         mediaDetails = this.getImageProperties(mediaSource)
-      } else if(mediaSource.urls && mediaSource.urls.length) {
+      } else if (mediaSource.urls && mediaSource.urls.length) {
         // For video mediaSource will be object {urls: {Array<String>}, cover: {String}}
         mediaDetails = this.getImageProperties(mediaSource)
       }
@@ -524,7 +524,7 @@ class YeldaChat {
     data.isDemo = data.isDemo ? true : false
     data.location = encodeURIComponent(window.location.href)
 
-    if(data.hasOwnProperty('shouldBeOpened')) {
+    if (data.hasOwnProperty('shouldBeOpened')) {
       data.shouldBeOpened = data.shouldBeOpened ? true : false
     }
 
@@ -535,7 +535,7 @@ class YeldaChat {
       data[config.YELDA_PARAMETER] = yeldaParam
     }
 
-    if(data.hasOwnProperty('canBeClosed')) {
+    if (data.hasOwnProperty('canBeClosed')) {
       data.canBeClosed = data.canBeClosed ? true : false
     }
 
@@ -543,7 +543,7 @@ class YeldaChat {
     this.parentContainer = document.body
 
     // If parentContainerId presents and valid one, set parentContainer
-    if(data.parentContainerId && document.getElementById(data.parentContainerId)) {
+    if (data.parentContainerId && document.getElementById(data.parentContainerId)) {
       this.parentContainer = document.getElementById(data.parentContainerId)
       // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
       // However, if canBeClosed is not provided but the parentContainerId is provided, force it to false
@@ -590,7 +590,7 @@ class YeldaChat {
    * @return {Promise}
   */
   getAssistantSettings(data) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       try {
         const xhr = new XMLHttpRequest();
         const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
@@ -600,14 +600,14 @@ class YeldaChat {
 
         // Bind and call are necessary to pass the "this" to the callback function
         xhr.onreadystatechange = (function () {
-          if(xhr.readyState === 4) {
-            this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null
-            resolve()
+          if (xhr.readyState === 4) {
+            const webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null
+            resolve(webchatSettings)
           }
-        }).bind(this)
+        })
       } catch (e) { // when json.parse fails or xhr onerror catch will be called
         this.webchatSettings = null
-        resolve()
+        reject()
       }
     })
   }
@@ -634,7 +634,12 @@ class YeldaChat {
       }
 
       // Get assistant settings from backend
-      await this.getAssistantSettings(data)
+      try {
+        this.webchatSettings = await this.getAssistantSettings(data)
+      } catch(err) {
+        this.webchatSettings = null
+      }
+
       this.loadChat(data)
       return resolve()
     })
@@ -653,12 +658,12 @@ class YeldaChat {
 
     // Chat should always be loaded on ALWAYS_ALLOWED_SITES list of domain
     const currentHost = window.location.hostname
-    if(config.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
+    if (config.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
       return true
     }
 
     // if webchat publication status is set to false, we should not load it
-    if(webchatSettings.hasOwnProperty('isActivated') && !webchatSettings.isActivated) {
+    if (webchatSettings.hasOwnProperty('isActivated') && !webchatSettings.isActivated) {
       return false
     }
 
@@ -671,7 +676,7 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.assistantId }
    */
   loadChat(data) {
-    if( !this.shouldChatBeLoaded(this.webchatSettings)) {
+    if ( !this.shouldChatBeLoaded(this.webchatSettings)) {
       this.unLoadChat()
       return
     }

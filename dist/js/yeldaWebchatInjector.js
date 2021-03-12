@@ -1400,7 +1400,7 @@ var YeldaChat = function () {
     value: function getAssistantSettings(data) {
       var _this3 = this;
 
-      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function (resolve) {
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function (resolve, reject) {
         try {
           var xhr = new XMLHttpRequest();
           var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
@@ -1411,14 +1411,14 @@ var YeldaChat = function () {
           // Bind and call are necessary to pass the "this" to the callback function
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-              this.webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null;
-              resolve();
+              var webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null;
+              resolve(webchatSettings);
             }
-          }.bind(_this3);
+          };
         } catch (e) {
           // when json.parse fails or xhr onerror catch will be called
           _this3.webchatSettings = null;
-          resolve();
+          reject();
         }
       });
     }
@@ -1460,19 +1460,32 @@ var YeldaChat = function () {
                             return _context2.abrupt('return', resolve());
 
                           case 7:
-                            _context2.next = 9;
+                            _context2.prev = 7;
+                            _context2.next = 10;
                             return _this4.getAssistantSettings(data);
 
-                          case 9:
+                          case 10:
+                            _this4.webchatSettings = _context2.sent;
+                            _context2.next = 16;
+                            break;
+
+                          case 13:
+                            _context2.prev = 13;
+                            _context2.t0 = _context2['catch'](7);
+
+                            _this4.webchatSettings = null;
+
+                          case 16:
+
                             _this4.loadChat(data);
                             return _context2.abrupt('return', resolve());
 
-                          case 11:
+                          case 18:
                           case 'end':
                             return _context2.stop();
                         }
                       }
-                    }, _callee2, _this4);
+                    }, _callee2, _this4, [[7, 13]]);
                   }));
 
                   return function (_x6) {
