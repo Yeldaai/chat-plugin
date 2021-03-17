@@ -800,7 +800,7 @@ var YeldaChat = function () {
     /**
      * Create webChatContainer, which is the main div containing image and webchat elements
      * and add it to the DOM
-    */
+     */
 
   }, {
     key: 'createContainer',
@@ -825,8 +825,30 @@ var YeldaChat = function () {
     }
 
     /**
-    * Create assistantImage element and add it to webChatContainer element
-    */
+     * Create an assistantBubbleText component and add it to webChatContainer element
+     */
+
+  }, {
+    key: 'addAssistantBubbleText',
+    value: function addAssistantBubbleText() {
+      if (!this.webChatContainer || !this.webchatSettings || !this.webchatSettings.bubbleText) {
+        return;
+      }
+
+      // create assistantBubbleText element and set the text
+      this.assistantBubbleText = document.createElement('span');
+      this.assistantBubbleText.innerText = this.webchatSettings.bubbleText;
+
+      // Add click event to assistant text
+      this.assistantBubbleText.addEventListener('click', this.openChat);
+
+      // add assistant text to webChatContainer using the webchatSettings
+      this.webChatContainer.appendChild(this.assistantBubbleText);
+    }
+
+    /**
+     * Create assistantImage element and add it to webChatContainer element
+     */
 
   }, {
     key: 'addAssistantImage',
@@ -837,11 +859,22 @@ var YeldaChat = function () {
 
       // If it's already set up, keep it
       if (document.getElementById('yelda_assistant_img') !== null) {
-        return;
+        if (this.bubbleContainer) {
+          document.getElementById('yelda_assistant_img').remove();
+        } else {
+          return;
+        }
       }
 
       // Assistant Image Creation
       this.assistantImage = document.createElement('div');
+
+      // bubbleContainerChildId force the assistant image to be set in the bubbleContainer
+      if (this.bubbleContainer) {
+        this.assistantImage = this.bubbleContainer;
+      }
+
+      // Assistant Image setup
       this.assistantImage.setAttribute('id', 'yelda_assistant_img');
       this.assistantImage.setAttribute('class', 'yelda_assistant_img default');
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
@@ -854,8 +887,24 @@ var YeldaChat = function () {
     }
 
     /**
+     * Add the assistantImage to the webChatContainer
+     * Or update the webChatContainer element if the image is already added (bubbleContainerChildId param)
+     */
+
+  }, {
+    key: 'addAssistantImageToWebChatContainer',
+    value: function addAssistantImageToWebChatContainer() {
+      if (this.bubbleContainer) {
+        this.webChatContainer = this.assistantImage.parentElement;
+        return;
+      }
+
+      this.webChatContainer.appendChild(this.assistantImage);
+    }
+
+    /**
      * Update assistantImage with assistant settings from backend if any
-    */
+     */
 
   }, {
     key: 'updateAssistantImageWithAssistantSettings',
@@ -865,7 +914,7 @@ var YeldaChat = function () {
       }
 
       if (!this.webchatSettings) {
-        this.webChatContainer.appendChild(this.assistantImage);
+        this.addAssistantImageToWebChatContainer();
         return;
       }
 
@@ -890,7 +939,7 @@ var YeldaChat = function () {
       }
 
       if (!hasCustomStyle || !customImage) {
-        this.webChatContainer.appendChild(this.assistantImage);
+        this.addAssistantImageToWebChatContainer();
         return;
       }
 
@@ -902,7 +951,7 @@ var YeldaChat = function () {
       this.assistantImage.innerHTML = '<img src="' + image + '" alt="assistant">';
       this.assistantImage.classList.add('custom');
 
-      this.webChatContainer.appendChild(this.assistantImage);
+      this.addAssistantImageToWebChatContainer();
     }
 
     /**
@@ -911,7 +960,7 @@ var YeldaChat = function () {
      * @param {String} assistantId assistant id
      * @param {String} assistantSlug assistant slug
      * @return {String} url
-    */
+     */
 
   }, {
     key: 'createWebChatURL',
@@ -959,7 +1008,7 @@ var YeldaChat = function () {
      * @param {Boolean} data.isStartBtn
      * @param {Boolean} data.canBeClosed
      * @return {Element} iframe HTML element
-    */
+     */
 
   }, {
     key: 'createWebChatFrame',
@@ -1028,7 +1077,7 @@ var YeldaChat = function () {
      * Format object with social media shareUrl
      * @param {String} shareUrl url to share
      * @return {Object} shareUrl properties { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
-    */
+     */
 
   }, {
     key: 'getSharedUrlProperties',
@@ -1044,7 +1093,7 @@ var YeldaChat = function () {
      * Get Image related properties for lightGallery
      * @param {String} mediaSource image url
      * @return {Object} object of image needed properties {src, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
-    */
+     */
 
   }, {
     key: 'getImageProperties',
@@ -1161,7 +1210,7 @@ var YeldaChat = function () {
 
       // Open Light gallery
       window.lightGallery(lightgalleryContainer, {
-        googlePlus: false, //Don't show the googlePlus share button
+        googlePlus: false, // Don't show the googlePlus share button
         dynamic: true,
         dynamicEl: dynamicElements,
         index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
@@ -1240,7 +1289,7 @@ var YeldaChat = function () {
     /**
      * Load CSS asynchroneously
      * @param {String} origin to retrive css
-    */
+     */
 
   }, {
     key: 'loadCssAsync',
@@ -1258,7 +1307,7 @@ var YeldaChat = function () {
     /**
      * Gererate webchatURL and create webchatIframe
      * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
-    */
+     */
 
   }, {
     key: 'setUpChatIFrame',
@@ -1272,7 +1321,7 @@ var YeldaChat = function () {
      * @param {Object} data { data.assistantUrl, data.chatPath }
      * @param {Element} container webchat container
      * @returns {Promise}
-    */
+     */
 
   }, {
     key: 'resetChat',
@@ -1310,7 +1359,7 @@ var YeldaChat = function () {
      * Set default value for data object used for multiple init functions
      * @param {Object} data { data.assistantUrl, data.chatPath }
      * @param {Object} data
-    */
+     */
 
   }, {
     key: 'formatData',
@@ -1348,6 +1397,11 @@ var YeldaChat = function () {
 
       // default container
       this.parentContainer = document.body;
+      this.bubbleContainer = null;
+
+      if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
+        this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement;
+      }
 
       // If parentContainerId presents and valid one, set parentContainer
       if (data.parentContainerId && document.getElementById(data.parentContainerId)) {
@@ -1366,15 +1420,15 @@ var YeldaChat = function () {
       var isFound = false;
       var cssSelector = '.yelda_assistant_img'; // Used to check style sheet loaded or not
 
-      if (typeof sheets != 'undefined' && sheets.length) {
+      if (typeof sheets !== 'undefined' && sheets.length) {
         sheetsLoop: for (var i = 0; i < sheets.length; i++) {
           var sheet = document.styleSheets[i];
 
           try {
             var rules = sheet.cssRules;
-            if (typeof rules != 'undefined') {
+            if (typeof rules !== 'undefined') {
               for (var j = 0; j < rules.length; j++) {
-                if (typeof rules[j].selectorText != 'undefined' && rules[j].selectorText === cssSelector) {
+                if (typeof rules[j].selectorText !== 'undefined' && rules[j].selectorText === cssSelector) {
                   isFound = true;
                   break sheetsLoop;
                 }
@@ -1393,7 +1447,7 @@ var YeldaChat = function () {
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} data { data.assistantUrl, data.assistantId }
      * @return {Promise}
-    */
+     */
 
   }, {
     key: 'getAssistantSettings',
@@ -1403,7 +1457,7 @@ var YeldaChat = function () {
           var xhr = new XMLHttpRequest();
           var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
 
-          xhr.open("GET", url);
+          xhr.open('GET', url);
           xhr.send();
 
           // Bind and call are necessary to pass the "this" to the callback function
@@ -1423,7 +1477,7 @@ var YeldaChat = function () {
     /**
      * Initialize the chat window
      * @param {object} data
-    */
+     */
 
   }, {
     key: 'setupChat',
@@ -1549,6 +1603,7 @@ var YeldaChat = function () {
       // because the assistant image containing the openChat event wouldn't have been created
       if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
         this.addAssistantImage();
+        this.addAssistantBubbleText();
       }
 
       // add the frame lister to receive message from iframe to the parent
@@ -1649,6 +1704,7 @@ var YeldaChat = function () {
         }
       }
 
+      this.assistantBubbleText = null;
       this.assistantImage = null;
       this.iframeContainer = null;
       this.webChatIframe = null;
@@ -1742,7 +1798,7 @@ var YeldaChat = function () {
 
 var yeldaChat = new YeldaChat();
 
-if (typeof window != 'undefined') {
+if (typeof window !== 'undefined') {
   window.yeldaChat = yeldaChat;
 }
 
@@ -1857,8 +1913,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N;
- * @license GPLv3
+ * Copyright (c) 2016 Sachin N; 
+ * @license GPLv3 
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2126,11 +2182,12 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-            var firstImage = this.core.items[index].querySelector('img');
+        }
 
-            if (firstImage) {
-                videoTitle = videoTitle || firstImage.getAttribute('alt');
-            }
+        var firstImage = this.core.items[index].querySelector('img');
+
+        if (firstImage) {
+            videoTitle = videoTitle || firstImage.getAttribute('alt');
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';

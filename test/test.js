@@ -374,6 +374,50 @@ describe('YeldaChat', () => {
         })
       })
 
+      describe('yeldaChat.bubbleText set', () => {
+        before(async () => {
+          mock.reset()
+          mock.get(testAPIUrl, {
+            status: 201,
+            body: JSON.stringify({ data: { bubbleText: 'coucou' } })
+          })
+
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+        })
+
+
+        it('should set assistantBubbleText', () => {
+          expect(yeldaChat.assistantBubbleText).not.to.be.null
+          expect(yeldaChat.assistantBubbleText).not.to.be.undefined
+          expect(yeldaChat.assistantBubbleText).to.have.rendered.text('coucou')
+        })
+
+        it('should add assistantBubbleText to webChatContainer', () => {
+          expect(yeldaChat.webChatContainer).to.contain('span')
+          expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
+        })
+      })
+
+      describe('yeldaChat.bubbleText not set', () => {
+        before(async () => {
+          mock.reset()
+          mock.get(testAPIUrl, {
+            status: 201,
+            body: JSON.stringify({ data: { bubbleText: '' } })
+          })
+
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+        })
+
+
+        it('should not set assistantBubbleText element', () => {
+          expect(yeldaChat.assistantBubbleText).to.be.null
+          expect(yeldaChat.webChatContainer).not.to.contain('span')
+        })
+      })
+
       describe('yeldaChat.isActivated', () => {
         before(async () => {
           mock.reset()
