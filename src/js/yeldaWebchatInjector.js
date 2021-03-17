@@ -81,6 +81,25 @@ class YeldaChat {
   }
 
   /**
+   * Create an assistantBubbleText component and add it to webChatContainer element
+   */
+  addAssistantBubbleText() {
+    if (!this.webChatContainer || !this.webchatSettings || !this.webchatSettings.bubbleText) {
+      return
+    }
+
+    // create assistantBubbleText element and set the text
+    this.assistantBubbleText = document.createElement('span')
+    this.assistantBubbleText.innerText = this.webchatSettings.bubbleText
+
+    // Add click event to assistant text
+    this.assistantBubbleText.addEventListener('click', this.openChat)
+
+    // add assistant text to webChatContainer using the webchatSettings
+    this.webChatContainer.appendChild(this.assistantBubbleText)
+  }
+
+  /**
    * Create assistantImage element and add it to webChatContainer element
    */
   addAssistantImage() {
@@ -90,11 +109,22 @@ class YeldaChat {
 
     // If it's already set up, keep it
     if (document.getElementById('yelda_assistant_img') !== null) {
-      return
+      if (this.bubbleContainer) {
+        document.getElementById('yelda_assistant_img').remove()
+      } else {
+        return
+      }
     }
 
     // Assistant Image Creation
     this.assistantImage = document.createElement('div')
+
+    // bubbleContainerChildId force the assistant image to be set in the bubbleContainer
+    if (this.bubbleContainer) {
+      this.assistantImage = this.bubbleContainer
+    }
+
+    // Assistant Image setup
     this.assistantImage.setAttribute('id', 'yelda_assistant_img')
     this.assistantImage.setAttribute('class', 'yelda_assistant_img default')
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
@@ -107,6 +137,19 @@ class YeldaChat {
   }
 
   /**
+   * Add the assistantImage to the webChatContainer
+   * Or update the webChatContainer element if the image is already added (bubbleContainerChildId param)
+   */
+  addAssistantImageToWebChatContainer() {
+    if (this.bubbleContainer) {
+      this.webChatContainer = this.assistantImage.parentElement
+      return
+    }
+
+    this.webChatContainer.appendChild(this.assistantImage)
+  }
+
+  /**
    * Update assistantImage with assistant settings from backend if any
    */
   updateAssistantImageWithAssistantSettings() {
@@ -115,7 +158,7 @@ class YeldaChat {
     }
 
     if (!this.webchatSettings) {
-      this.webChatContainer.appendChild(this.assistantImage)
+      this.addAssistantImageToWebChatContainer()
       return
     }
 
@@ -142,7 +185,7 @@ class YeldaChat {
     }
 
     if (!hasCustomStyle || !customImage) {
-      this.webChatContainer.appendChild(this.assistantImage)
+      this.addAssistantImageToWebChatContainer()
       return
     }
 
@@ -156,7 +199,7 @@ class YeldaChat {
     this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
     this.assistantImage.classList.add('custom')
 
-    this.webChatContainer.appendChild(this.assistantImage)
+    this.addAssistantImageToWebChatContainer()
   }
 
   /**
@@ -538,6 +581,11 @@ class YeldaChat {
 
     // default container
     this.parentContainer = document.body
+    this.bubbleContainer = null
+
+    if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
+      this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement
+    }
 
     // If parentContainerId presents and valid one, set parentContainer
     if (data.parentContainerId && document.getElementById(data.parentContainerId)) {
@@ -693,6 +741,7 @@ class YeldaChat {
     // because the assistant image containing the openChat event wouldn't have been created
     if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
       this.addAssistantImage()
+      this.addAssistantBubbleText()
     }
 
     // add the frame lister to receive message from iframe to the parent
@@ -727,6 +776,7 @@ class YeldaChat {
       }
     }
 
+    this.assistantBubbleText = null
     this.assistantImage = null
     this.iframeContainer = null
     this.webChatIframe = null
