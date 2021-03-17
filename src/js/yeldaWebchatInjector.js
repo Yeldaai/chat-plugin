@@ -15,7 +15,7 @@ class YeldaChat {
    * @param {String} key
    * @param {String} value
    */
-  updateQueryStringParameter (uri, key, value) {
+  updateQueryStringParameter(uri, key, value) {
     const re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i')
     const separator = uri.indexOf('?') !== -1 ? '&' : '?'
 
@@ -59,8 +59,8 @@ class YeldaChat {
   /**
    * Create webChatContainer, which is the main div containing image and webchat elements
    * and add it to the DOM
-  */
-  createContainer () {
+   */
+  createContainer() {
     // If the parentContainer (document.body) not loaded then do not proceed
     if (!this.parentContainer) {
       return null
@@ -81,9 +81,9 @@ class YeldaChat {
   }
 
   /**
-  * Create assistantImage element and add it to webChatContainer element
-  */
-  addAssistantImage () {
+   * Create assistantImage element and add it to webChatContainer element
+   */
+  addAssistantImage() {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementById('yelda_container')
     }
@@ -108,13 +108,13 @@ class YeldaChat {
 
   /**
    * Update assistantImage with assistant settings from backend if any
-  */
+   */
   updateAssistantImageWithAssistantSettings() {
     if (!this.webChatContainer) {
       return
     }
 
-    if (!this.webchatSettings ) {
+    if (!this.webchatSettings) {
       this.webChatContainer.appendChild(this.assistantImage)
       return
     }
@@ -165,8 +165,8 @@ class YeldaChat {
    * @param {String} assistantId assistant id
    * @param {String} assistantSlug assistant slug
    * @return {String} url
-  */
-  createWebChatURL (data) {
+   */
+  createWebChatURL(data) {
     let url = data.chatUrl
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
@@ -189,7 +189,7 @@ class YeldaChat {
     }
 
     if (data.isStartBtn) {
-      url = this.updateQueryStringParameter(url, 'isStartBtn', (data.isAdmin && data.isStartBtn))
+      url = this.updateQueryStringParameter(url, 'isStartBtn', data.isAdmin && data.isStartBtn)
     }
 
     if (data.isDemo) {
@@ -210,9 +210,8 @@ class YeldaChat {
    * @param {Boolean} data.isStartBtn
    * @param {Boolean} data.canBeClosed
    * @return {Element} iframe HTML element
-  */
-
-  createWebChatFrame (url, data) {
+   */
+  createWebChatFrame(url, data) {
     if (!this.webChatContainer) {
       this.webChatContainer = document.getElementsByClassName('yelda_container')[0]
     }
@@ -230,15 +229,15 @@ class YeldaChat {
         classList += ' inner'
       }
 
-        /**
-         * add CSS class which controls the opacity of the frame container if the iframe:
-         * - should be opened on load OR has a start button
-         * - cannot be closed (canBeClosed explicitely set to false)
-         *
-         * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
-         * Otherwise,
-         */
-      if ((data.shouldBeOpened || data.isStartBtn) && (data.hasOwnProperty('canBeClosed') && !data.canBeClosed)) {
+      /**
+       * add CSS class which controls the opacity of the frame container if the iframe:
+       * - should be opened on load OR has a start button
+       * - cannot be closed (canBeClosed explicitely set to false)
+       *
+       * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
+       * Otherwise,
+       */
+      if ((data.shouldBeOpened || data.isStartBtn) && data.hasOwnProperty('canBeClosed') && !data.canBeClosed) {
         classList += ' y_active'
       } else {
         /**
@@ -277,7 +276,7 @@ class YeldaChat {
    * Format object with social media shareUrl
    * @param {String} shareUrl url to share
    * @return {Object} shareUrl properties { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
-  */
+   */
   getSharedUrlProperties(shareURL) {
     return {
       facebookShareUrl: shareURL,
@@ -290,12 +289,12 @@ class YeldaChat {
    * Get Image related properties for lightGallery
    * @param {String} mediaSource image url
    * @return {Object} object of image needed properties {src, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
-  */
+   */
   getImageProperties(mediaSource) {
     return {
       src: mediaSource,
       href: mediaSource,
-      ...this.getSharedUrlProperties(mediaSource)  // { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
+      ...this.getSharedUrlProperties(mediaSource) // { facebookShareUrl, twitterShareUrl, pinterestShareUrl }
     }
   }
 
@@ -307,7 +306,7 @@ class YeldaChat {
    * @return {Object} object of video needed properties {html, href, facebookShareUrl, twitterShareUrl, pinterestShareUrl }
    */
   getVideoProperties(mediaSource) {
-    const videoSources =  mediaSource.urls.reduce((acc, url) => {
+    const videoSources = mediaSource.urls.reduce((acc, url) => {
       return `${acc}<source src="${url}"></source>`
     }, '')
 
@@ -326,7 +325,7 @@ class YeldaChat {
    * handles also the chat bubble style
    * @param {event} event
    */
-  messageListener (event) {
+  messageListener(event) {
     if (event.data === 'closeChat' || event.message === 'closeChat') {
       this.closeChat()
       return
@@ -354,7 +353,7 @@ class YeldaChat {
      */
     if (event.data && event.data.event && event.data.event === 'isSendingMessage') {
       if (event.data.hasOwnProperty('data')) {
-        window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }) )
+        window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }))
       }
       return
     }
@@ -388,7 +387,6 @@ class YeldaChat {
         mediaDetails = this.getImageProperties(mediaSource)
       }
 
-
       return {
         tweetText: '', // Empty string used to avoid undefined message showed in the twitter share window
         pinterestText: '',
@@ -398,7 +396,7 @@ class YeldaChat {
 
     // Open Light gallery
     window.lightGallery(lightgalleryContainer, {
-      googlePlus: false, //Don't show the googlePlus share button
+      googlePlus: false, // Don't show the googlePlus share button
       dynamic: true,
       dynamicEl: dynamicElements,
       index: data.index || 0 // Opens directly the clicked image/video or the first element in gallery
@@ -429,7 +427,7 @@ class YeldaChat {
   /**
    * Open the webchat window
    */
-  openChat () {
+  openChat() {
     const assistantImgElement = document.getElementById('yelda_assistant_img')
     if (assistantImgElement !== null) {
       assistantImgElement.style.display = 'none'
@@ -450,7 +448,7 @@ class YeldaChat {
    *
    * @param {Boolean} remove - If we are removing the event listener
    */
-  toggleFrameListener (remove = false) {
+  toggleFrameListener(remove = false) {
     const isOldIEVersion = !window.addEventListener
 
     const addEventMethod = isOldIEVersion ? 'attachEvent' : 'addEventListener'
@@ -466,9 +464,8 @@ class YeldaChat {
   /**
    * Load CSS asynchroneously
    * @param {String} origin to retrive css
-  */
-
-  loadCssAsync (origin) {
+   */
+  loadCssAsync(origin) {
     const head = document.getElementsByTagName('head')[0]
     const yeldaCss = document.createElement('link')
     yeldaCss.rel = 'stylesheet'
@@ -482,8 +479,8 @@ class YeldaChat {
   /**
    * Gererate webchatURL and create webchatIframe
    * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
-  */
-  setUpChatIFrame (data) {
+   */
+  setUpChatIFrame(data) {
     const webchatUrl = this.createWebChatURL(data)
     this.webChatIframe = this.createWebChatFrame(webchatUrl, data)
   }
@@ -493,8 +490,8 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.chatPath }
    * @param {Element} container webchat container
    * @returns {Promise}
-  */
-  resetChat (data) {
+   */
+  resetChat(data) {
     return new Promise(async resolve => {
       this.unLoadChat()
       await this.setupChat(data)
@@ -506,8 +503,8 @@ class YeldaChat {
    * Set default value for data object used for multiple init functions
    * @param {Object} data { data.assistantUrl, data.chatPath }
    * @param {Object} data
-  */
-  formatData (data) {
+   */
+  formatData(data) {
     const assistantUrl = data.assistantUrl || 'https://app.yelda.ai'
     const chatPath = data.chatPath || ''
 
@@ -515,8 +512,8 @@ class YeldaChat {
       Formatting the url to remove trailing slash
       This avoids problems with missing or duplicating slashes when composing other urls with them
     */
-    data.assistantUrl = assistantUrl.replace(/\/$/,'')
-    data.chatPath = chatPath.replace(/^\//,'')
+    data.assistantUrl = assistantUrl.replace(/\/$/, '')
+    data.chatPath = chatPath.replace(/^\//, '')
     data.chatUrl = `${data.assistantUrl}/${data.chatPath}`
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
@@ -553,28 +550,26 @@ class YeldaChat {
     return data
   }
 
-  isStyleSheetLoaded () {
+  isStyleSheetLoaded() {
     const sheets = document.styleSheets
     let isFound = false
     const cssSelector = '.yelda_assistant_img' // Used to check style sheet loaded or not
 
-    if (typeof sheets != 'undefined' && sheets.length) {
-      sheetsLoop:
-      for (let i = 0; i < sheets.length; i++) {
-        const sheet = document.styleSheets[i];
+    if (typeof sheets !== 'undefined' && sheets.length) {
+      sheetsLoop: for (let i = 0; i < sheets.length; i++) {
+        const sheet = document.styleSheets[i]
 
         try {
           const rules = sheet.cssRules
-          if (typeof rules != 'undefined') {
+          if (typeof rules !== 'undefined') {
             for (let j = 0; j < rules.length; j++) {
-              if (typeof rules[j].selectorText != 'undefined' && rules[j].selectorText === cssSelector) {
+              if (typeof rules[j].selectorText !== 'undefined' && rules[j].selectorText === cssSelector) {
                 isFound = true
                 break sheetsLoop
               }
             }
           }
-        }
-        catch (e) {
+        } catch (e) {
           continue
         }
       }
@@ -583,29 +578,29 @@ class YeldaChat {
     return isFound
   }
 
-
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} data { data.assistantUrl, data.assistantId }
    * @return {Promise}
-  */
+   */
   getAssistantSettings(data) {
     return new Promise((resolve, reject) => {
       try {
-        const xhr = new XMLHttpRequest();
-        const url= `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+        const xhr = new XMLHttpRequest()
+        const url = `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
 
-        xhr.open("GET", url);
-        xhr.send();
+        xhr.open('GET', url)
+        xhr.send()
 
         // Bind and call are necessary to pass the "this" to the callback function
-        xhr.onreadystatechange = (function () {
+        xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             const webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null
             resolve(webchatSettings)
           }
-        })
-      } catch (e) { // when json.parse fails or xhr onerror catch will be called
+        }
+      } catch (e) {
+        // when json.parse fails or xhr onerror catch will be called
         reject()
       }
     })
@@ -614,9 +609,9 @@ class YeldaChat {
   /**
    * Initialize the chat window
    * @param {object} data
-  */
-  setupChat (data) {
-    return new Promise(async (resolve) => {
+   */
+  setupChat(data) {
+    return new Promise(async resolve => {
       this.webChatContainer = null
       this.iframeContainer = null
       this.webChatIframe = null
@@ -625,17 +620,14 @@ class YeldaChat {
       // Format the data with default values if not exists
       data = this.formatData(data)
 
-      if (
-        data.assistantId === undefined ||
-        data.assistantSlug === undefined
-      ) {
+      if (data.assistantId === undefined || data.assistantSlug === undefined) {
         return resolve()
       }
 
       // Get assistant settings from backend
       try {
         this.webchatSettings = await this.getAssistantSettings(data)
-      } catch(err) {
+      } catch (err) {
         this.webchatSettings = null
       }
 
@@ -668,7 +660,6 @@ class YeldaChat {
 
     return true
   }
-
 
   /**
    * Load the chat after getting the webchat settings if publication is enabled
@@ -711,7 +702,7 @@ class YeldaChat {
   /**
    * destroy the webchat window
    */
-  unLoadChat () {
+  unLoadChat() {
     this.toggleFrameListener(true)
 
     /**
@@ -745,7 +736,7 @@ class YeldaChat {
   }
 
   init(data) {
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       if (data.assistantId === undefined || data.assistantSlug === undefined) {
         return resolve()
       }
@@ -778,7 +769,7 @@ class YeldaChat {
 
 let yeldaChat = new YeldaChat()
 
-if (typeof window != 'undefined') {
+if (typeof window !== 'undefined') {
   window.yeldaChat = yeldaChat
 }
 
