@@ -58,7 +58,7 @@ describe('YeldaChat', () => {
       assert.typeOf(yeldaChat.init, 'function', 'init function exists')
     })
 
-    it('should set webChatContainer to if assistantId or assistantSlug are not passed', async () => {
+    it('should set webChatContainer to null if assistantId or assistantSlug are not passed', async () => {
       const mockData = {
         'locale': 'fr_FR'
       }
@@ -81,7 +81,7 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.setupChat', () => {
     describe('yeldaChat.setupChat initial checks', () => {
-      it('should set webChatContainer to if assistantId is missing', async () => {
+      it('should set webChatContainer to null if assistantId is missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
@@ -93,7 +93,7 @@ describe('YeldaChat', () => {
         expect(yeldaChat.webChatContainer).to.be.null
       })
 
-      it('should set webChatContainer to if assistantSlug is missing', async () => {
+      it('should set webChatContainer to null if assistantSlug is missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
