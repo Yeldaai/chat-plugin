@@ -457,7 +457,7 @@ class YeldaChat {
   closeChat() {
     const assistantImgElement = document.getElementById('yelda_assistant_img')
     if (assistantImgElement !== null) {
-      assistantImgElement.style.display = 'block'
+      assistantImgElement.style.display = 'inline-block'
     }
 
     const yeldaIframeContainerElement = document.getElementById('yelda_iframe_container')
