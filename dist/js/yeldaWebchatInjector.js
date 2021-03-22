@@ -1231,7 +1231,7 @@ var YeldaChat = function () {
     value: function closeChat() {
       var assistantImgElement = document.getElementById('yelda_assistant_img');
       if (assistantImgElement !== null) {
-        assistantImgElement.style.display = 'block';
+        assistantImgElement.style.display = 'inline-block';
       }
 
       var yeldaIframeContainerElement = document.getElementById('yelda_iframe_container');
@@ -1543,12 +1543,19 @@ var YeldaChat = function () {
     /**
      * Check the webchat can be loaded
      * @param {Object} webchatSettings
+     * @param {Object} data - iframe data sent from webchat window
      * @returns {Boolean}
      */
 
   }, {
     key: 'shouldChatBeLoaded',
-    value: function shouldChatBeLoaded(webchatSettings) {
+    value: function shouldChatBeLoaded(webchatSettings, data) {
+      // if bubbleContainerChildId has been set but there is no element in the DOM matching this id
+      // the chat should not be loaded
+      if (data && data.bubbleContainerChildId && (!document.getElementById(data.bubbleContainerChildId) || !document.getElementById(data.bubbleContainerChildId).parentElement)) {
+        return false;
+      }
+
       // if webchatSettings is null load the chat
       if (!webchatSettings) {
         return true;
@@ -1576,7 +1583,7 @@ var YeldaChat = function () {
   }, {
     key: 'loadChat',
     value: function loadChat(data) {
-      if (!this.shouldChatBeLoaded(this.webchatSettings)) {
+      if (!this.shouldChatBeLoaded(this.webchatSettings, data)) {
         this.unLoadChat();
         return;
       }

@@ -44,6 +44,7 @@ describe('YeldaChat', () => {
 
   global.window = window
   global.document = window.document
+  document.body.innerHTML = document.body.innerHTML + '<div><span id="bubble"></span></div>'
 
   const yeldaChat = require('../dist/js/yeldaWebchatInjector.min')
 
@@ -79,6 +80,37 @@ describe('YeldaChat', () => {
     })
   })
 
+  describe('yeldaChat.shouldChatBeLoaded', () => {
+    it('should return false if data.bubbleContainerChildId & element does not exist', () => {
+      expect(yeldaChat.shouldChatBeLoaded(null, { bubbleContainerChildId: 'test' })).to.be.false
+    })
+
+    it('should return true if webchatSettings is null & data.bubbleContainerChildId & element exists', () => {
+      expect(yeldaChat.shouldChatBeLoaded(null, { bubbleContainerChildId: 'bubble' })).to.be.true
+    })
+
+    it('should return true if webchatSettings is null & data are null', () => {
+      expect(yeldaChat.shouldChatBeLoaded(null, null)).to.be.true
+    })
+
+    it('should return true if webchatSettings.isActivated is true & data is null', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: true })).to.be.true
+    })
+
+    it('should return false if webchatSettings.isActivated is false & data is null', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: false })).to.be.false
+    })
+
+    it('should return false if webchatSettings.isActivated is true & data.bubbleContainerChildId & element does not exist', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: true }, { bubbleContainerChildId: 'test' })).to.be.false
+    })
+
+    it('should return true if webchatSettings.isActivated is true & data.bubbleContainerChildId & element exists', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: true }, { bubbleContainerChildId: 'bubble' })).to.be.true
+    })
+  })
+
+
   describe('yeldaChat.setupChat', () => {
     describe('yeldaChat.setupChat initial checks', () => {
       it('should set webChatContainer to null if assistantId is missing', async () => {
@@ -111,6 +143,32 @@ describe('YeldaChat', () => {
 
         await yeldaChat.setupChat(validMockData)
         expect(yeldaChat.webChatContainer).not.to.be.null
+      })
+
+      it('should not webChatContainer if data.bubbleContainerChildId is set & bubbleContainerChildId element does not exist', async () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
+
+        await yeldaChat.setupChat(Object.assign({ bubbleContainerChildId: 'test' }, validMockData))
+        expect(yeldaChat.webChatContainer).to.be.null
+      })
+
+      it('should not set webChatContainer & bubbleContainer if data.bubbleContainerChildId is set & bubbleContainerChildId element does not exist', async () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
+
+        await yeldaChat.setupChat(Object.assign({ bubbleContainerChildId: 'test' }, validMockData))
+        expect(yeldaChat.bubbleContainer).to.be.null
+        expect(yeldaChat.webChatContainer).to.be.null
+      })
+
+      it('should set webChatContainer & bubbleContainer if data.bubbleContainerChildId is set & bubbleContainerChildId element exists', async () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
+
+        await yeldaChat.setupChat(Object.assign({ bubbleContainerChildId: 'bubble' }, validMockData))
+        expect(yeldaChat.webChatContainer).not.to.be.null
+        expect(yeldaChat.bubbleContainer).not.to.be.null
       })
     })
 
