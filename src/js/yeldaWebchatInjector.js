@@ -687,9 +687,16 @@ class YeldaChat {
   /**
    * Check the webchat can be loaded
    * @param {Object} webchatSettings
+   * @param {Object} data - iframe data sent from webchat window
    * @returns {Boolean}
    */
-  shouldChatBeLoaded(webchatSettings) {
+  shouldChatBeLoaded(webchatSettings, data) {
+    // if bubbleContainerChildId has been set but there is no element in the DOM matching this id
+    // the chat should not be loaded
+    if (data && data.bubbleContainerChildId && (!document.getElementById(data.bubbleContainerChildId) || !document.getElementById(data.bubbleContainerChildId).parentElement)) {
+      return false
+    }
+
     // if webchatSettings is null load the chat
     if (!webchatSettings) {
       return true
@@ -714,7 +721,7 @@ class YeldaChat {
    * @param {Object} data { data.assistantUrl, data.assistantId }
    */
   loadChat(data) {
-    if (!this.shouldChatBeLoaded(this.webchatSettings)) {
+    if (!this.shouldChatBeLoaded(this.webchatSettings, data)) {
       this.unLoadChat()
       return
     }
