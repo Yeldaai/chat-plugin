@@ -343,6 +343,28 @@ describe('YeldaChat', () => {
         expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
       })
     })
+
+    describe('yeldaChat.bubbleContainer', () => {
+      before(async () => {
+        yeldaChat.unLoadChat()
+        const validMockData = {
+          'assistantSlug': 'testClient',
+          'assistantId': '12345678',
+          'chatPath': 'chat',
+          'bubbleContainerChildId': 'bubble'
+        }
+        await yeldaChat.setupChat(validMockData)
+      })
+
+      it('expect yelda_assistant_img exists in document', () => {
+        document.querySelector('#yelda_assistant_img').should.exist
+      })
+
+      it('expect bubbleContainerChildId added back to the document', () => {
+        yeldaChat.unLoadChat()
+        document.querySelector('#bubble').should.exist
+      })
+    })
   })
 
   describe('yeldaChat.resetChat', () => {

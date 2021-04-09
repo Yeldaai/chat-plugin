@@ -837,6 +837,7 @@ var YeldaChat = function () {
 
       // create assistantBubbleText element and set the text
       this.assistantBubbleText = document.createElement('span');
+      this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
       this.assistantBubbleText.innerText = this.webchatSettings.bubbleText;
 
       // Add click event to assistant text
@@ -1398,9 +1399,14 @@ var YeldaChat = function () {
       // default container
       this.parentContainer = document.body;
       this.bubbleContainer = null;
+      this.bubbleContainerClone = null;
 
       if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
         this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement;
+
+        if (this.bubbleContainer) {
+          this.bubbleContainerClone = document.getElementById(data.bubbleContainerChildId).parentElement.cloneNode(true);
+        }
       }
 
       // If parentContainerId presents and valid one, set parentContainer
@@ -1506,32 +1512,36 @@ var YeldaChat = function () {
                   return _context2.abrupt('return', resolve());
 
                 case 7:
-                  _context2.prev = 7;
-                  _context2.next = 10;
+
+                  _this3.webchatData = data;
+
+                  // Get assistant settings from backend
+                  _context2.prev = 8;
+                  _context2.next = 11;
                   return _this3.getAssistantSettings(data);
 
-                case 10:
+                case 11:
                   _this3.webchatSettings = _context2.sent;
-                  _context2.next = 16;
+                  _context2.next = 17;
                   break;
 
-                case 13:
-                  _context2.prev = 13;
-                  _context2.t0 = _context2['catch'](7);
+                case 14:
+                  _context2.prev = 14;
+                  _context2.t0 = _context2['catch'](8);
 
                   _this3.webchatSettings = null;
 
-                case 16:
+                case 17:
 
                   _this3.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 18:
+                case 19:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this3, [[7, 13]]);
+          }, _callee2, _this3, [[8, 14]]);
         }));
 
         return function (_x5) {
@@ -1626,98 +1636,77 @@ var YeldaChat = function () {
     value: function unLoadChat() {
       this.toggleFrameListener(true);
 
+      if (this.assistantImage) {
+        if (this.bubbleContainer) {
+          this.assistantImage.removeAttribute('id', 'yelda_assistant_img');
+          this.assistantImage.removeAttribute('class', 'yelda_assistant_img default');
+          this.assistantImage.removeEventListener('click', this.openChat);
+          this.assistantImage.replaceWith(this.bubbleContainerClone);
+        } else {
+          this.removeElements('yelda_assistant_img');
+        }
+      }
+
+      if (this.assistantBubbleText) {
+        this.removeElements('yelda_assistant_bubble_text');
+      }
+
+      if (this.webChatContainer) {
+        this.removeElements('yelda_container');
+      }
+
       /**
        * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
        * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
        */
       if (this.iframeContainer) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_iframe_container']")), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var element = _step.value;
-
-            element.remove();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-      }
-
-      if (this.assistantImage) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_assistant_img']")), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _element = _step2.value;
-
-            _element.remove();
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
-      }
-
-      if (this.webChatContainer) {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-          for (var _iterator3 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_container']")), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var _element2 = _step3.value;
-
-            _element2.remove();
-          }
-        } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-              _iterator3.return();
-            }
-          } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
-            }
-          }
-        }
+        this.removeElements('yelda_iframe_container');
       }
 
       this.assistantBubbleText = null;
+      this.bubbleContainerClone = null;
+      this.bubbleContainer = null;
       this.assistantImage = null;
       this.iframeContainer = null;
       this.webChatIframe = null;
       this.webChatContainer = null;
       this.parentContainer = null;
       this.webchatSettings = null;
+      this.webchatData = null;
+    }
+
+    /**
+     * Remove dom elements
+     * @param {String} id
+     */
+
+  }, {
+    key: 'removeElements',
+    value: function removeElements(id) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll('[id=\'' + id + '\']')), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var element = _step.value;
+
+          element.remove();
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
   }, {
     key: 'init',
