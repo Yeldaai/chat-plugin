@@ -1404,6 +1404,10 @@ var YeldaChat = function () {
       if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
         this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement;
 
+        /**
+         * if the bubbleContainer exists take the clone of the bubbleContainerChildId's parentElement,
+         * so that it can be restored on unLoadChat function
+         */
         if (this.bubbleContainer) {
           this.bubbleContainerClone = document.getElementById(data.bubbleContainerChildId).parentElement.cloneNode(true);
         }
@@ -1496,6 +1500,15 @@ var YeldaChat = function () {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
+                  if (!(document.getElementById('yelda_container') || document.getElementById('yelda_iframe_container'))) {
+                    _context2.next = 2;
+                    break;
+                  }
+
+                  return _context2.abrupt('return', resolve());
+
+                case 2:
+
                   _this3.webChatContainer = null;
                   _this3.iframeContainer = null;
                   _this3.webChatIframe = null;
@@ -1505,43 +1518,39 @@ var YeldaChat = function () {
                   data = _this3.formatData(data);
 
                   if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
-                    _context2.next = 7;
+                    _context2.next = 9;
                     break;
                   }
 
                   return _context2.abrupt('return', resolve());
 
-                case 7:
-
-                  _this3.webchatData = data;
-
-                  // Get assistant settings from backend
-                  _context2.prev = 8;
-                  _context2.next = 11;
+                case 9:
+                  _context2.prev = 9;
+                  _context2.next = 12;
                   return _this3.getAssistantSettings(data);
 
-                case 11:
+                case 12:
                   _this3.webchatSettings = _context2.sent;
-                  _context2.next = 17;
+                  _context2.next = 18;
                   break;
 
-                case 14:
-                  _context2.prev = 14;
-                  _context2.t0 = _context2['catch'](8);
+                case 15:
+                  _context2.prev = 15;
+                  _context2.t0 = _context2['catch'](9);
 
                   _this3.webchatSettings = null;
 
-                case 17:
+                case 18:
 
                   _this3.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 19:
+                case 20:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this3, [[8, 14]]);
+          }, _callee2, _this3, [[9, 15]]);
         }));
 
         return function (_x5) {
@@ -1637,6 +1646,7 @@ var YeldaChat = function () {
       this.toggleFrameListener(true);
 
       if (this.assistantImage) {
+        // If bubbleContainer exists instead of removing the assistantImage dom, replace with the original dom of bubbleContainer
         if (this.bubbleContainer) {
           this.assistantImage.removeAttribute('id', 'yelda_assistant_img');
           this.assistantImage.removeAttribute('class', 'yelda_assistant_img default');
@@ -1672,7 +1682,6 @@ var YeldaChat = function () {
       this.webChatContainer = null;
       this.parentContainer = null;
       this.webchatSettings = null;
-      this.webchatData = null;
     }
 
     /**

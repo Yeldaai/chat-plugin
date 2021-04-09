@@ -588,6 +588,10 @@ class YeldaChat {
     if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
       this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement
 
+      /**
+       * if the bubbleContainer exists take the clone of the bubbleContainerChildId's parentElement,
+       * so that it can be restored on unLoadChat function
+       */
       if (this.bubbleContainer) {
         this.bubbleContainerClone = document.getElementById(data.bubbleContainerChildId).parentElement.cloneNode(true)
       }
@@ -666,6 +670,10 @@ class YeldaChat {
    */
   setupChat(data) {
     return new Promise(async resolve => {
+      if (document.getElementById('yelda_container') || document.getElementById('yelda_iframe_container')) {
+        return resolve()
+      }
+
       this.webChatContainer = null
       this.iframeContainer = null
       this.webChatIframe = null
@@ -774,7 +782,6 @@ class YeldaChat {
         this.assistantImage.removeAttribute('class', 'yelda_assistant_img default')
         this.assistantImage.removeEventListener('click', this.openChat)
         this.assistantImage.replaceWith(this.bubbleContainerClone)
-
       } else {
         this.removeElements('yelda_assistant_img')
       }

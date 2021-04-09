@@ -357,11 +357,13 @@ describe('YeldaChat', () => {
       })
 
       it('expect yelda_assistant_img exists in document', () => {
+        expect(document.querySelector('#bubble')).to.be.null
         document.querySelector('#yelda_assistant_img').should.exist
       })
 
       it('expect bubbleContainerChildId added back to the document', () => {
         yeldaChat.unLoadChat()
+        expect(document.querySelector('#yelda_assistant_img')).to.be.null
         document.querySelector('#bubble').should.exist
       })
     })
