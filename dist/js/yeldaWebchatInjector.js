@@ -684,39 +684,36 @@ module.exports = __webpack_require__("u938");
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("FyfS");
-/* harmony import */ var babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("14Xm");
-/* harmony import */ var babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("D3Ub");
-/* harmony import */ var babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("4d7F");
-/* harmony import */ var babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("QbLZ");
-/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("iCc5");
-/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("V7oC");
-/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("c39r");
-/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("xsZ3");
-/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(mobile_detect__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("RolN");
-/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("yu08");
-/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("+KpT");
-/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lg_zoom_js__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("5vGx");
-/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lg_video_js__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("Wdqn");
-/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lg_share_js__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("fb6B");
-/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__("8SHQ");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_config__WEBPACK_IMPORTED_MODULE_15__);
-
+/* harmony import */ var babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("14Xm");
+/* harmony import */ var babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("D3Ub");
+/* harmony import */ var babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("4d7F");
+/* harmony import */ var babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("QbLZ");
+/* harmony import */ var babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("iCc5");
+/* harmony import */ var babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("V7oC");
+/* harmony import */ var babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("c39r");
+/* harmony import */ var _css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_css_yeldaWebchatInjector_css__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("xsZ3");
+/* harmony import */ var mobile_detect__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(mobile_detect__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("RolN");
+/* harmony import */ var lightgallery_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("yu08");
+/* harmony import */ var lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lg_fullscreen_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("+KpT");
+/* harmony import */ var lg_zoom_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lg_zoom_js__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("5vGx");
+/* harmony import */ var lg_video_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lg_video_js__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("Wdqn");
+/* harmony import */ var lg_share_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lg_share_js__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("fb6B");
+/* harmony import */ var lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lightgallery_js_dist_css_lightgallery_css__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("8SHQ");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_config__WEBPACK_IMPORTED_MODULE_14__);
 
 
 
@@ -735,10 +732,10 @@ __webpack_require__.r(__webpack_exports__);
 
 var YeldaChat = function () {
   function YeldaChat() {
-    babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default()(this, YeldaChat);
+    babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default()(this, YeldaChat);
   }
 
-  babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default()(YeldaChat, [{
+  babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(YeldaChat, [{
     key: 'updateQueryStringParameter',
 
     /**
@@ -837,6 +834,7 @@ var YeldaChat = function () {
 
       // create assistantBubbleText element and set the text
       this.assistantBubbleText = document.createElement('span');
+      this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
       this.assistantBubbleText.innerText = this.webchatSettings.bubbleText;
 
       // Add click event to assistant text
@@ -944,7 +942,7 @@ var YeldaChat = function () {
       }
 
       // If the device is mobile and mobile image url exists then use it
-      var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_8___default.a(navigator.userAgent);
+      var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_7___default.a(navigator.userAgent);
       var image = md.mobile() !== null && this.webchatSettings.mobileImage && this.webchatSettings.mobileImage.url ? this.webchatSettings.mobileImage.url : customImage;
 
       this.assistantImage.classList.remove('default', 'custom');
@@ -994,8 +992,8 @@ var YeldaChat = function () {
         url = this.updateQueryStringParameter(url, 'isDemo', data.isDemo);
       }
 
-      if (data.hasOwnProperty(_config__WEBPACK_IMPORTED_MODULE_15___default.a.YELDA_PARAMETER)) {
-        url = this.updateQueryStringParameter(url, _config__WEBPACK_IMPORTED_MODULE_15___default.a.YELDA_PARAMETER, data[_config__WEBPACK_IMPORTED_MODULE_15___default.a.YELDA_PARAMETER]);
+      if (data.hasOwnProperty(_config__WEBPACK_IMPORTED_MODULE_14___default.a.YELDA_PARAMETER)) {
+        url = this.updateQueryStringParameter(url, _config__WEBPACK_IMPORTED_MODULE_14___default.a.YELDA_PARAMETER, data[_config__WEBPACK_IMPORTED_MODULE_14___default.a.YELDA_PARAMETER]);
       }
 
       return url;
@@ -1098,7 +1096,7 @@ var YeldaChat = function () {
   }, {
     key: 'getImageProperties',
     value: function getImageProperties(mediaSource) {
-      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4___default()({
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3___default()({
         src: mediaSource,
         href: mediaSource
       }, this.getSharedUrlProperties(mediaSource));
@@ -1119,7 +1117,7 @@ var YeldaChat = function () {
         return acc + '<source src="' + url + '"></source>';
       }, '');
 
-      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4___default()({
+      return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3___default()({
         html: '<video class="lg-video-object lg-html5" controls="true" preload="none">' + videoSources + '</video>',
         href: mediaSource.urls[0]
       }, mediaSource.cover && {
@@ -1202,7 +1200,7 @@ var YeldaChat = function () {
           mediaDetails = _this.getImageProperties(mediaSource);
         }
 
-        return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_4___default()({
+        return babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_3___default()({
           tweetText: '', // Empty string used to avoid undefined message showed in the twitter share window
           pinterestText: ''
         }, mediaDetails);
@@ -1328,9 +1326,9 @@ var YeldaChat = function () {
     value: function resetChat(data) {
       var _this2 = this;
 
-      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
-        var _ref = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee(resolve) {
-          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee$(_context) {
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
+        var _ref = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
@@ -1385,10 +1383,10 @@ var YeldaChat = function () {
       }
 
       // Check if the YELDA_PARAMETER(yparam) parameter exists in the url then add it to the data
-      var yeldaParam = this.getUrlParam(_config__WEBPACK_IMPORTED_MODULE_15___default.a.YELDA_PARAMETER, null);
+      var yeldaParam = this.getUrlParam(_config__WEBPACK_IMPORTED_MODULE_14___default.a.YELDA_PARAMETER, null);
 
       if (yeldaParam && yeldaParam !== '') {
-        data[_config__WEBPACK_IMPORTED_MODULE_15___default.a.YELDA_PARAMETER] = yeldaParam;
+        data[_config__WEBPACK_IMPORTED_MODULE_14___default.a.YELDA_PARAMETER] = yeldaParam;
       }
 
       if (data.hasOwnProperty('canBeClosed')) {
@@ -1398,9 +1396,18 @@ var YeldaChat = function () {
       // default container
       this.parentContainer = document.body;
       this.bubbleContainer = null;
+      this.bubbleContainerClone = null;
 
       if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
         this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement;
+
+        /**
+         * if the bubbleContainer exists take the clone of the bubbleContainerChildId's parentElement,
+         * so that it can be restored on unLoadChat function
+         */
+        if (this.bubbleContainer) {
+          this.bubbleContainerClone = document.getElementById(data.bubbleContainerChildId).parentElement.cloneNode(true);
+        }
       }
 
       // If parentContainerId presents and valid one, set parentContainer
@@ -1408,7 +1415,7 @@ var YeldaChat = function () {
         this.parentContainer = document.getElementById(data.parentContainerId);
         // Don't overwrite canBeClosed if it has been explicitly set in the webchat config
         // However, if canBeClosed is not provided but the parentContainerId is provided, force it to false
-        data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : _config__WEBPACK_IMPORTED_MODULE_15___default.a.CAN_BE_CLOSED_WITH_PARENT_ID;
+        data.canBeClosed = data.hasOwnProperty('canBeClosed') ? data.canBeClosed : _config__WEBPACK_IMPORTED_MODULE_14___default.a.CAN_BE_CLOSED_WITH_PARENT_ID;
       }
 
       return data;
@@ -1452,7 +1459,7 @@ var YeldaChat = function () {
   }, {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data) {
-      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function (resolve, reject) {
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function (resolve, reject) {
         try {
           var xhr = new XMLHttpRequest();
           var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
@@ -1484,12 +1491,21 @@ var YeldaChat = function () {
     value: function setupChat(data) {
       var _this3 = this;
 
-      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
-        var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee2(resolve) {
-          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee2$(_context2) {
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
+        var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
+                  if (!(document.getElementById('yelda_container') || document.getElementById('yelda_iframe_container'))) {
+                    _context2.next = 2;
+                    break;
+                  }
+
+                  return _context2.abrupt('return', resolve());
+
+                case 2:
+
                   _this3.webChatContainer = null;
                   _this3.iframeContainer = null;
                   _this3.webChatIframe = null;
@@ -1499,39 +1515,39 @@ var YeldaChat = function () {
                   data = _this3.formatData(data);
 
                   if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
-                    _context2.next = 7;
+                    _context2.next = 9;
                     break;
                   }
 
                   return _context2.abrupt('return', resolve());
 
-                case 7:
-                  _context2.prev = 7;
-                  _context2.next = 10;
+                case 9:
+                  _context2.prev = 9;
+                  _context2.next = 12;
                   return _this3.getAssistantSettings(data);
 
-                case 10:
+                case 12:
                   _this3.webchatSettings = _context2.sent;
-                  _context2.next = 16;
+                  _context2.next = 18;
                   break;
 
-                case 13:
-                  _context2.prev = 13;
-                  _context2.t0 = _context2['catch'](7);
+                case 15:
+                  _context2.prev = 15;
+                  _context2.t0 = _context2['catch'](9);
 
                   _this3.webchatSettings = null;
 
-                case 16:
+                case 18:
 
                   _this3.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 18:
+                case 20:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this3, [[7, 13]]);
+          }, _callee2, _this3, [[9, 15]]);
         }));
 
         return function (_x5) {
@@ -1563,7 +1579,7 @@ var YeldaChat = function () {
 
       // Chat should always be loaded on ALWAYS_ALLOWED_SITES list of domain
       var currentHost = window.location.hostname;
-      if (_config__WEBPACK_IMPORTED_MODULE_15___default.a.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
+      if (_config__WEBPACK_IMPORTED_MODULE_14___default.a.ALWAYS_ALLOWED_SITES_REGEX.test(currentHost)) {
         return true;
       }
 
@@ -1626,92 +1642,33 @@ var YeldaChat = function () {
     value: function unLoadChat() {
       this.toggleFrameListener(true);
 
-      /**
-       * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
-       * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
-       */
-      if (this.iframeContainer) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_iframe_container']")), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var element = _step.value;
-
-            element.remove();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+      if (this.assistantImage) {
+        // If bubbleContainer exists instead of removing the assistantImage dom, replace with the original dom of bubbleContainer
+        if (this.bubbleContainer) {
+          this.assistantImage.removeAttribute('id', 'yelda_assistant_img');
+          this.assistantImage.removeAttribute('class', 'yelda_assistant_img default');
+          this.assistantImage.removeEventListener('click', this.openChat);
+          this.assistantImage.replaceWith(this.bubbleContainerClone);
+        } else {
+          this.removeElement('yelda_assistant_img');
         }
       }
 
-      if (this.assistantImage) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+      if (this.assistantBubbleText) {
+        this.removeElement('yelda_assistant_bubble_text');
+      }
 
-        try {
-          for (var _iterator2 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_assistant_img']")), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _element = _step2.value;
-
-            _element.remove();
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
+      if (this.iframeContainer) {
+        this.removeElement('yelda_iframe_container');
       }
 
       if (this.webChatContainer) {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-          for (var _iterator3 = babel_runtime_core_js_get_iterator__WEBPACK_IMPORTED_MODULE_0___default()(document.querySelectorAll("[id='yelda_container']")), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var _element2 = _step3.value;
-
-            _element2.remove();
-          }
-        } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-              _iterator3.return();
-            }
-          } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
-            }
-          }
-        }
+        this.removeElement('yelda_container');
       }
 
       this.assistantBubbleText = null;
+      this.bubbleContainerClone = null;
+      this.bubbleContainer = null;
       this.assistantImage = null;
       this.iframeContainer = null;
       this.webChatIframe = null;
@@ -1719,14 +1676,27 @@ var YeldaChat = function () {
       this.parentContainer = null;
       this.webchatSettings = null;
     }
+
+    /**
+     * Remove element from dom
+     * @param {String} id
+     */
+
+  }, {
+    key: 'removeElement',
+    value: function removeElement(id) {
+      if (document.getElementById(id)) {
+        document.getElementById(id).remove();
+      }
+    }
   }, {
     key: 'init',
     value: function init(data) {
       var _this4 = this;
 
-      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_3___default.a(function () {
-        var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4(resolve) {
-          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
+      return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
+        var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
+          return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
             while (1) {
               switch (_context4.prev = _context4.next) {
                 case 0:
@@ -1752,8 +1722,8 @@ var YeldaChat = function () {
                 case 6:
 
                   // If the DOM is not yet ready, wait
-                  window.onload = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee3() {
-                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee3$(_context3) {
+                  window.onload = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+                    return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
                       while (1) {
                         switch (_context3.prev = _context3.next) {
                           case 0:
@@ -2443,13 +2413,6 @@ module.exports = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
 
-
-/***/ }),
-
-/***/ "FyfS":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__("Rp86"), __esModule: true };
 
 /***/ }),
 
@@ -4689,16 +4652,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "Rp86":
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__("bBy9");
-__webpack_require__("FlQf");
-module.exports = __webpack_require__("fXsU");
-
-
-/***/ }),
-
 /***/ "Rqdy":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5297,20 +5250,6 @@ module.exports = __webpack_require__("WEpk").getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
-};
-
-
-/***/ }),
-
-/***/ "fXsU":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("5K7Z");
-var get = __webpack_require__("fNZA");
-module.exports = __webpack_require__("WEpk").getIterator = function (it) {
-  var iterFn = get(it);
-  if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
-  return anObject(iterFn.call(it));
 };
 
 

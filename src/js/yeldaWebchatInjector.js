@@ -90,6 +90,7 @@ class YeldaChat {
 
     // create assistantBubbleText element and set the text
     this.assistantBubbleText = document.createElement('span')
+    this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
     this.assistantBubbleText.innerText = this.webchatSettings.bubbleText
 
     // Add click event to assistant text
@@ -582,9 +583,18 @@ class YeldaChat {
     // default container
     this.parentContainer = document.body
     this.bubbleContainer = null
+    this.bubbleContainerClone = null
 
     if (data.bubbleContainerChildId && document.getElementById(data.bubbleContainerChildId)) {
       this.bubbleContainer = document.getElementById(data.bubbleContainerChildId).parentElement
+
+      /**
+       * if the bubbleContainer exists take the clone of the bubbleContainerChildId's parentElement,
+       * so that it can be restored on unLoadChat function
+       */
+      if (this.bubbleContainer) {
+        this.bubbleContainerClone = document.getElementById(data.bubbleContainerChildId).parentElement.cloneNode(true)
+      }
     }
 
     // If parentContainerId presents and valid one, set parentContainer
@@ -660,6 +670,10 @@ class YeldaChat {
    */
   setupChat(data) {
     return new Promise(async resolve => {
+      if (document.getElementById('yelda_container') || document.getElementById('yelda_iframe_container')) {
+        return resolve()
+      }
+
       this.webChatContainer = null
       this.iframeContainer = null
       this.webChatIframe = null
@@ -761,35 +775,49 @@ class YeldaChat {
   unLoadChat() {
     this.toggleFrameListener(true)
 
-    /**
-     * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
-     * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
-     */
-    if (this.iframeContainer) {
-      for (const element of document.querySelectorAll("[id='yelda_iframe_container']")) {
-        element.remove()
+    if (this.assistantImage) {
+      // If bubbleContainer exists instead of removing the assistantImage dom, replace with the original dom of bubbleContainer
+      if (this.bubbleContainer) {
+        this.assistantImage.removeAttribute('id', 'yelda_assistant_img')
+        this.assistantImage.removeAttribute('class', 'yelda_assistant_img default')
+        this.assistantImage.removeEventListener('click', this.openChat)
+        this.assistantImage.replaceWith(this.bubbleContainerClone)
+      } else {
+        this.removeElement('yelda_assistant_img')
       }
     }
 
-    if (this.assistantImage) {
-      for (const element of document.querySelectorAll("[id='yelda_assistant_img']")) {
-        element.remove()
-      }
+    if (this.assistantBubbleText) {
+      this.removeElement('yelda_assistant_bubble_text')
+    }
+
+    if (this.iframeContainer) {
+      this.removeElement('yelda_iframe_container')
     }
 
     if (this.webChatContainer) {
-      for (const element of document.querySelectorAll("[id='yelda_container']")) {
-        element.remove()
-      }
+      this.removeElement('yelda_container')
     }
 
     this.assistantBubbleText = null
+    this.bubbleContainerClone = null
+    this.bubbleContainer = null
     this.assistantImage = null
     this.iframeContainer = null
     this.webChatIframe = null
     this.webChatContainer = null
     this.parentContainer = null
     this.webchatSettings = null
+  }
+
+  /**
+   * Remove element from dom
+   * @param {String} id
+   */
+  removeElement(id) {
+    if (document.getElementById(id)) {
+      document.getElementById(id).remove()
+    }
   }
 
   init(data) {
