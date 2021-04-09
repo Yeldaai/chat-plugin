@@ -783,24 +783,20 @@ class YeldaChat {
         this.assistantImage.removeEventListener('click', this.openChat)
         this.assistantImage.replaceWith(this.bubbleContainerClone)
       } else {
-        this.removeElements('yelda_assistant_img')
+        document.getElementById('yelda_assistant_img').remove()
       }
     }
 
     if (this.assistantBubbleText) {
-      this.removeElements('yelda_assistant_bubble_text')
+      document.getElementById('yelda_assistant_bubble_text').remove()
+    }
+
+    if (this.iframeContainer) {
+      document.getElementById('yelda_iframe_container').remove()
     }
 
     if (this.webChatContainer) {
-      this.removeElements('yelda_container')
-    }
-
-    /**
-     * If init or setupChat has been called multiple times we might end up with multiple yelda_iframe_container and yelda_container
-     * So to be sure that the destroy the webchat window completely, let's find all the matching elements and remove them all
-     */
-    if (this.iframeContainer) {
-      this.removeElements('yelda_iframe_container')
+      document.getElementById('yelda_container').remove()
     }
 
     this.assistantBubbleText = null
@@ -812,16 +808,6 @@ class YeldaChat {
     this.webChatContainer = null
     this.parentContainer = null
     this.webchatSettings = null
-  }
-
-  /**
-   * Remove dom elements
-   * @param {String} id
-   */
-  removeElements(id) {
-    for (const element of document.querySelectorAll(`[id='${id}']`)) {
-      element.remove()
-    }
   }
 
   init(data) {
