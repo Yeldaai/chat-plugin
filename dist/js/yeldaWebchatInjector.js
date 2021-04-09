@@ -1650,20 +1650,20 @@ var YeldaChat = function () {
           this.assistantImage.removeEventListener('click', this.openChat);
           this.assistantImage.replaceWith(this.bubbleContainerClone);
         } else {
-          document.getElementById('yelda_assistant_img').remove();
+          this.removeElement('yelda_assistant_img');
         }
       }
 
       if (this.assistantBubbleText) {
-        document.getElementById('yelda_assistant_bubble_text').remove();
+        this.removeElement('yelda_assistant_bubble_text');
       }
 
       if (this.iframeContainer) {
-        document.getElementById('yelda_iframe_container').remove();
+        this.removeElement('yelda_iframe_container');
       }
 
       if (this.webChatContainer) {
-        document.getElementById('yelda_container').remove();
+        this.removeElement('yelda_container');
       }
 
       this.assistantBubbleText = null;
@@ -1675,6 +1675,19 @@ var YeldaChat = function () {
       this.webChatContainer = null;
       this.parentContainer = null;
       this.webchatSettings = null;
+    }
+
+    /**
+     * Remove element from dom
+     * @param {String} id
+     */
+
+  }, {
+    key: 'removeElement',
+    value: function removeElement(id) {
+      if (document.getElementById(id)) {
+        document.getElementById(id).remove();
+      }
     }
   }, {
     key: 'init',
