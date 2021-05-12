@@ -1286,18 +1286,17 @@ var YeldaChat = function () {
 
     /**
      * Load CSS asynchroneously
-     * @param {String} origin to retrive css
      */
 
   }, {
     key: 'loadCssAsync',
-    value: function loadCssAsync(origin) {
+    value: function loadCssAsync() {
       var head = document.getElementsByTagName('head')[0];
       var yeldaCss = document.createElement('link');
       yeldaCss.rel = 'stylesheet';
       yeldaCss.type = 'text/css';
       yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = origin + '/static/css/yeldaWebchatInjector.min.css';
+      yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css';
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
@@ -1333,13 +1332,19 @@ var YeldaChat = function () {
               switch (_context.prev = _context.next) {
                 case 0:
                   _this2.unLoadChat();
-                  _context.next = 3;
+
+                  if (!data) {
+                    _context.next = 4;
+                    break;
+                  }
+
+                  _context.next = 4;
                   return _this2.setupChat(data);
 
-                case 3:
+                case 4:
                   resolve();
 
-                case 4:
+                case 5:
                 case 'end':
                   return _context.stop();
               }
@@ -1354,6 +1359,56 @@ var YeldaChat = function () {
     }
 
     /**
+      * Update data object with assistantId, assistantSlug and locale if needed
+      * @param {Object} data { data.assistantUrl, data.chatPath }
+      * @param {Object} webchatSettings webchat settings from DB
+      * @param {Object} data
+      */
+
+  }, {
+    key: 'updateAssistantData',
+    value: function updateAssistantData(data, webchatSettings) {
+      if (!data.settingId || !webchatSettings || !webchatSettings.assistantSlug) {
+        return data;
+      }
+
+      data.assistantId = webchatSettings.assistantId;
+      data.assistantSlug = webchatSettings.assistantSlug;
+      data.locale = webchatSettings.locale;
+
+      return data;
+    }
+
+    /**
+     * Return assistantUrl from param or deduced from href
+     * @param {String} assistantUrl can be undefined
+     * @param {String} href window.location.href
+     * @return {String} assistantUrl
+     */
+
+  }, {
+    key: 'setAssistantUrl',
+    value: function setAssistantUrl(assistantUrl, href) {
+      if (assistantUrl) {
+        return assistantUrl.replace(/\/$/, '');
+      }
+      var regexLocalhost = _config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.LOCALHOST;
+      var regexStaging = _config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.STAGING;
+
+      var host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.PRODUCTION;
+      var protocol = 'https://';
+
+      if (regexStaging.test(href)) {
+        host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.STAGING;
+      } else if (regexLocalhost.test(href)) {
+        host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.LOCAL;
+        protocol = 'http://';
+      }
+
+      return ('' + protocol + host).replace(/\/$/, '');
+    }
+
+    /**
      * Set default value for data object used for multiple init functions
      * @param {Object} data { data.assistantUrl, data.chatPath }
      * @param {Object} data
@@ -1362,14 +1417,13 @@ var YeldaChat = function () {
   }, {
     key: 'formatData',
     value: function formatData(data) {
-      var assistantUrl = data.assistantUrl || 'https://app.yelda.ai';
-      var chatPath = data.chatPath || '';
+      var chatPath = data.chatPath || '/chat';
 
       /*
         Formatting the url to remove trailing slash
         This avoids problems with missing or duplicating slashes when composing other urls with them
       */
-      data.assistantUrl = assistantUrl.replace(/\/$/, '');
+      data.assistantUrl = this.setAssistantUrl(data.assistantUrl, window.location.href);
       data.chatPath = chatPath.replace(/^\//, '');
       data.chatUrl = data.assistantUrl + '/' + data.chatPath;
       data.locale = data.locale || 'fr_FR';
@@ -1451,18 +1505,36 @@ var YeldaChat = function () {
     }
 
     /**
+    * return getAssistantSettings endpoint URL from data
+    * @param {Object} data { assistantUrl, assistantId, settingId }
+    * @return {String} url
+    */
+
+  }, {
+    key: 'getAssistantSettingsUrl',
+    value: function getAssistantSettingsUrl(data) {
+      if (data.settingId) {
+        return data.assistantUrl + '/assistants/settings/' + data.settingId + '/chatBubble';
+      }
+
+      return data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
+    }
+
+    /**
      * Update assistantImage with assistant settings from backend if any
-     * @param {Object} data { data.assistantUrl, data.assistantId }
+     * @param {Object} data { assistantUrl, assistantId, settingId }
      * @return {Promise}
      */
 
   }, {
     key: 'getAssistantSettings',
     value: function getAssistantSettings(data) {
+      var _this3 = this;
+
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function (resolve, reject) {
         try {
           var xhr = new XMLHttpRequest();
-          var url = data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
+          var url = _this3.getAssistantSettingsUrl(data);
 
           xhr.open('GET', url);
           xhr.send();
@@ -1489,7 +1561,7 @@ var YeldaChat = function () {
   }, {
     key: 'setupChat',
     value: function setupChat(data) {
-      var _this3 = this;
+      var _this4 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
         var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve) {
@@ -1506,15 +1578,15 @@ var YeldaChat = function () {
 
                 case 2:
 
-                  _this3.webChatContainer = null;
-                  _this3.iframeContainer = null;
-                  _this3.webChatIframe = null;
-                  _this3.webchatSettings = null;
+                  _this4.webChatContainer = null;
+                  _this4.iframeContainer = null;
+                  _this4.webChatIframe = null;
+                  _this4.webchatSettings = null;
 
                   // Format the data with default values if not exists
-                  data = _this3.formatData(data);
+                  data = _this4.formatData(data);
 
-                  if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
+                  if (!(data.settingId === undefined && (data.assistantId === undefined || data.assistantSlug === undefined))) {
                     _context2.next = 9;
                     break;
                   }
@@ -1524,30 +1596,36 @@ var YeldaChat = function () {
                 case 9:
                   _context2.prev = 9;
                   _context2.next = 12;
-                  return _this3.getAssistantSettings(data);
+                  return _this4.getAssistantSettings(data);
 
                 case 12:
-                  _this3.webchatSettings = _context2.sent;
-                  _context2.next = 18;
+                  _this4.webchatSettings = _context2.sent;
+
+
+                  // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
+                  // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
+                  data = _this4.updateAssistantData(data, _this4.webchatSettings);
+
+                  _context2.next = 19;
                   break;
 
-                case 15:
-                  _context2.prev = 15;
+                case 16:
+                  _context2.prev = 16;
                   _context2.t0 = _context2['catch'](9);
 
-                  _this3.webchatSettings = null;
+                  _this4.webchatSettings = null;
 
-                case 18:
+                case 19:
 
-                  _this3.loadChat(data);
+                  _this4.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 20:
+                case 21:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this3, [[9, 15]]);
+          }, _callee2, _this4, [[9, 16]]);
         }));
 
         return function (_x5) {
@@ -1606,7 +1684,7 @@ var YeldaChat = function () {
 
       // Load Async css only if style sheet not found
       if (!this.isStyleSheetLoaded()) {
-        this.loadCssAsync(data.assistantUrl);
+        this.loadCssAsync();
       }
 
       if (!document.body || !this.parentContainer) {
@@ -1692,7 +1770,7 @@ var YeldaChat = function () {
   }, {
     key: 'init',
     value: function init(data) {
-      var _this4 = this;
+      var _this5 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
         var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
@@ -1700,7 +1778,7 @@ var YeldaChat = function () {
             while (1) {
               switch (_context4.prev = _context4.next) {
                 case 0:
-                  if (!(data.assistantId === undefined || data.assistantSlug === undefined)) {
+                  if (!(data.settingId === undefined && (data.assistantId === undefined || data.assistantSlug === undefined))) {
                     _context4.next = 2;
                     break;
                   }
@@ -1714,7 +1792,7 @@ var YeldaChat = function () {
                   }
 
                   _context4.next = 5;
-                  return _this4.setupChat(data);
+                  return _this5.setupChat(data);
 
                 case 5:
                   return _context4.abrupt('return', resolve());
@@ -1728,7 +1806,7 @@ var YeldaChat = function () {
                         switch (_context3.prev = _context3.next) {
                           case 0:
                             _context3.next = 2;
-                            return _this4.setupChat(data);
+                            return _this5.setupChat(data);
 
                           case 2:
                             return _context3.abrupt('return', resolve());
@@ -1738,7 +1816,7 @@ var YeldaChat = function () {
                             return _context3.stop();
                         }
                       }
-                    }, _callee3, _this4);
+                    }, _callee3, _this5);
                   }));
 
                 case 7:
@@ -1746,7 +1824,7 @@ var YeldaChat = function () {
                   return _context4.stop();
               }
             }
-          }, _callee4, _this4);
+          }, _callee4, _this5);
         }));
 
         return function (_x6) {
@@ -1890,8 +1968,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N;
- * @license GPLv3
+ * Copyright (c) 2016 Sachin N; 
+ * @license GPLv3 
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2159,11 +2237,12 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-            var firstImage = this.core.items[index].querySelector('img');
+        }
 
-            if (firstImage) {
-                videoTitle = videoTitle || firstImage.getAttribute('alt');
-            }
+        var firstImage = this.core.items[index].querySelector('img');
+
+        if (firstImage) {
+            videoTitle = videoTitle || firstImage.getAttribute('alt');
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
@@ -2257,7 +2336,16 @@ module.exports = {
   CAN_BE_CLOSED_WITH_PARENT_ID: false,
   YELDA_PARAMETER: 'yparam',
   DEFAULT_PUBLICATION_STATUS: true,
-  ALWAYS_ALLOWED_SITES_REGEX: /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/
+  ALWAYS_ALLOWED_SITES_REGEX: /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/,
+  REGEX_HOST: {
+    STAGING: /staging.yelda.ai/,
+    LOCALHOST: /localhost*(:[0-9]+)?\/|file:/
+  },
+  HOST: {
+    PRODUCTION: 'app.yelda.ai',
+    STAGING: 'staging.yelda.ai',
+    LOCAL: 'localhost:8080'
+  }
 };
 
 /***/ }),

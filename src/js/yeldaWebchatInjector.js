@@ -507,15 +507,14 @@ class YeldaChat {
 
   /**
    * Load CSS asynchroneously
-   * @param {String} origin to retrive css
    */
-  loadCssAsync(origin) {
+  loadCssAsync() {
     const head = document.getElementsByTagName('head')[0]
     const yeldaCss = document.createElement('link')
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = origin + '/static/css/yeldaWebchatInjector.min.css'
+    yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css'
     yeldaCss.media = 'all'
     head.appendChild(yeldaCss)
   }
@@ -538,9 +537,56 @@ class YeldaChat {
   resetChat(data) {
     return new Promise(async resolve => {
       this.unLoadChat()
-      await this.setupChat(data)
+
+      if (data) {
+        await this.setupChat(data)
+      }
       resolve()
     })
+  }
+
+ /**
+   * Update data object with assistantId, assistantSlug and locale if needed
+   * @param {Object} data { data.assistantUrl, data.chatPath }
+   * @param {Object} webchatSettings webchat settings from DB
+   * @param {Object} data
+   */
+  updateAssistantData(data, webchatSettings) {
+    if (!data.settingId || !webchatSettings || !webchatSettings.assistantSlug) {
+      return data
+    }
+
+    data.assistantId = webchatSettings.assistantId
+    data.assistantSlug = webchatSettings.assistantSlug
+    data.locale = webchatSettings.locale
+
+    return data
+  }
+
+  /**
+   * Return assistantUrl from param or deduced from href
+   * @param {String} assistantUrl can be undefined
+   * @param {String} href window.location.href
+   * @return {String} assistantUrl
+   */
+  setAssistantUrl(assistantUrl, href) {
+    if (assistantUrl) {
+      return assistantUrl.replace(/\/$/, '')
+    }
+    const regexLocalhost = config.REGEX_HOST.LOCALHOST
+    const regexStaging = config.REGEX_HOST.STAGING
+
+    let host = config.HOST.PRODUCTION
+    let protocol = 'https://'
+
+    if (regexStaging.test(href)) {
+      host = config.HOST.STAGING
+    } else if (regexLocalhost.test(href)) {
+      host = config.HOST.LOCAL
+      protocol = 'http://'
+    }
+
+    return `${protocol}${host}`.replace(/\/$/, '')
   }
 
   /**
@@ -549,14 +595,13 @@ class YeldaChat {
    * @param {Object} data
    */
   formatData(data) {
-    const assistantUrl = data.assistantUrl || 'https://app.yelda.ai'
-    const chatPath = data.chatPath || ''
+    const chatPath = data.chatPath || '/chat'
 
     /*
       Formatting the url to remove trailing slash
       This avoids problems with missing or duplicating slashes when composing other urls with them
     */
-    data.assistantUrl = assistantUrl.replace(/\/$/, '')
+    data.assistantUrl = this.setAssistantUrl(data.assistantUrl, window.location.href)
     data.chatPath = chatPath.replace(/^\//, '')
     data.chatUrl = `${data.assistantUrl}/${data.chatPath}`
     data.locale = data.locale || 'fr_FR'
@@ -636,16 +681,29 @@ class YeldaChat {
     return isFound
   }
 
+   /**
+   * return getAssistantSettings endpoint URL from data
+   * @param {Object} data { assistantUrl, assistantId, settingId }
+   * @return {String} url
+   */
+  getAssistantSettingsUrl(data) {
+    if(data.settingId) {
+      return  `${data.assistantUrl}/assistants/settings/${data.settingId}/chatBubble`
+    }
+
+    return  `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+  }
+
   /**
    * Update assistantImage with assistant settings from backend if any
-   * @param {Object} data { data.assistantUrl, data.assistantId }
+   * @param {Object} data { assistantUrl, assistantId, settingId }
    * @return {Promise}
    */
   getAssistantSettings(data) {
     return new Promise((resolve, reject) => {
       try {
         const xhr = new XMLHttpRequest()
-        const url = `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+        const url = this.getAssistantSettingsUrl(data)
 
         xhr.open('GET', url)
         xhr.send()
@@ -682,13 +740,18 @@ class YeldaChat {
       // Format the data with default values if not exists
       data = this.formatData(data)
 
-      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+      if (data.settingId === undefined && (data.assistantId === undefined || data.assistantSlug === undefined)) {
         return resolve()
       }
 
       // Get assistant settings from backend
       try {
         this.webchatSettings = await this.getAssistantSettings(data)
+
+        // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
+        // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
+        data = this.updateAssistantData(data, this.webchatSettings)
+
       } catch (err) {
         this.webchatSettings = null
       }
@@ -742,7 +805,7 @@ class YeldaChat {
 
     // Load Async css only if style sheet not found
     if (!this.isStyleSheetLoaded()) {
-      this.loadCssAsync(data.assistantUrl)
+      this.loadCssAsync()
     }
 
     if (!document.body || !this.parentContainer) {
@@ -822,7 +885,7 @@ class YeldaChat {
 
   init(data) {
     return new Promise(async resolve => {
-      if (data.assistantId === undefined || data.assistantSlug === undefined) {
+      if (data.settingId === undefined && (data.assistantId === undefined || data.assistantSlug === undefined)) {
         return resolve()
       }
 

@@ -6,11 +6,21 @@ Yelda Website Chat Plugin is a library that enables your website to load [yelda.
 
 ![Demo](https://github.com/Yeldaai/chat-plugin/blob/master/screencast-yelda.gif?raw=true "Demo")
 
-## Load the scripts
+## Usage - From Yelda website
 
-You can load the scripts from yelda-webchat NPM package or from yelda website
+Each time a new package version is published, we also update static minified version on Yelda.
+```html
+<script
+  type="text/javascript"
+  src="https://yelda-webchat.s3.eu-west-3.amazonaws.com/js/yeldaWebchatInjector.min.js"
+></script>
 
-## With Node Packages Manager
+<script>
+  yeldaChat.init({settingId: xxxx}) // settingId available on your Yelda Platform > Webchat page
+</script>
+```
+
+## Usage - From  Node Packages Manager
 
 **System requirements**
 Node.JS 8+
@@ -44,31 +54,21 @@ Or add the `<script>` in the `<body>`, and the `<link>` in the `<head>` tags
   type="text/javascript"
   src="/node_modules/yelda/dist/js/yeldaWebchatInjector.min.js"
 ></script>
+
+<script>
+  yeldaChat.init({settingId: xxxx}) // settingId available on your Yelda Platform > Webchat page
+</script>
 ```
 
-## From Yelda website
+if you don't provide the css, the latest yelda version will be automatically loaded asynchroneously by the library
 
-Each time a new package version is published, we also update static minified version on Yelda.
-You can directly load these files with classic script and link tags as explained above
-
-```html
-<link
-  type="text/css"
-  rel="stylesheet"
-  href="https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css"
-/>
-<script
-  type="text/javascript"
-  src="https://yelda-webchat.s3.eu-west-3.amazonaws.com/js/yeldaWebchatInjector.min.js"
-></script>
-```
-
-Using NPM give you the ownership on the Yelda plugin updates. For example you might want to test it in a preprod version to ensure that a CSS change would not affect your stylesheet (each new version is carefully tested, but you might want to check it yourself 😉)
-Loading direct link from Yelda ensure to always use the latest version in production without redeploying your website assets (but it might require users to clear their cache)
+## Usage - downloaded
 
 We don't advise you to download a local version without using the NPM package : you might miss an important update.
 
-## Init the library
+--------------
+
+## Expert custom initialization without settingId
 
 Initialize the lib with the Yelda provided elements
 
@@ -104,7 +104,7 @@ yeldaChat.init({
 });
 ```
 
-To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)
+To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)`
 
 ## Issues and Feature Requests
 
