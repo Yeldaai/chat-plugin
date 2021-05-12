@@ -54,12 +54,88 @@ describe('YeldaChat', () => {
     done()
   })
 
+  describe('yeldaChat.setAssistantUrl', () => {
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.setAssistantUrl, 'function', 'init function exists')
+    })
+
+    it('should return assistantUrl if provided', () => {
+      var url = 'https://staging.yelda.ai/a7932/yelda/assistantSettings/passthrough'
+      expect(yeldaChat.setAssistantUrl(url)).to.deep.equal(url)
+      expect(yeldaChat.setAssistantUrl(url, url)).to.deep.equal(url)
+    })
+
+    it('should return https://staging.yelda.ai for https://staging.yelda.ai... href if assistantUrl is null', () => {
+      var url = 'https://staging.yelda.ai/a7932/yelda/assistantSettings/passthrough'
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://staging.yelda.ai')
+    })
+
+    it('should return http://localhost:8080 for http://localhost:8080... href if assistantUrl is null', () => {
+      var url = 'http://localhost:8080/a7932/yelda/assistantSettings/passthrough'
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('http://localhost:8080')
+    })
+
+    it('should return http://localhost:8080 for file://... href if assistantUrl is null', () => {
+      var url = 'file:///var/www/yelda/chat-plugin/test/index.html'
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('http://localhost:8080')
+    })
+
+    it('should return https://staging.yelda.ai for any other href if assistantUrl is null', () => {
+      var url = 'https://app.yelda.ai/a7932/yelda/assistantSettings/passthrough'
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://app.yelda.ai')
+      url = 'https:/viving.fr/brest/'
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://app.yelda.ai')
+    })
+
+    it('should return https://app.yelda.ai if href and assistantUrl are null or undefined', () => {
+      expect(yeldaChat.setAssistantUrl(null)).to.deep.equal('https://app.yelda.ai')
+      expect(yeldaChat.setAssistantUrl(undefined)).to.deep.equal('https://app.yelda.ai')
+      expect(yeldaChat.setAssistantUrl(undefined, undefined)).to.deep.equal('https://app.yelda.ai')
+      expect(yeldaChat.setAssistantUrl(null, null)).to.deep.equal('https://app.yelda.ai')
+    })
+  })
+
+  describe('yeldaChat.updateAssistantData', () => {
+    var webchatSettings = {
+      assistantId : '1',
+      assistantSlug: 'slug',
+      locale: 'fr_FR'
+    }
+
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.updateAssistantData, 'function', 'init function exists')
+    })
+
+    it('should return data if no webchatSettings', () => {
+      var data = {truc: 'truc'}
+      expect(yeldaChat.updateAssistantData(data)).to.deep.equal(data)
+    })
+
+    it('should return data if no data.settingId', () => {
+      var data = {truc: 'truc'}
+      expect(yeldaChat.updateAssistantData(data, webchatSettings)).to.deep.equal(data)
+    })
+
+    it('should return data with webchatSettings assistantId, assistantSlug, locale if data.settingId', () => {
+      var data = {truc: 'truc', settingId: 'x'}
+      var res = {
+        truc: 'truc',
+        settingId: 'x',
+        assistantId : '1',
+        assistantSlug: 'slug',
+        locale: 'fr_FR'
+      }
+      expect(yeldaChat.updateAssistantData(data, webchatSettings)).to.deep.equal(res)
+    })
+
+  })
+
   describe('yeldaChat.init', () => {
     it('should return typeof function', () => {
       assert.typeOf(yeldaChat.init, 'function', 'init function exists')
     })
 
-    it('should set webChatContainer to null if assistantId or assistantSlug are not passed', async () => {
+    it('should set webChatContainer to null if !settingId && assistantId or assistantSlug are not passed', async () => {
       const mockData = {
         'locale': 'fr_FR'
       }
@@ -67,6 +143,15 @@ describe('YeldaChat', () => {
       yeldaChat.unLoadChat()
       await yeldaChat.init(mockData)
       expect(yeldaChat.webChatContainer).to.be.null
+    })
+
+    it('should create webChatContainer DOM element if settingId data is passed', async () => {
+      const mockData = {
+        'settingId': '600060987bcdfb0fe914808b',
+      }
+      yeldaChat.unLoadChat()
+      await yeldaChat.init(mockData)
+      expect(yeldaChat.webChatContainer).not.to.be.null
     })
 
     it('should create webChatContainer DOM element if required data are passed', async () => {
@@ -113,7 +198,7 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.setupChat', () => {
     describe('yeldaChat.setupChat initial checks', () => {
-      it('should set webChatContainer to null if assistantId is missing', async () => {
+      it('should set webChatContainer to null if assistantId  & settingId are missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
@@ -125,7 +210,7 @@ describe('YeldaChat', () => {
         expect(yeldaChat.webChatContainer).to.be.null
       })
 
-      it('should set webChatContainer to null if assistantSlug is missing', async () => {
+      it('should set webChatContainer to null if settingId & assistantSlug are missing', async () => {
         // Reset the DOM
         yeldaChat.unLoadChat()
         const mockData = {
@@ -135,6 +220,14 @@ describe('YeldaChat', () => {
 
         await yeldaChat.setupChat(mockData)
         expect(yeldaChat.webChatContainer).to.be.null
+      })
+
+      it('should set webChatContainer if settingId data is passed', async () => {
+        // Reset the DOM
+        yeldaChat.unLoadChat()
+
+        await yeldaChat.setupChat({settingId:'600060987bcdfb0fe914808b'})
+        expect(yeldaChat.webChatContainer).not.to.be.null
       })
 
       it('should set webChatContainer if required data passed', async () => {
