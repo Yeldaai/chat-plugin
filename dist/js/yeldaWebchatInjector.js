@@ -1286,18 +1286,17 @@ var YeldaChat = function () {
 
     /**
      * Load CSS asynchroneously
-     * @param {String} origin to retrive css
      */
 
   }, {
     key: 'loadCssAsync',
-    value: function loadCssAsync(origin) {
+    value: function loadCssAsync() {
       var head = document.getElementsByTagName('head')[0];
       var yeldaCss = document.createElement('link');
       yeldaCss.rel = 'stylesheet';
       yeldaCss.type = 'text/css';
       yeldaCss.crossorigin = 'anonymous';
-      yeldaCss.href = origin + '/static/css/yeldaWebchatInjector.min.css';
+      yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css';
       yeldaCss.media = 'all';
       head.appendChild(yeldaCss);
     }
@@ -1685,7 +1684,7 @@ var YeldaChat = function () {
 
       // Load Async css only if style sheet not found
       if (!this.isStyleSheetLoaded()) {
-        this.loadCssAsync(data.assistantUrl);
+        this.loadCssAsync();
       }
 
       if (!document.body || !this.parentContainer) {

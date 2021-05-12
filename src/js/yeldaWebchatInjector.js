@@ -507,15 +507,14 @@ class YeldaChat {
 
   /**
    * Load CSS asynchroneously
-   * @param {String} origin to retrive css
    */
-  loadCssAsync(origin) {
+  loadCssAsync() {
     const head = document.getElementsByTagName('head')[0]
     const yeldaCss = document.createElement('link')
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = origin + '/static/css/yeldaWebchatInjector.min.css'
+    yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css'
     yeldaCss.media = 'all'
     head.appendChild(yeldaCss)
   }
@@ -806,7 +805,7 @@ class YeldaChat {
 
     // Load Async css only if style sheet not found
     if (!this.isStyleSheetLoaded()) {
-      this.loadCssAsync(data.assistantUrl)
+      this.loadCssAsync()
     }
 
     if (!document.body || !this.parentContainer) {
