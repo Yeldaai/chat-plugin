@@ -573,20 +573,10 @@ class YeldaChat {
     if (assistantUrl) {
       return assistantUrl.replace(/\/$/, '')
     }
-    const regexLocalhost = config.REGEX_HOST.LOCALHOST
-    const regexStaging = config.REGEX_HOST.STAGING
 
-    let host = config.HOST.PRODUCTION
-    let protocol = 'https://'
+    const host = config.REGEX_HOST.STAGING.test(href) ? config.HOST.STAGING: config.HOST.PRODUCTION
 
-    if (regexStaging.test(href)) {
-      host = config.HOST.STAGING
-    } else if (regexLocalhost.test(href)) {
-      host = config.HOST.LOCAL
-      protocol = 'http://'
-    }
-
-    return `${protocol}${host}`.replace(/\/$/, '')
+    return `https://${host}`.replace(/\/$/, '')
   }
 
   /**

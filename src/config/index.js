@@ -5,12 +5,10 @@ module.exports = {
   DEFAULT_PUBLICATION_STATUS: true,
   ALWAYS_ALLOWED_SITES_REGEX : /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/,
   REGEX_HOST: {
-    STAGING: /staging.yelda.ai/,
-    LOCALHOST: /localhost*(:[0-9]+)?\/|file:/
+    STAGING: /staging.yelda.ai/
   },
   HOST: {
     PRODUCTION: 'app.yelda.ai',
     STAGING: 'staging.yelda.ai',
-    LOCAL: 'localhost:8080'
   },
 }
