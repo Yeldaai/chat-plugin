@@ -70,14 +70,24 @@ describe('YeldaChat', () => {
       expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://staging.yelda.ai')
     })
 
-    it('should return http://localhost:8080 for http://localhost:8080... href if assistantUrl is null', () => {
+    it('should return https://app.yelda.ai for http://localhost:8080... href if assistantUrl is null', () => {
       var url = 'http://localhost:8080/a7932/yelda/assistantSettings/passthrough'
-      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('http://localhost:8080')
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://app.yelda.ai')
     })
 
-    it('should return http://localhost:8080 for file://... href if assistantUrl is null', () => {
+    it('should return http://localhost:8080 for http://localhost:8080... href if assistantUrl is http://localhost:8080', () => {
+      var url = 'http://localhost:8080/a7932/yelda/assistantSettings/passthrough'
+      expect(yeldaChat.setAssistantUrl('http://localhost:8080', url)).to.deep.equal('http://localhost:8080')
+    })
+
+    it('should return https://app.yelda.ai for file://... href if assistantUrl is null', () => {
       var url = 'file:///var/www/yelda/chat-plugin/test/index.html'
-      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('http://localhost:8080')
+      expect(yeldaChat.setAssistantUrl(null, url)).to.deep.equal('https://app.yelda.ai')
+    })
+
+    it('should return http://localhost:8080 for file://... href if assistantUrl is http://localhost:8080', () => {
+      var url = 'file:///var/www/yelda/chat-plugin/test/index.html'
+      expect(yeldaChat.setAssistantUrl('http://localhost:8080', url)).to.deep.equal('http://localhost:8080')
     })
 
     it('should return https://staging.yelda.ai for any other href if assistantUrl is null', () => {

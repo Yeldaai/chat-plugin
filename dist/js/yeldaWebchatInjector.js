@@ -1392,20 +1392,10 @@ var YeldaChat = function () {
       if (assistantUrl) {
         return assistantUrl.replace(/\/$/, '');
       }
-      var regexLocalhost = _config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.LOCALHOST;
-      var regexStaging = _config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.STAGING;
 
-      var host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.PRODUCTION;
-      var protocol = 'https://';
+      var host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.STAGING.test(href) ? _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.STAGING : _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.PRODUCTION;
 
-      if (regexStaging.test(href)) {
-        host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.STAGING;
-      } else if (regexLocalhost.test(href)) {
-        host = _config__WEBPACK_IMPORTED_MODULE_14___default.a.HOST.LOCAL;
-        protocol = 'http://';
-      }
-
-      return ('' + protocol + host).replace(/\/$/, '');
+      return ('https://' + host).replace(/\/$/, '');
     }
 
     /**
@@ -2338,13 +2328,11 @@ module.exports = {
   DEFAULT_PUBLICATION_STATUS: true,
   ALWAYS_ALLOWED_SITES_REGEX: /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/,
   REGEX_HOST: {
-    STAGING: /staging.yelda.ai/,
-    LOCALHOST: /localhost*(:[0-9]+)?\/|file:/
+    STAGING: /staging.yelda.ai/
   },
   HOST: {
     PRODUCTION: 'app.yelda.ai',
-    STAGING: 'staging.yelda.ai',
-    LOCAL: 'localhost:8080'
+    STAGING: 'staging.yelda.ai'
   }
 };
 
