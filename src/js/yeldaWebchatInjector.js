@@ -501,7 +501,10 @@ class YeldaChat {
 
     const eventHandler = window[remove ? removeEventMethod : addEventMethod]
 
-    this.messageListenerBind = this.messageListener.bind(this)
+    // To make removeEventListener to work do not reassign messageListenerBind
+    if (!this.messageListenerBind) {
+      this.messageListenerBind = this.messageListener.bind(this)
+    }
     eventHandler(messageEvent, this.messageListenerBind)
   }
 
