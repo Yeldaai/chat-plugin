@@ -737,10 +737,15 @@ class YeldaChat {
         return resolve()
       }
 
+
+      // These data will be needed to avoid loading outdated data in the chat (in case of multiple chat load requests)
+      this.assistantId = data.assistantId
+      this.locale = data.locale
+      this.settingId = data.settingId
+
       // Get assistant settings from backend
       try {
         this.webchatSettings = await this.getAssistantSettings(data)
-
         // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
         // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
         data = this.updateAssistantData(data, this.webchatSettings)
@@ -767,7 +772,9 @@ class YeldaChat {
       return false
     }
 
-    // if webchatSettings is null load the chat
+    // if webchatSettings is null, it means that the admins didn't created custom webchat settings or
+    // or that the API call to get the settings failed
+    // In this case we can still load the webchat with the default settings
     if (!webchatSettings) {
       return true
     }
@@ -787,10 +794,46 @@ class YeldaChat {
   }
 
   /**
+   * Return if the webchat loadChat settings are different from the yeldaChat global assistant settings
+   * 
+   * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally 
+   * - Each new webchat loading request implies a "getAssistantSettings" async API call, 
+   * => If multiple new webchat loading requests are done in a short amount of time, 
+   * "getAssistantSettings" response can be subject to a race condition issue: 
+   * The latest requested answer received might not be the latest API call answer.
+   * 
+   * isDataOutdated checks if one of the global parameter is different the ones from the webchat settings we got from the "getAssistantSettings" API call
+   * so the "loadChat" function can be informed that the latest request is not the one currently handled
+   * And can stop the current process to let the chat load with the global latest requested settings
+   * 
+   * @param {Object} webchatSettings - current settings from the reset or init yeldaChat request
+   * @param {String} webchatSettings.settingId
+   * @param {String} webchatSettings.assistantId
+   * @param {String} webchatSettings.locale
+   * @param {Object} globalData - latest globally stored settings from the reset or init yeldaChat request
+   * @param {String} globalData.settingId
+   * @param {String} globalData.assistantId
+   * @param {String} globalData.locale
+   * @returns {Boolean}
+   */
+  isDataOutdated(data, { settingId, assistantId, locale }) {
+    if (data.settingId && data.settingId !== settingId) {
+      return true
+    }
+    if (!data.settingId && (data.assistantId !== assistantId || data.locale !== locale)) {
+      return true
+    }
+    return false
+  }
+
+  /**
    * Load the chat after getting the webchat settings if publication is enabled
-   * @param {Object} data { data.assistantUrl, data.assistantId }
+   * @param {Object} data { data.assistantUrl, data.assistantId, data.locale }
    */
   loadChat(data) {
+    if (this.isDataOutdated(data, this)) {
+      return
+    }
     if (!this.shouldChatBeLoaded(this.webchatSettings, data)) {
       this.unLoadChat()
       return

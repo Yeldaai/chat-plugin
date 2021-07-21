@@ -1587,38 +1587,44 @@ var YeldaChat = function () {
                   return _context2.abrupt('return', resolve());
 
                 case 9:
-                  _context2.prev = 9;
-                  _context2.next = 12;
+
+                  // These data will be needed to avoid loading outdated data in the chat (in case of multiple chat load requests)
+                  _this4.assistantId = data.assistantId;
+                  _this4.locale = data.locale;
+                  _this4.settingId = data.settingId;
+
+                  // Get assistant settings from backend
+                  _context2.prev = 12;
+                  _context2.next = 15;
                   return _this4.getAssistantSettings(data);
 
-                case 12:
+                case 15:
                   _this4.webchatSettings = _context2.sent;
-
 
                   // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
                   // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
                   data = _this4.updateAssistantData(data, _this4.webchatSettings);
 
-                  _context2.next = 19;
+                  _context2.next = 22;
                   break;
 
-                case 16:
-                  _context2.prev = 16;
-                  _context2.t0 = _context2['catch'](9);
+                case 19:
+                  _context2.prev = 19;
+                  _context2.t0 = _context2['catch'](12);
 
                   _this4.webchatSettings = null;
 
-                case 19:
+                case 22:
 
                   _this4.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 21:
+                case 24:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this4, [[9, 16]]);
+          }, _callee2, _this4, [[12, 19]]);
         }));
 
         return function (_x5) {
@@ -1643,7 +1649,9 @@ var YeldaChat = function () {
         return false;
       }
 
-      // if webchatSettings is null load the chat
+      // if webchatSettings is null, it means that the admins didn't created custom webchat settings or
+      // or that the API call to get the settings failed
+      // In this case we can still load the webchat with the default settings
       if (!webchatSettings) {
         return true;
       }
@@ -1663,13 +1671,56 @@ var YeldaChat = function () {
     }
 
     /**
+     * Return if the webchat loadChat settings are different from the yeldaChat global assistant settings
+     * 
+     * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally 
+     * - Each new webchat loading request implies a "getAssistantSettings" async API call, 
+     * => If multiple new webchat loading requests are done in a short amount of time, 
+     * "getAssistantSettings" response can be subject to a race condition issue: 
+     * The latest requested answer received might not be the latest API call answer.
+     * 
+     * isDataOutdated checks if one of the global parameter is different the ones from the webchat settings we got from the "getAssistantSettings" API call
+     * so the "loadChat" function can be informed that the latest request is not the one currently handled
+     * And can stop the current process to let the chat load with the global latest requested settings
+     * 
+     * @param {Object} webchatSettings - current settings from the reset or init yeldaChat request
+     * @param {String} webchatSettings.settingId
+     * @param {String} webchatSettings.assistantId
+     * @param {String} webchatSettings.locale
+     * @param {Object} globalData - latest globally stored settings from the reset or init yeldaChat request
+     * @param {String} globalData.settingId
+     * @param {String} globalData.assistantId
+     * @param {String} globalData.locale
+     * @returns {Boolean}
+     */
+
+  }, {
+    key: 'isDataOutdated',
+    value: function isDataOutdated(data, _ref3) {
+      var settingId = _ref3.settingId,
+          assistantId = _ref3.assistantId,
+          locale = _ref3.locale;
+
+      if (data.settingId && data.settingId !== settingId) {
+        return true;
+      }
+      if (!data.settingId && (data.assistantId !== assistantId || data.locale !== locale)) {
+        return true;
+      }
+      return false;
+    }
+
+    /**
      * Load the chat after getting the webchat settings if publication is enabled
-     * @param {Object} data { data.assistantUrl, data.assistantId }
+     * @param {Object} data { data.assistantUrl, data.assistantId, data.locale }
      */
 
   }, {
     key: 'loadChat',
     value: function loadChat(data) {
+      if (this.isDataOutdated(data, this)) {
+        return;
+      }
       if (!this.shouldChatBeLoaded(this.webchatSettings, data)) {
         this.unLoadChat();
         return;
@@ -1766,7 +1817,7 @@ var YeldaChat = function () {
       var _this5 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
-        var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
+        var _ref4 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
           return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
             while (1) {
               switch (_context4.prev = _context4.next) {
@@ -1821,7 +1872,7 @@ var YeldaChat = function () {
         }));
 
         return function (_x6) {
-          return _ref3.apply(this, arguments);
+          return _ref4.apply(this, arguments);
         };
       }());
     }
@@ -1961,8 +2012,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N;
- * @license GPLv3
+ * Copyright (c) 2016 Sachin N; 
+ * @license GPLv3 
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2230,11 +2281,12 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-            var firstImage = this.core.items[index].querySelector('img');
+        }
 
-            if (firstImage) {
-                videoTitle = videoTitle || firstImage.getAttribute('alt');
-            }
+        var firstImage = this.core.items[index].querySelector('img');
+
+        if (firstImage) {
+            videoTitle = videoTitle || firstImage.getAttribute('alt');
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
