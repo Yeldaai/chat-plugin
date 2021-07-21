@@ -205,6 +205,24 @@ describe('YeldaChat', () => {
     })
   })
 
+  describe('yeldaChat.isDataOutdated', () => {    
+    it('should return false if data.settingId match the global settingId', () => {
+      expect(yeldaChat.isDataOutdated({ settingId: '12345678' }, { settingId: '12345678' })).to.be.false
+    })
+    
+    it('should return true if data.settingId does not match the global settingId', () => {
+      expect(yeldaChat.isDataOutdated({ settingId: '12345678' }, { settingId: '12345679' })).to.be.true
+    })
+
+    it('should return true if data.assistantId match the global assistantId but not locale', () => {
+      expect(yeldaChat.isDataOutdated({ assistantId: '12345678', locale: 'fr_FR' }, { assistantId: '12345678', locale: 'en_US' })).to.be.true
+    })
+
+    it('should return false if data.assistantId and locale match the global assistantId and locale', () => {
+      expect(yeldaChat.isDataOutdated({ assistantId: '12345678', locale: 'fr_FR' }, { assistantId: '12345678', locale: 'fr_FR' })).to.be.false
+    })
+  })
+
 
   describe('yeldaChat.setupChat', () => {
     describe('yeldaChat.setupChat initial checks', () => {
@@ -473,6 +491,23 @@ describe('YeldaChat', () => {
   })
 
   describe('yeldaChat.resetChat', () => {
+    it('should use the data from the latest call to build the iframe url', async () => {
+      yeldaChat.resetChat(Object.assign({}, validMockData, { locale: 'fr_FR' }))
+      await yeldaChat.resetChat(Object.assign({}, validMockData, { locale: 'en_US' }))
+      
+      const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=en_US&location=https%3A%2F%2Fyelda.ai%2F'
+      expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
+    })
+
+    it('should not set webChatContainer if the loadChat locale parameter does not match the global locale', async () => {
+      yeldaChat.unLoadChat()
+      yeldaChat.locale = 'en_US'
+      yeldaChat.parentContainer = document.body
+      await yeldaChat.loadChat(validMockData)
+      
+      expect(yeldaChat.webChatContainer).to.be.null
+    })
+
     describe('yeldaChat.resetChat', () => {
       before(async () => {
         yeldaChat.unLoadChat()
@@ -503,6 +538,7 @@ describe('YeldaChat', () => {
 
         done()
       })
+
     })
 
     describe('yeldaChat.unLoadChat', () => {
@@ -540,6 +576,7 @@ describe('YeldaChat', () => {
           })
 
           yeldaChat.unLoadChat()
+
           await yeldaChat.setupChat(validMockData)
         })
 
