@@ -370,17 +370,21 @@ class YeldaChat {
    * @param {event} event
    */
   messageListener(event) {
-    if (event.data === 'closeChat' || event.message === 'closeChat') {
+    if (!event.data) {
+      return
+    }
+
+    if (event.data === 'closeChat') {
       this.closeChat()
       return
     }
 
-    if (event.data === 'openChat' || event.message === 'openChat') {
+    if (event.data === 'openChat') {
       this.openChat()
       return
     }
 
-    if (event.data && event.data.event && event.data.event === 'openLightGallery') {
+    if (event.data.event && event.data.event === 'openLightGallery') {
       if (!event.data.mediaSources || !event.data.mediaSources.length) {
         return
       }
@@ -395,7 +399,7 @@ class YeldaChat {
      * is still waiting for an answer
      * If isSendingMessage data is false, the webchat is ready to receive new user messages
      */
-    if (event.data && event.data.event && event.data.event === 'isSendingMessage') {
+    if (event.data.event && event.data.event === 'isSendingMessage') {
       if (event.data.hasOwnProperty('data')) {
         window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }))
       }
@@ -403,14 +407,14 @@ class YeldaChat {
     }
 
     // Triggered from webchat to listen leave viewport event
-    if (event.data && event.data.event && event.data.event === 'listenLeaveViewport') {
+    if (event.data.event && event.data.event === 'listenLeaveViewport') {
       this.pushNotificationId = event.data.pushNotificationId
       this.listenLeaveViewport()
       return
     }
 
     // Triggered from webchat to stop listening to the leave viewport event
-    if (event.data === 'abstainLeaveViewport' || event.message === 'abstainLeaveViewport') {
+    if (event.data === 'abstainLeaveViewport') {
       this.listenLeaveViewport(true)
       return
     }
@@ -767,7 +771,7 @@ class YeldaChat {
         this.webchatSettings = null
       }
 
-      // Remove event listeners while switching the bot
+      // Remove event listeners when switching bots
       this.listenLeaveViewport(true)
 
       this.loadChat(data)
@@ -968,18 +972,21 @@ class YeldaChat {
 
   /**
    * Listen leave viewport event handling
-   * @param {Boolean} [remove=false]
+   * @param {Boolean} shouldRemoveEvent - default false
    */
-  listenLeaveViewport(remove = false) {
+  listenLeaveViewport(shouldRemoveEvent = false) {
     const md = new MobileDetect(navigator.userAgent)
     const isMobile = md.mobile() !== null
 
-    // Not needed to listen on mobile
+    /**
+     * Not needed to listen on mobile since webchat covers the full page of the site
+     * and we can't able to detect mouseout events
+     */
     if (isMobile) {
       return
     }
 
-    const eventHandler = window[remove ? 'removeEventListener' : 'addEventListener']
+    const eventHandler = window[shouldRemoveEvent ? 'removeEventListener' : 'addEventListener']
 
     if (!this.viewportListenerBind) {
       this.viewportListenerBind = this.viewportListener.bind(this)
@@ -987,7 +994,7 @@ class YeldaChat {
     // mouseout event is used to listen leave viewport
     eventHandler('mouseout', this.viewportListenerBind)
 
-    if (remove) {
+    if (shouldRemoveEvent) {
       this.pushNotificationId = null
     }
   }
@@ -997,6 +1004,10 @@ class YeldaChat {
    * @param {Event} event
    */
   viewportListener(event) {
+    /**
+     * when mouse moves between dom elements mouseout event is trigged but we need to trigger
+     * the event when mouse moves out of the viewport so toElement and relatedTarget is checked
+     */
     if (event.toElement || event.relatedTarget) {
       return
     }
