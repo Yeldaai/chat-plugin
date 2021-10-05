@@ -365,7 +365,7 @@ class YeldaChat {
   }
 
   /**
-   * Handles communcation between parent window and iframe, mainly for open and closing the chat
+   * Handles communication between parent window and iframe, mainly for open and closing the chat
    * handles also the chat bubble style
    * @param {event} event
    */
@@ -399,6 +399,19 @@ class YeldaChat {
       if (event.data.hasOwnProperty('data')) {
         window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }))
       }
+      return
+    }
+
+    // Triggered from webchat to listen leave viewport event
+    if (event.data && event.data.event && event.data.event === 'listenLeaveViewport') {
+      this.pushNotificationId = event.data.pushNotificationId
+      this.listenLeaveViewport()
+      return
+    }
+
+    // Triggered from webchat to stop listening to the leave viewport event
+    if (event.data === 'abstainLeaveViewport' || event.message === 'abstainLeaveViewport') {
+      this.listenLeaveViewport(true)
       return
     }
   }
@@ -509,7 +522,7 @@ class YeldaChat {
   }
 
   /**
-   * Load CSS asynchroneously
+   * Load CSS asynchronously
    */
   loadCssAsync() {
     const head = document.getElementsByTagName('head')[0]
@@ -523,7 +536,7 @@ class YeldaChat {
   }
 
   /**
-   * Gererate webchatURL and create webchatIframe
+   * Generate webchatURL and create webchatIframe
    * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
    */
   setUpChatIFrame(data) {
@@ -754,6 +767,9 @@ class YeldaChat {
         this.webchatSettings = null
       }
 
+      // Remove event listeners while switching the bot
+      this.listenLeaveViewport(true)
+
       this.loadChat(data)
       return resolve()
     })
@@ -795,17 +811,17 @@ class YeldaChat {
 
   /**
    * Return if the webchat loadChat settings are different from the yeldaChat global assistant settings
-   * 
-   * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally 
-   * - Each new webchat loading request implies a "getAssistantSettings" async API call, 
-   * => If multiple new webchat loading requests are done in a short amount of time, 
-   * "getAssistantSettings" response can be subject to a race condition issue: 
+   *
+   * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally
+   * - Each new webchat loading request implies a "getAssistantSettings" async API call,
+   * => If multiple new webchat loading requests are done in a short amount of time,
+   * "getAssistantSettings" response can be subject to a race condition issue:
    * The latest requested answer received might not be the latest API call answer.
-   * 
+   *
    * isDataOutdated checks if one of the global parameter is different the ones from the webchat settings we got from the "getAssistantSettings" API call
    * so the "loadChat" function can be informed that the latest request is not the one currently handled
    * And can stop the current process to let the chat load with the global latest requested settings
-   * 
+   *
    * @param {Object} webchatSettings - current settings from the reset or init yeldaChat request
    * @param {String} webchatSettings.settingId
    * @param {String} webchatSettings.assistantId
@@ -948,6 +964,44 @@ class YeldaChat {
       this.openChat()
       webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message })
     }
+  }
+
+  /**
+   * Listen leave viewport event handling
+   * @param {Boolean} [remove=false]
+   */
+  listenLeaveViewport(remove = false) {
+    const md = new MobileDetect(navigator.userAgent)
+    const isMobile = md.mobile() !== null
+
+    // Not needed to listen on mobile
+    if (isMobile) {
+      return
+    }
+
+    const eventHandler = window[remove ? 'removeEventListener' : 'addEventListener']
+
+    if (!this.viewportListenerBind) {
+      this.viewportListenerBind = this.viewportListener.bind(this)
+    }
+    // mouseout event is used to listen leave viewport
+    eventHandler('mouseout', this.viewportListenerBind)
+
+    if (remove) {
+      this.pushNotificationId = null
+    }
+  }
+
+  viewportListener(event) {
+    if (event.toElement || event.relatedTarget) {
+      return
+    }
+
+    // When mouse leaves the viewport send 'leaveViewPort' to webchat with the notificationId
+    document.getElementById('web_chat_frame').contentWindow.postMessage({
+      event: 'leaveViewPort',
+      pushNotificationId: this.pushNotificationId
+    }, '*')
   }
 }
 
