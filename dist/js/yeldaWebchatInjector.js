@@ -1126,7 +1126,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * Handles communcation between parent window and iframe, mainly for open and closing the chat
+     * Handles communication between parent window and iframe, mainly for open and closing the chat
      * handles also the chat bubble style
      * @param {event} event
      */
@@ -1163,6 +1163,17 @@ var YeldaChat = function () {
         if (event.data.hasOwnProperty('data')) {
           window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }));
         }
+        return;
+      }
+
+      if (event.data && event.data.event && event.data.event === 'listenLeaveViewport') {
+        this.pushNotificationId = event.data.pushNotificationId;
+        this.listenLeaveViewport();
+        return;
+      }
+
+      if (event.data === 'abstainLeaveViewport' || event.message === 'abstainLeaveViewport') {
+        this.listenLeaveViewport(true);
         return;
       }
     }
@@ -1288,7 +1299,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * Load CSS asynchroneously
+     * Load CSS asynchronously
      */
 
   }, {
@@ -1305,7 +1316,7 @@ var YeldaChat = function () {
     }
 
     /**
-     * Gererate webchatURL and create webchatIframe
+     * Generate webchatURL and create webchatIframe
      * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
      */
 
@@ -1616,10 +1627,12 @@ var YeldaChat = function () {
 
                 case 22:
 
+                  _this4.listenLeaveViewport(true);
+
                   _this4.loadChat(data);
                   return _context2.abrupt('return', resolve());
 
-                case 24:
+                case 25:
                 case 'end':
                   return _context2.stop();
               }
@@ -1672,17 +1685,17 @@ var YeldaChat = function () {
 
     /**
      * Return if the webchat loadChat settings are different from the yeldaChat global assistant settings
-     * 
-     * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally 
-     * - Each new webchat loading request implies a "getAssistantSettings" async API call, 
-     * => If multiple new webchat loading requests are done in a short amount of time, 
-     * "getAssistantSettings" response can be subject to a race condition issue: 
+     *
+     * - yeldaChat can be init (and reset) either with the settingId parameter or the pair (assistantId, locale) that we store globally
+     * - Each new webchat loading request implies a "getAssistantSettings" async API call,
+     * => If multiple new webchat loading requests are done in a short amount of time,
+     * "getAssistantSettings" response can be subject to a race condition issue:
      * The latest requested answer received might not be the latest API call answer.
-     * 
+     *
      * isDataOutdated checks if one of the global parameter is different the ones from the webchat settings we got from the "getAssistantSettings" API call
      * so the "loadChat" function can be informed that the latest request is not the one currently handled
      * And can stop the current process to let the chat load with the global latest requested settings
-     * 
+     *
      * @param {Object} webchatSettings - current settings from the reset or init yeldaChat request
      * @param {String} webchatSettings.settingId
      * @param {String} webchatSettings.assistantId
@@ -1890,6 +1903,41 @@ var YeldaChat = function () {
         webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message });
       }
     }
+  }, {
+    key: 'listenLeaveViewport',
+    value: function listenLeaveViewport() {
+      var remove = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var md = new mobile_detect__WEBPACK_IMPORTED_MODULE_7___default.a(navigator.userAgent);
+      var isMobile = md.mobile() !== null;
+
+      if (isMobile) {
+        return;
+      }
+
+      var eventHandler = window[remove ? 'removeEventListener' : 'addEventListener'];
+
+      // To make removeEventListener to work do not reassign messageListenerBind
+      if (!this.viewportListenerBind) {
+        this.viewportListenerBind = this.viewportListener.bind(this);
+      }
+      eventHandler('mouseout', this.viewportListenerBind);
+
+      if (remove) {
+        this.pushNotificationId = null;
+      }
+    }
+  }, {
+    key: 'viewportListener',
+    value: function viewportListener(event) {
+      if (event.toElement || event.relatedTarget) {
+        return;
+      }
+      document.getElementById('web_chat_frame').contentWindow.postMessage({
+        event: 'leaveViewPort',
+        pushNotificationId: this.pushNotificationId
+      }, '*');
+    }
   }]);
 
   return YeldaChat;
@@ -2012,8 +2060,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N; 
- * @license GPLv3 
+ * Copyright (c) 2016 Sachin N;
+ * @license GPLv3
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2281,12 +2329,11 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-        }
+            var firstImage = this.core.items[index].querySelector('img');
 
-        var firstImage = this.core.items[index].querySelector('img');
-
-        if (firstImage) {
-            videoTitle = videoTitle || firstImage.getAttribute('alt');
+            if (firstImage) {
+                videoTitle = videoTitle || firstImage.getAttribute('alt');
+            }
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
