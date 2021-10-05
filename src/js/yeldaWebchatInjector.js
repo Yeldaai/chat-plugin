@@ -992,6 +992,10 @@ class YeldaChat {
     }
   }
 
+  /**
+   * Callback for leave viewport listener
+   * @param {Event} event
+   */
   viewportListener(event) {
     if (event.toElement || event.relatedTarget) {
       return
