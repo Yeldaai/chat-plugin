@@ -11,4 +11,14 @@ module.exports = {
     PRODUCTION: 'app.yelda.ai',
     STAGING: 'staging.yelda.ai',
   },
+  FRAME_EVENT_TYPES: {
+    OPEN_CHAT: 'openChat',
+    CLOSE_CHAT: 'closeChat',
+    LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
+    ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
+    LEAVE_VIEWPORT: 'leaveViewPort',
+    OPEN_LIGHT_GALLERY: 'openLightGallery',
+    IS_SENDING_MESSAGE: 'isSendingMessage',
+    SEND_USER_MESSAGE: 'sendUserMessage'
+  }
 }
