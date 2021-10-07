@@ -370,6 +370,7 @@ class YeldaChat {
    * @param {event} event
    */
   messageListener(event) {
+    // event.message is only there to support IE11.
     const eventData = event.data || event.message
     if (!eventData) {
       return
@@ -380,18 +381,22 @@ class YeldaChat {
      */
     if (!eventData.event) {
       switch(eventData) {
-        case config.FRAME_EVENT_TYPES.OPEN_CHAT:
+        case config.FRAME_EVENT_TYPES.RECEIVED.OPEN_CHAT:
           // 'openChat' event triggered from webchat
           this.openChat()
         break
-        case config.FRAME_EVENT_TYPES.CLOSE_CHAT:
+        case config.FRAME_EVENT_TYPES.RECEIVED.CLOSE_CHAT:
           // 'closeChat' event triggered from webchat
           this.closeChat()
         break
-        case config.FRAME_EVENT_TYPES.ABSTAIN_LEAVE_VIEWPORT:
+        case config.FRAME_EVENT_TYPES.RECEIVED.ABSTAIN_LEAVE_VIEWPORT:
           // 'abstainLeaveViewport' event triggered from webchat to stop listening to the leave viewport event
           this.listenLeaveViewport(true)
         break
+        case config.FRAME_EVENT_TYPES.RECEIVED.LISTEN_LEAVE_VIEWPORT:
+        // Triggered from webchat to listen leave viewport event
+        this.listenLeaveViewport()
+      break
       }
       return
     }
@@ -400,14 +405,14 @@ class YeldaChat {
      * Complex event management parent.postMessage({ event: 'xxxx', data: yyyy })
      */
     switch(eventData.event) {
-      case config.FRAME_EVENT_TYPES.OPEN_LIGHT_GALLERY:
+      case config.FRAME_EVENT_TYPES.RECEIVED.OPEN_LIGHT_GALLERY:
         if (!eventData.mediaSources || !eventData.mediaSources.length) {
           return
         }
 
         this.handleLightGallery(eventData)
       break
-      case config.FRAME_EVENT_TYPES.IS_SENDING_MESSAGE:
+      case config.FRAME_EVENT_TYPES.RECEIVED.IS_SENDING_MESSAGE:
         /**
          * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
          * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
@@ -417,11 +422,6 @@ class YeldaChat {
         if (eventData.hasOwnProperty('data')) {
           window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: eventData.data }))
         }
-      break
-      case config.FRAME_EVENT_TYPES.LISTEN_LEAVE_VIEWPORT:
-        // Triggered from webchat to listen leave viewport event
-        this.pushNotificationId = eventData.pushNotificationId
-        this.listenLeaveViewport()
       break
     }
   }
@@ -507,7 +507,7 @@ class YeldaChat {
     }
 
     // Propagate the event to the webchat
-    document.getElementById('web_chat_frame').contentWindow.postMessage(config.FRAME_EVENT_TYPES.OPEN_CHAT, '*')
+    document.getElementById('web_chat_frame').contentWindow.postMessage(config.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*')
   }
 
   /**
@@ -972,7 +972,7 @@ class YeldaChat {
     const webchatFrame = document.getElementById('web_chat_frame')
     if (webchatFrame) {
       this.openChat()
-      webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SEND_USER_MESSAGE, data: message })
+      webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message })
     }
   }
 
@@ -999,10 +999,6 @@ class YeldaChat {
     }
     // mouseout event is used to listen leave viewport
     eventHandler('mouseout', this.viewportListenerBind)
-
-    if (shouldRemoveEvent) {
-      this.pushNotificationId = null
-    }
   }
 
   /**
@@ -1020,8 +1016,7 @@ class YeldaChat {
 
     // When mouse leaves the viewport send 'leaveViewPort' to webchat with the notificationId
     document.getElementById('web_chat_frame').contentWindow.postMessage({
-      event: config.FRAME_EVENT_TYPES.LEAVE_VIEWPORT,
-      pushNotificationId: this.pushNotificationId
+      event: config.FRAME_EVENT_TYPES.SENT.LEAVE_VIEWPORT
     }, '*')
   }
 }

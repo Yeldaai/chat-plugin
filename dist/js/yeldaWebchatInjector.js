@@ -1134,6 +1134,7 @@ var YeldaChat = function () {
   }, {
     key: 'messageListener',
     value: function messageListener(event) {
+      // event.message is only there to support IE11.
       var eventData = event.data || event.message;
       if (!eventData) {
         return;
@@ -1144,17 +1145,21 @@ var YeldaChat = function () {
        */
       if (!eventData.event) {
         switch (eventData) {
-          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_CHAT:
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.OPEN_CHAT:
             // 'openChat' event triggered from webchat
             this.openChat();
             break;
-          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.CLOSE_CHAT:
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.CLOSE_CHAT:
             // 'closeChat' event triggered from webchat
             this.closeChat();
             break;
-          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.ABSTAIN_LEAVE_VIEWPORT:
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ABSTAIN_LEAVE_VIEWPORT:
             // 'abstainLeaveViewport' event triggered from webchat to stop listening to the leave viewport event
             this.listenLeaveViewport(true);
+            break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.LISTEN_LEAVE_VIEWPORT:
+            // Triggered from webchat to listen leave viewport event
+            this.listenLeaveViewport();
             break;
         }
         return;
@@ -1164,14 +1169,14 @@ var YeldaChat = function () {
        * Complex event management parent.postMessage({ event: 'xxxx', data: yyyy })
        */
       switch (eventData.event) {
-        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_LIGHT_GALLERY:
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.OPEN_LIGHT_GALLERY:
           if (!eventData.mediaSources || !eventData.mediaSources.length) {
             return;
           }
 
           this.handleLightGallery(eventData);
           break;
-        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.IS_SENDING_MESSAGE:
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.IS_SENDING_MESSAGE:
           /**
            * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
            * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
@@ -1181,11 +1186,6 @@ var YeldaChat = function () {
           if (eventData.hasOwnProperty('data')) {
             window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: eventData.data }));
           }
-          break;
-        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.LISTEN_LEAVE_VIEWPORT:
-          // Triggered from webchat to listen leave viewport event
-          this.pushNotificationId = eventData.pushNotificationId;
-          this.listenLeaveViewport();
           break;
       }
     }
@@ -1281,7 +1281,7 @@ var YeldaChat = function () {
       }
 
       // Propagate the event to the webchat
-      document.getElementById('web_chat_frame').contentWindow.postMessage(_config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_CHAT, '*');
+      document.getElementById('web_chat_frame').contentWindow.postMessage(_config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*');
     }
 
     /**
@@ -1913,7 +1913,7 @@ var YeldaChat = function () {
       var webchatFrame = document.getElementById('web_chat_frame');
       if (webchatFrame) {
         this.openChat();
-        webchatFrame.contentWindow.postMessage({ event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SEND_USER_MESSAGE, data: message });
+        webchatFrame.contentWindow.postMessage({ event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message });
       }
     }
 
@@ -1945,10 +1945,6 @@ var YeldaChat = function () {
       }
       // mouseout event is used to listen leave viewport
       eventHandler('mouseout', this.viewportListenerBind);
-
-      if (shouldRemoveEvent) {
-        this.pushNotificationId = null;
-      }
     }
 
     /**
@@ -1969,8 +1965,7 @@ var YeldaChat = function () {
 
       // When mouse leaves the viewport send 'leaveViewPort' to webchat with the notificationId
       document.getElementById('web_chat_frame').contentWindow.postMessage({
-        event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.LEAVE_VIEWPORT,
-        pushNotificationId: this.pushNotificationId
+        event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.LEAVE_VIEWPORT
       }, '*');
     }
   }]);
@@ -2471,14 +2466,19 @@ module.exports = {
     STAGING: 'staging.yelda.ai'
   },
   FRAME_EVENT_TYPES: {
-    OPEN_CHAT: 'openChat',
-    CLOSE_CHAT: 'closeChat',
-    LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
-    ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
-    LEAVE_VIEWPORT: 'leaveViewPort',
-    OPEN_LIGHT_GALLERY: 'openLightGallery',
-    IS_SENDING_MESSAGE: 'isSendingMessage',
-    SEND_USER_MESSAGE: 'sendUserMessage'
+    SENT: {
+      OPEN_CHAT: 'openChat',
+      LEAVE_VIEWPORT: 'leaveViewPort',
+      SEND_USER_MESSAGE: 'sendUserMessage'
+    },
+    RECEIVED: {
+      OPEN_CHAT: 'openChat',
+      CLOSE_CHAT: 'closeChat',
+      ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
+      OPEN_LIGHT_GALLERY: 'openLightGallery',
+      IS_SENDING_MESSAGE: 'isSendingMessage',
+      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport'
+    }
   }
 };
 

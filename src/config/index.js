@@ -12,13 +12,18 @@ module.exports = {
     STAGING: 'staging.yelda.ai',
   },
   FRAME_EVENT_TYPES: {
-    OPEN_CHAT: 'openChat',
-    CLOSE_CHAT: 'closeChat',
-    LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
-    ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
-    LEAVE_VIEWPORT: 'leaveViewPort',
-    OPEN_LIGHT_GALLERY: 'openLightGallery',
-    IS_SENDING_MESSAGE: 'isSendingMessage',
-    SEND_USER_MESSAGE: 'sendUserMessage'
+    SENT: {
+      OPEN_CHAT: 'openChat',
+      LEAVE_VIEWPORT: 'leaveViewPort',
+      SEND_USER_MESSAGE: 'sendUserMessage'
+    },
+    RECEIVED: {
+      OPEN_CHAT: 'openChat',
+      CLOSE_CHAT: 'closeChat',
+      ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
+      OPEN_LIGHT_GALLERY: 'openLightGallery',
+      IS_SENDING_MESSAGE: 'isSendingMessage',
+      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport'
+    }
   }
 }
