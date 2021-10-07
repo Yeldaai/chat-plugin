@@ -776,7 +776,7 @@ var YeldaChat = function () {
      * get Specific parameter from the url
      * @param {*} parameter
      * @param {*} defaultValue, default empty string
-     * @return {String} urlParamter
+     * @return {String} urlParameter
      */
 
   }, {
@@ -1031,7 +1031,7 @@ var YeldaChat = function () {
         /**
          * add CSS class which controls the opacity of the frame container if the iframe:
          * - should be opened on load OR has a start button
-         * - cannot be closed (canBeClosed explicitely set to false)
+         * - cannot be closed (canBeClosed explicitly set to false)
          *
          * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
          * Otherwise,
@@ -1134,53 +1134,59 @@ var YeldaChat = function () {
   }, {
     key: 'messageListener',
     value: function messageListener(event) {
-      if (!event.data) {
+      var eventData = event.data || event.message;
+      if (!eventData) {
         return;
       }
 
-      if (event.data === 'closeChat') {
-        this.closeChat();
-        return;
-      }
-
-      if (event.data === 'openChat') {
-        this.openChat();
-        return;
-      }
-
-      if (event.data.event && event.data.event === 'openLightGallery') {
-        if (!event.data.mediaSources || !event.data.mediaSources.length) {
-          return;
-        }
-
-        this.handleLightGallery(event.data);
-        return;
-      }
-
-      /**
-       * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
-       * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
-       * is still waiting for an answer
-       * If isSendingMessage data is false, the webchat is ready to receive new user messages
+      /*
+       * Simple event management parent.postMessage('string message')
        */
-      if (event.data.event && event.data.event === 'isSendingMessage') {
-        if (event.data.hasOwnProperty('data')) {
-          window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: event.data.data }));
+      if (!eventData.event) {
+        switch (eventData) {
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_CHAT:
+            // 'openChat' event triggered from webchat
+            this.openChat();
+            break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.CLOSE_CHAT:
+            // 'closeChat' event triggered from webchat
+            this.closeChat();
+            break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.ABSTAIN_LEAVE_VIEWPORT:
+            // 'abstainLeaveViewport' event triggered from webchat to stop listening to the leave viewport event
+            this.listenLeaveViewport(true);
+            break;
         }
         return;
       }
 
-      // Triggered from webchat to listen leave viewport event
-      if (event.data.event && event.data.event === 'listenLeaveViewport') {
-        this.pushNotificationId = event.data.pushNotificationId;
-        this.listenLeaveViewport();
-        return;
-      }
+      /*
+       * Complex event management parent.postMessage({ event: 'xxxx', data: yyyy })
+       */
+      switch (eventData.event) {
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_LIGHT_GALLERY:
+          if (!eventData.mediaSources || !eventData.mediaSources.length) {
+            return;
+          }
 
-      // Triggered from webchat to stop listening to the leave viewport event
-      if (event.data === 'abstainLeaveViewport') {
-        this.listenLeaveViewport(true);
-        return;
+          this.handleLightGallery(eventData);
+          break;
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.IS_SENDING_MESSAGE:
+          /**
+           * Custom event to send to Yelda to keep track of the webchat ability to receive a new message
+           * If isSendingMessage data is true, it means that a user message has already been sent to the webchat and
+           * is still waiting for an answer
+           * If isSendingMessage data is false, the webchat is ready to receive new user messages
+           */
+          if (eventData.hasOwnProperty('data')) {
+            window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: eventData.data }));
+          }
+          break;
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.LISTEN_LEAVE_VIEWPORT:
+          // Triggered from webchat to listen leave viewport event
+          this.pushNotificationId = eventData.pushNotificationId;
+          this.listenLeaveViewport();
+          break;
       }
     }
 
@@ -1275,7 +1281,7 @@ var YeldaChat = function () {
       }
 
       // Propagate the event to the webchat
-      document.getElementById('web_chat_frame').contentWindow.postMessage('openChat', '*');
+      document.getElementById('web_chat_frame').contentWindow.postMessage(_config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.OPEN_CHAT, '*');
     }
 
     /**
@@ -1515,10 +1521,10 @@ var YeldaChat = function () {
     }
 
     /**
-    * return getAssistantSettings endpoint URL from data
-    * @param {Object} data { assistantUrl, assistantId, settingId }
-    * @return {String} url
-    */
+     * return getAssistantSettings endpoint URL from data
+     * @param {Object} data { assistantUrl, assistantId, settingId }
+     * @return {String} url
+     */
 
   }, {
     key: 'getAssistantSettingsUrl',
@@ -1907,7 +1913,7 @@ var YeldaChat = function () {
       var webchatFrame = document.getElementById('web_chat_frame');
       if (webchatFrame) {
         this.openChat();
-        webchatFrame.contentWindow.postMessage({ event: 'sendUserMessage', data: message });
+        webchatFrame.contentWindow.postMessage({ event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SEND_USER_MESSAGE, data: message });
       }
     }
 
@@ -1963,7 +1969,7 @@ var YeldaChat = function () {
 
       // When mouse leaves the viewport send 'leaveViewPort' to webchat with the notificationId
       document.getElementById('web_chat_frame').contentWindow.postMessage({
-        event: 'leaveViewPort',
+        event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.LEAVE_VIEWPORT,
         pushNotificationId: this.pushNotificationId
       }, '*');
     }
@@ -2463,6 +2469,16 @@ module.exports = {
   HOST: {
     PRODUCTION: 'app.yelda.ai',
     STAGING: 'staging.yelda.ai'
+  },
+  FRAME_EVENT_TYPES: {
+    OPEN_CHAT: 'openChat',
+    CLOSE_CHAT: 'closeChat',
+    LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
+    ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
+    LEAVE_VIEWPORT: 'leaveViewPort',
+    OPEN_LIGHT_GALLERY: 'openLightGallery',
+    IS_SENDING_MESSAGE: 'isSendingMessage',
+    SEND_USER_MESSAGE: 'sendUserMessage'
   }
 };
 
