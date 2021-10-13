@@ -1014,7 +1014,7 @@ class YeldaChat {
       return
     }
 
-    // When mouse leaves the viewport send 'leaveViewPort' to webchat with the notificationId
+    // When mouse leaves the viewport send 'leaveViewPort' to webchat
     document.getElementById('web_chat_frame').contentWindow.postMessage({
       event: config.FRAME_EVENT_TYPES.SENT.LEAVE_VIEWPORT
     }, '*')
