@@ -42,13 +42,11 @@ const argv = yargs
     })
     .argv
 
-    console.log(argv)
-
 const main = async () => {
   try {
     // Check if there are any change that has not been committed before starting the script
     if (!(await checkIfAllChangesCommitted())) {
-      //throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
+      throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
 
     await uploadToS3()
