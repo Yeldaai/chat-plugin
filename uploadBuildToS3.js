@@ -48,7 +48,9 @@ const main = async () => {
     if (!(await checkIfAllChangesCommitted())) {
       //throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
-
+    const otp = (argv._.includes('build') && argv.otp) ? `--otp=${argv.otp}` : ''
+    console.log(argv, otp)
+    process.exit
     await uploadToS3()
 
     await copyDistToYelda()
@@ -124,7 +126,7 @@ const publishPackage = async () => {
   console.info('Publishing the package ...')
   const otp = (argv._.includes('build') && argv.otp) ? `--otp=${argv.otp}` : ''
 
-  return await executeCommand(`npm publish --otp=${otp}`)
+  return await executeCommand(`npm publish ${otp}`)
 }
 
 /**
