@@ -135,7 +135,7 @@ It requires AWS creds, bucket & region information in .env to upload the build f
 you'll also need to provide an otp (one time password for NPM 2 factor authentication)
 
 ```shell
-npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --otp=1111111
+npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static -o 1111111
 ```
 
 ## License

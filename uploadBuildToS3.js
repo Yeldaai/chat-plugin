@@ -6,7 +6,7 @@
  *
  * To copy dist folder to Yelda repo include the yelda repo static folder path in the command
  * Like this
- * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch --otp=<code>
+ * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch -o <code>
  * This command uploadBuildToS3 runs build, test, upload to s3, npm version update, push to git and move dist folder to yelda repo
  */
 
@@ -32,15 +32,17 @@ const argv = yargs
       destinationPath: {
         description: 'Destination path to copy',
         alias: 'd',
-        type: 'string',
+        type: 'string'
       },
       otp: {
         description: 'Npm one-time password from your authenticator',
         alias: 'o',
-        type: 'string',
+        type: 'string'
       }
     })
     .argv
+
+    console.log(argv)
 
 const main = async () => {
   try {
@@ -48,9 +50,7 @@ const main = async () => {
     if (!(await checkIfAllChangesCommitted())) {
       //throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
-    const otp = (argv._.includes('build') && argv.otp) ? `--otp=${argv.otp}` : ''
-    console.log(argv, otp)
-    process.exit
+
     await uploadToS3()
 
     await copyDistToYelda()
