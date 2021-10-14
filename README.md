@@ -132,8 +132,10 @@ Run this command to build, test, increment the npm version, publish the package,
 
 It requires AWS creds, bucket & region information in .env to upload the build files to s3 bucket and npm version command requires git working directory to be clean otherwise it throws error
 
+you'll also need to provide an otp (one time password for NPM 2 factor authentication)
+
 ```shell
-npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static
+npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --otp=1111111
 ```
 
 ## License
