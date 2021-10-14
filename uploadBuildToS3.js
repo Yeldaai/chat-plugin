@@ -122,7 +122,7 @@ const updateNPMVersion = async () => {
  */
 const publishPackage = async () => {
   console.info('Publishing the package ...')
-  return await executeCommand(`npm publish --otp=${argv.semver}`)
+  return await executeCommand(`npm publish --otp=${argv.otp}`)
 }
 
 /**
