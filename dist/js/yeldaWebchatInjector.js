@@ -838,7 +838,7 @@ var YeldaChat = function () {
       this.assistantBubbleText.innerText = this.webchatSettings.bubbleText;
 
       // Add click event to assistant text
-      this.assistantBubbleText.addEventListener('click', this.openChat);
+      this.assistantBubbleText.addEventListener('click', this.openChat.bind(this));
 
       // add assistant text to webChatContainer using the webchatSettings
       this.webChatContainer.appendChild(this.assistantBubbleText);
@@ -878,7 +878,7 @@ var YeldaChat = function () {
       this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>';
 
       // Add click event to assistant image
-      this.assistantImage.addEventListener('click', this.openChat);
+      this.assistantImage.addEventListener('click', this.openChat.bind(this));
 
       // add assistantImage to webChatContainer using the webchatSettings
       this.updateAssistantImageWithAssistantSettings();
@@ -1161,6 +1161,20 @@ var YeldaChat = function () {
             // Triggered from webchat to listen leave viewport event
             this.listenLeaveViewport();
             break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.LISTEN_URL_UPDATE:
+            // Triggered from webchat to listen for url update
+            this.listenUrlUpdate();
+            break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ABSTAIN_URL_UPDATE:
+            // Triggered form webchat to stop listening for url update
+            this.listenUrlUpdate(true);
+            break;
+          case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ADD_BUBBLE_TEXT:
+            // Triggered from webchat to add assistant bubble text if possible
+            if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
+              this.addAssistantBubbleText();
+            }
+            break;
         }
         return;
       }
@@ -1278,6 +1292,11 @@ var YeldaChat = function () {
       if (yeldaIframeContainerElement !== null) {
         yeldaIframeContainerElement.style.display = 'block';
         yeldaIframeContainerElement.classList.add('y_active');
+      }
+
+      // hide the assistant bubble text while opening the webchat window
+      if (this.assistantBubbleText) {
+        this.assistantBubbleText.classList.add('hidden');
       }
 
       // Propagate the event to the webchat
@@ -1641,11 +1660,14 @@ var YeldaChat = function () {
 
                   // Remove event listeners when switching bots
                   _this4.listenLeaveViewport(true);
+                  _this4.listenUrlUpdate(true);
 
                   _this4.loadChat(data);
+
+                  _this4.configurationData = data;
                   return _context2.abrupt('return', resolve());
 
-                case 25:
+                case 27:
                 case 'end':
                   return _context2.stop();
               }
@@ -1774,7 +1796,6 @@ var YeldaChat = function () {
       // because the assistant image containing the openChat event wouldn't have been created
       if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
         this.addAssistantImage();
-        this.addAssistantBubbleText();
       }
 
       // add the frame lister to receive message from iframe to the parent
@@ -1795,7 +1816,7 @@ var YeldaChat = function () {
         if (this.bubbleContainer) {
           this.assistantImage.removeAttribute('id', 'yelda_assistant_img');
           this.assistantImage.removeAttribute('class', 'yelda_assistant_img default');
-          this.assistantImage.removeEventListener('click', this.openChat);
+          this.assistantImage.removeEventListener('click', this.openChat.bind(this));
           this.assistantImage.replaceWith(this.bubbleContainerClone);
         } else {
           this.removeElement('yelda_assistant_img');
@@ -1915,6 +1936,42 @@ var YeldaChat = function () {
         this.openChat();
         webchatFrame.contentWindow.postMessage({ event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message });
       }
+    }
+
+    /**
+     * Listen to url update on the page
+     * @param {Boolean} shouldRemoveEvent
+     */
+
+  }, {
+    key: 'listenUrlUpdate',
+    value: function listenUrlUpdate() {
+      var shouldRemoveEvent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var eventHandler = window[shouldRemoveEvent ? 'removeEventListener' : 'addEventListener'];
+
+      if (!this.urlUpdateListenerBind) {
+        this.urlUpdateListenerBind = this.urlUpdateListener.bind(this);
+      }
+      // mouseout event is used to listen leave viewport
+      eventHandler('locationchange', this.urlUpdateListenerBind);
+      eventHandler('popstate', this.urlUpdateListenerBind);
+      eventHandler('hashchange', this.urlUpdateListenerBind);
+    }
+
+    /**
+     * Callback for url update listener
+     */
+
+  }, {
+    key: 'urlUpdateListener',
+    value: function urlUpdateListener() {
+      var webchatFrame = document.getElementById('web_chat_frame');
+
+      if (!webchatFrame) {
+        return;
+      }
+      webchatFrame.contentWindow.postMessage({ event: _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.URL_UPDATE, data: window.location.href }, '*');
     }
 
     /**
@@ -2090,8 +2147,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N; 
- * @license GPLv3 
+ * Copyright (c) 2016 Sachin N;
+ * @license GPLv3
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2359,12 +2416,11 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-        }
+            var firstImage = this.core.items[index].querySelector('img');
 
-        var firstImage = this.core.items[index].querySelector('img');
-
-        if (firstImage) {
-            videoTitle = videoTitle || firstImage.getAttribute('alt');
+            if (firstImage) {
+                videoTitle = videoTitle || firstImage.getAttribute('alt');
+            }
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';
@@ -2470,7 +2526,8 @@ module.exports = {
     SENT: {
       OPEN_CHAT: 'openChat',
       LEAVE_VIEWPORT: 'leaveViewPort',
-      SEND_USER_MESSAGE: 'sendUserMessage'
+      SEND_USER_MESSAGE: 'sendUserMessage',
+      URL_UPDATE: 'urlUpdate'
     },
     RECEIVED: {
       OPEN_CHAT: 'openChat',
@@ -2478,7 +2535,10 @@ module.exports = {
       ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
       OPEN_LIGHT_GALLERY: 'openLightGallery',
       IS_SENDING_MESSAGE: 'isSendingMessage',
-      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport'
+      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
+      LISTEN_URL_UPDATE: 'listenUrlUpdate',
+      ABSTAIN_URL_UPDATE: 'abstainUrlUpdate',
+      ADD_BUBBLE_TEXT: 'addBubbleText'
     }
   }
 };

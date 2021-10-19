@@ -94,7 +94,7 @@ class YeldaChat {
     this.assistantBubbleText.innerText = this.webchatSettings.bubbleText
 
     // Add click event to assistant text
-    this.assistantBubbleText.addEventListener('click', this.openChat)
+    this.assistantBubbleText.addEventListener('click', this.openChat.bind(this))
 
     // add assistant text to webChatContainer using the webchatSettings
     this.webChatContainer.appendChild(this.assistantBubbleText)
@@ -131,7 +131,7 @@ class YeldaChat {
     this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
 
     // Add click event to assistant image
-    this.assistantImage.addEventListener('click', this.openChat)
+    this.assistantImage.addEventListener('click', this.openChat.bind(this))
 
     // add assistantImage to webChatContainer using the webchatSettings
     this.updateAssistantImageWithAssistantSettings()
@@ -394,9 +394,23 @@ class YeldaChat {
           this.listenLeaveViewport(true)
         break
         case config.FRAME_EVENT_TYPES.RECEIVED.LISTEN_LEAVE_VIEWPORT:
-        // Triggered from webchat to listen leave viewport event
-        this.listenLeaveViewport()
-      break
+          // Triggered from webchat to listen leave viewport event
+          this.listenLeaveViewport()
+        break
+        case config.FRAME_EVENT_TYPES.RECEIVED.LISTEN_URL_UPDATE:
+          // Triggered from webchat to listen for url update
+          this.listenUrlUpdate()
+        break
+        case config.FRAME_EVENT_TYPES.RECEIVED.ABSTAIN_URL_UPDATE:
+          // Triggered form webchat to stop listening for url update
+          this.listenUrlUpdate(true)
+        break
+        case config.FRAME_EVENT_TYPES.RECEIVED.ADD_BUBBLE_TEXT:
+          // Triggered from webchat to add assistant bubble text if possible
+          if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
+            this.addAssistantBubbleText()
+          }
+        break;
       }
       return
     }
@@ -504,6 +518,11 @@ class YeldaChat {
     if (yeldaIframeContainerElement !== null) {
       yeldaIframeContainerElement.style.display = 'block'
       yeldaIframeContainerElement.classList.add('y_active')
+    }
+
+    // hide the assistant bubble text while opening the webchat window
+    if (this.assistantBubbleText) {
+      this.assistantBubbleText.classList.add('hidden')
     }
 
     // Propagate the event to the webchat
@@ -779,8 +798,11 @@ class YeldaChat {
 
       // Remove event listeners when switching bots
       this.listenLeaveViewport(true)
+      this.listenUrlUpdate(true)
 
       this.loadChat(data)
+
+      this.configurationData = data
       return resolve()
     })
   }
@@ -887,7 +909,6 @@ class YeldaChat {
     // because the assistant image containing the openChat event wouldn't have been created
     if (!data.hasOwnProperty('canBeClosed') || data.canBeClosed) {
       this.addAssistantImage()
-      this.addAssistantBubbleText()
     }
 
     // add the frame lister to receive message from iframe to the parent
@@ -905,7 +926,7 @@ class YeldaChat {
       if (this.bubbleContainer) {
         this.assistantImage.removeAttribute('id', 'yelda_assistant_img')
         this.assistantImage.removeAttribute('class', 'yelda_assistant_img default')
-        this.assistantImage.removeEventListener('click', this.openChat)
+        this.assistantImage.removeEventListener('click', this.openChat.bind(this))
         this.assistantImage.replaceWith(this.bubbleContainerClone)
       } else {
         this.removeElement('yelda_assistant_img')
@@ -974,6 +995,34 @@ class YeldaChat {
       this.openChat()
       webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message })
     }
+  }
+
+  /**
+   * Listen to url update on the page
+   * @param {Boolean} shouldRemoveEvent
+   */
+  listenUrlUpdate(shouldRemoveEvent = false) {
+    const eventHandler = window[shouldRemoveEvent ? 'removeEventListener' : 'addEventListener']
+
+    if (!this.urlUpdateListenerBind) {
+      this.urlUpdateListenerBind = this.urlUpdateListener.bind(this)
+    }
+    // mouseout event is used to listen leave viewport
+    eventHandler('locationchange', this.urlUpdateListenerBind)
+    eventHandler('popstate', this.urlUpdateListenerBind)
+    eventHandler('hashchange', this.urlUpdateListenerBind)
+  }
+
+  /**
+   * Callback for url update listener
+   */
+  urlUpdateListener() {
+    const webchatFrame = document.getElementById('web_chat_frame')
+
+    if (!webchatFrame) {
+      return
+    }
+    webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.URL_UPDATE, data: window.location.href }, '*')
   }
 
   /**
