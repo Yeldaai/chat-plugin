@@ -138,7 +138,58 @@
     overflow: hidden;
   }
 }
+/** CSS for assistant bubble text */
+#yelda_assistant_bubble_text {
+  position: absolute;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-104%, -140%);
+  padding: 5px;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  background-color: white;
+  cursor: pointer;
+  animation: 1s ease-out 0s 1 fadeAndSlideInFromRight;
+}
 
+#yelda_assistant_bubble_text.hidden {
+  display: none;
+}
 
+/** css for adding tooltip like triangle to the assistant bubble text */
+#yelda_assistant_bubble_text::before,
+#yelda_assistant_bubble_text::after {
+  content: "";
+  position: absolute;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  top: 50%;
+  left: 100%;
+}
 
+/* The border of the triangle */
+#yelda_assistant_bubble_text::before {
+  border-left: 10px solid #000;
+  margin-top: -5px;
+  margin-left: 1px;
+}
 
+/* The white fill of the triangle */
+#yelda_assistant_bubble_text::after {
+  border-left: 10px solid white;
+  margin-top: -5px;
+  z-index: 1;
+}
+
+/** Animation for assistant bubble text */
+@keyframes fadeAndSlideInFromRight {
+  0% {
+    transform: translateX(0%) translateY(-140%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-104%) translateY(-140%);
+    opacity: 1;
+  }
+}

@@ -15,7 +15,8 @@ module.exports = {
     SENT: {
       OPEN_CHAT: 'openChat',
       LEAVE_VIEWPORT: 'leaveViewPort',
-      SEND_USER_MESSAGE: 'sendUserMessage'
+      SEND_USER_MESSAGE: 'sendUserMessage',
+      URL_UPDATE: 'urlUpdate'
     },
     RECEIVED: {
       OPEN_CHAT: 'openChat',
@@ -23,7 +24,10 @@ module.exports = {
       ABSTAIN_LEAVE_VIEWPORT: 'abstainLeaveViewport',
       OPEN_LIGHT_GALLERY: 'openLightGallery',
       IS_SENDING_MESSAGE: 'isSendingMessage',
-      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport'
+      LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
+      LISTEN_URL_UPDATE: 'listenUrlUpdate',
+      ABSTAIN_URL_UPDATE: 'abstainUrlUpdate',
+      ADD_BUBBLE_TEXT: 'addBubbleText'
     }
   }
 }
