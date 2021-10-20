@@ -1955,16 +1955,21 @@ var YeldaChat = function () {
         this.urlObserver = null;
         return;
       }
-      this.previousUrl = '';
-      this.urlObserver = new MutationObserver(function () {
-        if (location.href === _this6.previousUrl) {
-          return;
-        }
-        _this6.previousUrl = location.href;
-        _this6.urlUpdateListener();
-      });
 
-      this.urlObserver.observe(document, { childList: true, subtree: true });
+      try {
+        this.previousUrl = '';
+        this.urlObserver = new MutationObserver(function () {
+          if (location.href === _this6.previousUrl) {
+            return;
+          }
+          _this6.previousUrl = location.href;
+          _this6.urlUpdateListener();
+        });
+
+        this.urlObserver.observe(document, { childList: true, subtree: true });
+      } catch (err) {
+        console.warn('listenUrlUpdate error', err);
+      }
     }
 
     /**
