@@ -1002,15 +1002,21 @@ class YeldaChat {
    * @param {Boolean} shouldRemoveEvent
    */
   listenUrlUpdate(shouldRemoveEvent = false) {
-    const eventHandler = window[shouldRemoveEvent ? 'removeEventListener' : 'addEventListener']
-
-    if (!this.urlUpdateListenerBind) {
-      this.urlUpdateListenerBind = this.urlUpdateListener.bind(this)
+    if (shouldRemoveEvent && this.urlObserver) {
+      this.urlObserver.disconnect()
+      this.urlObserver = null
+      return
     }
-    // mouseout event is used to listen leave viewport
-    eventHandler('locationchange', this.urlUpdateListenerBind)
-    eventHandler('popstate', this.urlUpdateListenerBind)
-    eventHandler('hashchange', this.urlUpdateListenerBind)
+    this.previousUrl = ''
+    this.urlObserver = new MutationObserver(() => {
+      if (location.href === this.previousUrl) {
+        return
+      }
+      this.previousUrl = location.href
+      this.urlUpdateListener()
+    })
+
+    this.urlObserver.observe(document, {childList: true, subtree: true})
   }
 
   /**
