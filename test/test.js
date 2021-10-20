@@ -624,7 +624,7 @@ describe('YeldaChat', () => {
           yeldaChat.unLoadChat()
           yeldaChat.setupChat(validMockData).then(() => {
             yeldaChat.webChatIframe.contentWindow.parent.postMessage('addBubbleText', '*')
-            // Delay is added to give time for messageListeners updates the assistant bubble text
+            // Delay is added to give time for messageListener to updates the assistant bubble text
             setTimeout(() => {done()}, 100)
           })
         })
