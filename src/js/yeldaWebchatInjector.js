@@ -1007,16 +1007,21 @@ class YeldaChat {
       this.urlObserver = null
       return
     }
-    this.previousUrl = ''
-    this.urlObserver = new MutationObserver(() => {
-      if (location.href === this.previousUrl) {
-        return
-      }
-      this.previousUrl = location.href
-      this.urlUpdateListener()
-    })
 
-    this.urlObserver.observe(document, {childList: true, subtree: true})
+    try {
+      this.previousUrl = ''
+      this.urlObserver = new MutationObserver(() => {
+        if (location.href === this.previousUrl) {
+          return
+        }
+        this.previousUrl = location.href
+        this.urlUpdateListener()
+      })
+
+      this.urlObserver.observe(document, {childList: true, subtree: true})
+    } catch(err) {
+      console.warn('listenUrlUpdate error', err)
+    }
   }
 
   /**

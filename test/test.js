@@ -14,18 +14,35 @@
 import { expect, should, use, assert } from 'chai'
 import mock from 'xhr-mock'
 
-const testAPIUrl = 'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR'
 // mock.setup() sets global.XMLHttpRequest with mock xhr
 mock.setup()
-mock.get(testAPIUrl, {
-  status: 201,
-  body: JSON.stringify({ data: {} })
+const testAPIUrls = [
+  'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR',
+  'https://app.yelda.ai/assistants/12345678/chatBubble/en_US',
+  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble',
+  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble'
+]
+
+testAPIUrls.forEach(url => {
+  mock.get(url, {
+    status: 201,
+    body: JSON.stringify({ data: {} })
+  })
 })
 
 // To Fix undefined error on navigator while running the test
 global.navigator = {
   userAgent: 'node.js'
 }
+
+// To Fix undefined error on MutationObserver while running the test
+global.MutationObserver = class {
+  // eslint-disable-next-line no-unused-vars
+  constructor(callback) {}
+  disconnect() {}
+  // eslint-disable-next-line no-unused-vars
+  observe(element, initObject) {}
+};
 
 should()
 use(require('chai-dom'))
@@ -205,11 +222,11 @@ describe('YeldaChat', () => {
     })
   })
 
-  describe('yeldaChat.isDataOutdated', () => {    
+  describe('yeldaChat.isDataOutdated', () => {
     it('should return false if data.settingId match the global settingId', () => {
       expect(yeldaChat.isDataOutdated({ settingId: '12345678' }, { settingId: '12345678' })).to.be.false
     })
-    
+
     it('should return true if data.settingId does not match the global settingId', () => {
       expect(yeldaChat.isDataOutdated({ settingId: '12345678' }, { settingId: '12345679' })).to.be.true
     })
@@ -494,7 +511,7 @@ describe('YeldaChat', () => {
     it('should use the data from the latest call to build the iframe url', async () => {
       yeldaChat.resetChat(Object.assign({}, validMockData, { locale: 'fr_FR' }))
       await yeldaChat.resetChat(Object.assign({}, validMockData, { locale: 'en_US' }))
-      
+
       const result = 'https://app.yelda.ai/chat?assistantId=12345678&assistantSlug=testClient&locale=en_US&location=https%3A%2F%2Fyelda.ai%2F'
       expect(yeldaChat.webChatIframe.getAttribute('src')).to.deep.equal(result)
     })
@@ -504,7 +521,7 @@ describe('YeldaChat', () => {
       yeldaChat.locale = 'en_US'
       yeldaChat.parentContainer = document.body
       await yeldaChat.loadChat(validMockData)
-      
+
       expect(yeldaChat.webChatContainer).to.be.null
     })
 
@@ -570,7 +587,7 @@ describe('YeldaChat', () => {
       describe('yeldaChat.voiceFirstUI', () => {
         before(async () => {
           mock.reset()
-          mock.get(testAPIUrl, {
+          mock.get(testAPIUrls[0], {
             status: 201,
             body: JSON.stringify({ data: {isVoiceFirstUI: true} })
           })
@@ -597,17 +614,20 @@ describe('YeldaChat', () => {
       })
 
       describe('yeldaChat.bubbleText set', () => {
-        before(async () => {
+        before((done) => {
           mock.reset()
-          mock.get(testAPIUrl, {
+          mock.get(testAPIUrls[0], {
             status: 201,
             body: JSON.stringify({ data: { bubbleText: 'coucou' } })
           })
 
           yeldaChat.unLoadChat()
-          await yeldaChat.setupChat(validMockData)
+          yeldaChat.setupChat(validMockData).then(() => {
+            yeldaChat.webChatIframe.contentWindow.parent.postMessage('addBubbleText', '*')
+            // Delay is added to give time for messageListener to updates the assistant bubble text
+            setTimeout(() => {done()}, 100)
+          })
         })
-
 
         it('should set assistantBubbleText', () => {
           expect(yeldaChat.assistantBubbleText).not.to.be.null
@@ -624,7 +644,7 @@ describe('YeldaChat', () => {
       describe('yeldaChat.bubbleText not set', () => {
         before(async () => {
           mock.reset()
-          mock.get(testAPIUrl, {
+          mock.get(testAPIUrls[0], {
             status: 201,
             body: JSON.stringify({ data: { bubbleText: '' } })
           })
@@ -643,7 +663,7 @@ describe('YeldaChat', () => {
       describe('yeldaChat.isActivated', () => {
         before(async () => {
           mock.reset()
-          mock.get(testAPIUrl, {
+          mock.get(testAPIUrls[0], {
             status: 201,
             body: JSON.stringify({ data: {isActivated: false} })
           })
