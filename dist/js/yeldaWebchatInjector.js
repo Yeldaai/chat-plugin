@@ -1946,17 +1946,25 @@ var YeldaChat = function () {
   }, {
     key: 'listenUrlUpdate',
     value: function listenUrlUpdate() {
+      var _this6 = this;
+
       var shouldRemoveEvent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      var eventHandler = window[shouldRemoveEvent ? 'removeEventListener' : 'addEventListener'];
-
-      if (!this.urlUpdateListenerBind) {
-        this.urlUpdateListenerBind = this.urlUpdateListener.bind(this);
+      if (shouldRemoveEvent && this.urlObserver) {
+        this.urlObserver.disconnect();
+        this.urlObserver = null;
+        return;
       }
-      // mouseout event is used to listen leave viewport
-      eventHandler('locationchange', this.urlUpdateListenerBind);
-      eventHandler('popstate', this.urlUpdateListenerBind);
-      eventHandler('hashchange', this.urlUpdateListenerBind);
+      this.previousUrl = '';
+      this.urlObserver = new MutationObserver(function () {
+        if (location.href === _this6.previousUrl) {
+          return;
+        }
+        _this6.previousUrl = location.href;
+        _this6.urlUpdateListener();
+      });
+
+      this.urlObserver.observe(document, { childList: true, subtree: true });
     }
 
     /**
