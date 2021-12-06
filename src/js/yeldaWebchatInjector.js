@@ -82,16 +82,17 @@ class YeldaChat {
 
   /**
    * Create an assistantBubbleText component and add it to webChatContainer element
+   * @param {String} text - default null
    */
-  addAssistantBubbleText() {
-    if (!this.webChatContainer || !this.webchatSettings || !this.webchatSettings.bubbleText) {
+  addAssistantBubbleText(text = null) {
+    if (!this.webChatContainer || ((!this.webchatSettings || !this.webchatSettings.bubbleText) && !text)) {
       return
     }
 
     // create assistantBubbleText element and set the text
     this.assistantBubbleText = document.createElement('span')
     this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
-    this.assistantBubbleText.innerText = this.webchatSettings.bubbleText
+    this.assistantBubbleText.innerText = text || this.webchatSettings.bubbleText
 
     // Add click event to assistant text
     this.assistantBubbleText.addEventListener('click', this.openChat.bind(this))
@@ -437,6 +438,9 @@ class YeldaChat {
           window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: eventData.data }))
         }
       break
+      case config.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
+        this.addAssistantBubbleText(eventData.text)
+      break;
     }
   }
 
@@ -525,6 +529,7 @@ class YeldaChat {
       this.assistantBubbleText.classList.add('hidden')
     }
 
+    this.removeElement('yelda_assistant_bubble_text')
     // Propagate the event to the webchat
     document.getElementById('web_chat_frame').contentWindow.postMessage(config.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*')
   }
