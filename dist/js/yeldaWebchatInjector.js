@@ -823,7 +823,7 @@ var YeldaChat = function () {
 
     /**
      * Create an assistantBubbleText component and add it to webChatContainer element
-     * @param {String} text
+     * @param {String} text - default null
      */
 
   }, {
@@ -831,7 +831,8 @@ var YeldaChat = function () {
     value: function addAssistantBubbleText() {
       var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-      if (!this.webChatContainer || (!this.webchatSettings || !this.webchatSettings.bubbleText) && !text) {
+      text = text || this.webchatSettings && this.webchatSettings.bubbleText;
+      if (!this.webChatContainer || !text) {
         return;
       }
 
@@ -1137,7 +1138,6 @@ var YeldaChat = function () {
   }, {
     key: 'messageListener',
     value: function messageListener(event) {
-      console.log(event);
       // event.message is only there to support IE11.
       var eventData = event.data || event.message;
       if (!eventData) {
@@ -1186,7 +1186,6 @@ var YeldaChat = function () {
       /*
        * Complex event management parent.postMessage({ event: 'xxxx', data: yyyy })
        */
-      console.log(eventData.event);
       switch (eventData.event) {
         case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.OPEN_LIGHT_GALLERY:
           if (!eventData.mediaSources || !eventData.mediaSources.length) {
@@ -1207,7 +1206,6 @@ var YeldaChat = function () {
           }
           break;
         case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
-          console.log(eventData.text);
           this.addAssistantBubbleText(eventData.text);
           break;
       }
@@ -1305,10 +1303,12 @@ var YeldaChat = function () {
 
       // hide the assistant bubble text while opening the webchat window
       if (this.assistantBubbleText) {
-        this.assistantBubbleText.classList.add('hidden');
+        this.assistantBubbleText = null;
       }
 
+      // Remove assistant bubble text while opening the webchat window
       this.removeElement('yelda_assistant_bubble_text');
+
       // Propagate the event to the webchat
       document.getElementById('web_chat_frame').contentWindow.postMessage(_config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*');
     }

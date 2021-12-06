@@ -85,7 +85,8 @@ class YeldaChat {
    * @param {String} text - default null
    */
   addAssistantBubbleText(text = null) {
-    if (!this.webChatContainer || ((!this.webchatSettings || !this.webchatSettings.bubbleText) && !text)) {
+    text = text || this.webchatSettings && this.webchatSettings.bubbleText
+    if (!this.webChatContainer || !text) {
       return
     }
 
@@ -526,10 +527,12 @@ class YeldaChat {
 
     // hide the assistant bubble text while opening the webchat window
     if (this.assistantBubbleText) {
-      this.assistantBubbleText.classList.add('hidden')
+      this.assistantBubbleText = null
     }
 
+    // Remove assistant bubble text while opening the webchat window
     this.removeElement('yelda_assistant_bubble_text')
+
     // Propagate the event to the webchat
     document.getElementById('web_chat_frame').contentWindow.postMessage(config.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*')
   }
