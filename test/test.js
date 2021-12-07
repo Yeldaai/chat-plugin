@@ -660,6 +660,42 @@ describe('YeldaChat', () => {
         })
       })
 
+      describe('yeldaChat.bubbleText is set on triggering minimal notification', () => {
+        before((done) => {
+          yeldaChat.unLoadChat()
+          yeldaChat.setupChat(validMockData).then(() => {
+            yeldaChat.webChatIframe.contentWindow.parent.postMessage(
+              { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
+              '*'
+            )
+            // Delay is added to give time for messageListener to updates the assistant bubble text
+            setTimeout(() => {done()}, 100)
+          })
+        })
+
+        it('should set assistantBubbleText for notification', () => {
+          expect(yeldaChat.assistantBubbleText).not.to.be.null
+          expect(yeldaChat.assistantBubbleText).not.to.be.undefined
+          expect(yeldaChat.assistantBubbleText).to.have.rendered.text('Minimal notification message')
+        })
+
+        it('should add assistantBubbleText to webChatContainer', () => {
+          expect(yeldaChat.webChatContainer).to.contain('span')
+          expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
+        })
+      })
+
+      describe('yeldaChat.bubbleText should be removed while opening the webchat window', () => {
+        before(() => {
+          yeldaChat.openChat()
+        })
+
+        it('should not set assistantBubbleText element', () => {
+          expect(yeldaChat.assistantBubbleText).to.be.null
+          expect(yeldaChat.webChatContainer).not.to.contain('span')
+        })
+      })
+
       describe('yeldaChat.isActivated', () => {
         before(async () => {
           mock.reset()

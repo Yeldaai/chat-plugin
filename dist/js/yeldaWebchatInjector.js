@@ -823,19 +823,25 @@ var YeldaChat = function () {
 
     /**
      * Create an assistantBubbleText component and add it to webChatContainer element
+     * @param {String} text - default null
      */
 
   }, {
     key: 'addAssistantBubbleText',
     value: function addAssistantBubbleText() {
-      if (!this.webChatContainer || !this.webchatSettings || !this.webchatSettings.bubbleText) {
+      var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      text = text || this.webchatSettings && this.webchatSettings.bubbleText;
+      if (!this.webChatContainer || !text) {
         return;
       }
 
+      // Remove the assistant bubble text element before adding a new one
+      this.removeElement('yelda_assistant_bubble_text');
       // create assistantBubbleText element and set the text
       this.assistantBubbleText = document.createElement('span');
       this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
-      this.assistantBubbleText.innerText = this.webchatSettings.bubbleText;
+      this.assistantBubbleText.innerText = text || this.webchatSettings.bubbleText;
 
       // Add click event to assistant text
       this.assistantBubbleText.addEventListener('click', this.openChat.bind(this));
@@ -1201,6 +1207,9 @@ var YeldaChat = function () {
             window.dispatchEvent(new CustomEvent('isSendingMessage', { detail: eventData.data }));
           }
           break;
+        case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
+          this.addAssistantBubbleText(eventData.text);
+          break;
       }
     }
 
@@ -1296,8 +1305,11 @@ var YeldaChat = function () {
 
       // hide the assistant bubble text while opening the webchat window
       if (this.assistantBubbleText) {
-        this.assistantBubbleText.classList.add('hidden');
+        this.assistantBubbleText = null;
       }
+
+      // Remove assistant bubble text while opening the webchat window
+      this.removeElement('yelda_assistant_bubble_text');
 
       // Propagate the event to the webchat
       document.getElementById('web_chat_frame').contentWindow.postMessage(_config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.SENT.OPEN_CHAT, '*');
@@ -1397,7 +1409,7 @@ var YeldaChat = function () {
           }, _callee, _this2);
         }));
 
-        return function (_x4) {
+        return function (_x5) {
           return _ref.apply(this, arguments);
         };
       }());
@@ -1675,7 +1687,7 @@ var YeldaChat = function () {
           }, _callee2, _this4, [[12, 19]]);
         }));
 
-        return function (_x5) {
+        return function (_x6) {
           return _ref2.apply(this, arguments);
         };
       }());
@@ -1918,7 +1930,7 @@ var YeldaChat = function () {
           }, _callee4, _this5);
         }));
 
-        return function (_x6) {
+        return function (_x7) {
           return _ref4.apply(this, arguments);
         };
       }());
@@ -2551,7 +2563,8 @@ module.exports = {
       LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
       LISTEN_URL_UPDATE: 'listenUrlUpdate',
       ABSTAIN_URL_UPDATE: 'abstainUrlUpdate',
-      ADD_BUBBLE_TEXT: 'addBubbleText'
+      ADD_BUBBLE_TEXT: 'addBubbleText',
+      ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText'
     }
   }
 };

@@ -27,7 +27,8 @@ module.exports = {
       LISTEN_LEAVE_VIEWPORT: 'listenLeaveViewport',
       LISTEN_URL_UPDATE: 'listenUrlUpdate',
       ABSTAIN_URL_UPDATE: 'abstainUrlUpdate',
-      ADD_BUBBLE_TEXT: 'addBubbleText'
+      ADD_BUBBLE_TEXT: 'addBubbleText',
+      ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText'
     }
   }
 }
