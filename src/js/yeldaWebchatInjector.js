@@ -90,6 +90,8 @@ class YeldaChat {
       return
     }
 
+    // Remove the assistant bubble text element before adding a new one
+    this.removeElement('yelda_assistant_bubble_text')
     // create assistantBubbleText element and set the text
     this.assistantBubbleText = document.createElement('span')
     this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
