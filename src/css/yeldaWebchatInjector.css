@@ -48,6 +48,12 @@
   font-size: 35px !important;
 }
 
+.yelda_container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-weight: normal;
+}
+
 .yelda_container.inner {
   position: absolute !important;
   left: 45px;
@@ -140,56 +146,34 @@
 }
 /** CSS for assistant bubble text */
 #yelda_assistant_bubble_text {
+  animation: 1s ease-out 0s 1 fadeAndSlideInFromRight;
   position: absolute;
-  white-space: nowrap;
-  text-align: center;
-  transform: translate(-104%, -140%);
-  padding: 5px;
-  border: 1px solid #000000;
-  border-radius: 3px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  padding: 7px 10px;
+  border-radius: 8px;
+  box-shadow: #00000030 0px 2px 8px 0px;
   background-color: white;
   cursor: pointer;
-  animation: 1s ease-out 0s 1 fadeAndSlideInFromRight;
+  right: 0;
+  bottom: 76px;
+  max-width: 300px;
+  width: calc(66vw);
+  text-align: left;
+  font-size: 14px;
+  font-weight: normal;
 }
 
 #yelda_assistant_bubble_text.hidden {
   display: none;
 }
 
-/** css for adding tooltip like triangle to the assistant bubble text */
-#yelda_assistant_bubble_text::before,
-#yelda_assistant_bubble_text::after {
-  content: "";
-  position: absolute;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  top: 50%;
-  left: 100%;
-}
-
-/* The border of the triangle */
-#yelda_assistant_bubble_text::before {
-  border-left: 10px solid #000;
-  margin-top: -5px;
-  margin-left: 1px;
-}
-
-/* The white fill of the triangle */
-#yelda_assistant_bubble_text::after {
-  border-left: 10px solid white;
-  margin-top: -5px;
-  z-index: 1;
-}
-
 /** Animation for assistant bubble text */
 @keyframes fadeAndSlideInFromRight {
   0% {
-    transform: translateX(0%) translateY(-140%);
+    transform: translateY(10%);
     opacity: 0;
   }
   100% {
-    transform: translateX(-104%) translateY(-140%);
+    transform: translateY(0%);
     opacity: 1;
   }
 }
