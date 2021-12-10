@@ -842,6 +842,7 @@ var YeldaChat = function () {
       this.assistantBubbleText = document.createElement('span');
       this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
       this.assistantBubbleText.innerText = text;
+      // Create close button and add it to the bubble text container
       var closeButton = document.createElement('a');
       closeButton.setAttribute('class', 'bubbleCloseButton');
       closeButton.innerHTML = '&times;';
