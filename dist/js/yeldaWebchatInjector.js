@@ -841,13 +841,31 @@ var YeldaChat = function () {
       // create assistantBubbleText element and set the text
       this.assistantBubbleText = document.createElement('span');
       this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
-      this.assistantBubbleText.innerText = text || this.webchatSettings.bubbleText;
+      this.assistantBubbleText.innerText = text;
+      var closeButton = document.createElement('a');
+      closeButton.setAttribute('class', 'bubbleCloseButton');
+      closeButton.innerHTML = '&times;';
+      closeButton.onclick = this.closeBubbleText.bind(this);
+      this.assistantBubbleText.prepend(closeButton);
 
       // Add click event to assistant text
       this.assistantBubbleText.addEventListener('click', this.openChat.bind(this));
 
       // add assistant text to webChatContainer using the webchatSettings
       this.webChatContainer.appendChild(this.assistantBubbleText);
+    }
+
+    /**
+     * Callback function for bubble text close button
+     * @param {Event} event
+     */
+
+  }, {
+    key: 'closeBubbleText',
+    value: function closeBubbleText(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.removeElement('yelda_assistant_bubble_text');
     }
 
     /**
@@ -1208,7 +1226,9 @@ var YeldaChat = function () {
           }
           break;
         case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
-          this.addAssistantBubbleText(eventData.text);
+          if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
+            this.addAssistantBubbleText(eventData.text);
+          }
           break;
       }
     }

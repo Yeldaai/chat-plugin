@@ -166,6 +166,56 @@
   display: none;
 }
 
+/** css for adding tooltip like triangle to the assistant bubble text */
+#yelda_assistant_bubble_text::before,
+#yelda_assistant_bubble_text::after {
+  content: "";
+  position: absolute;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  top: 50%;
+  left: 100%;
+}
+
+/* The border of the triangle */
+#yelda_assistant_bubble_text::before {
+  border-left: 10px solid #000;
+  margin-top: -5px;
+  margin-left: 1px;
+}
+
+/* The white fill of the triangle */
+#yelda_assistant_bubble_text::after {
+  border-left: 10px solid white;
+  margin-top: -5px;
+  z-index: 1;
+}
+
+/* Close button for bubble text */
+.bubbleCloseButton {
+  position: relative;
+  top: -17px;
+  left: 95%;
+  color: white;
+  background: grey;
+  border-radius: 50%;
+  padding: 1px 4px;
+  font-size: 16px;
+  visibility: hidden; /* Don't show the close button by default */
+}
+
+/* Show the close button on mouse hover */
+#yelda_assistant_bubble_text:hover .bubbleCloseButton {
+  visibility: visible;
+}
+
+/* Show the close button always on mobile screen */
+@media only screen and (max-width: 768px) {
+  .bubbleCloseButton {
+    visibility: visible !important;
+  }
+}
+
 /** Animation for assistant bubble text */
 @keyframes fadeAndSlideInFromRight {
   0% {
