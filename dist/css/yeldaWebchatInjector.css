@@ -166,31 +166,6 @@
   display: none;
 }
 
-/** css for adding tooltip like triangle to the assistant bubble text */
-#yelda_assistant_bubble_text::before,
-#yelda_assistant_bubble_text::after {
-  content: "";
-  position: absolute;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  top: 50%;
-  left: 100%;
-}
-
-/* The border of the triangle */
-#yelda_assistant_bubble_text::before {
-  border-left: 10px solid #000;
-  margin-top: -5px;
-  margin-left: 1px;
-}
-
-/* The white fill of the triangle */
-#yelda_assistant_bubble_text::after {
-  border-left: 10px solid white;
-  margin-top: -5px;
-  z-index: 1;
-}
-
 /* Close button for bubble text */
 .bubbleCloseButton {
   position: relative;

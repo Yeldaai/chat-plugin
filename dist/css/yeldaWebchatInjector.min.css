@@ -19,9 +19,6 @@
 @media only screen and (max-width:768px){.yelda_container:not(.inner){position:fixed;right:20px;bottom:20px;z-index:2147483647}.yelda_iframe_container:not(.inner){position:fixed;left:0;top:0;right:0;bottom:0;width:100%;height:auto;max-height:none;border-radius:0;margin:0 !important;padding:0;transition-duration:0s}.yelda_iframe_container.inner{width:100%;box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px;transition-duration:1s;margin:0px 20px 0 0px;overflow:hidden}}
 #yelda_assistant_bubble_text{animation:1s ease-out 0s 1 fadeAndSlideInFromRight;position:absolute;padding:7px 10px;border-radius:8px;box-shadow:#00000030 0 2px 8px 0;background-color:white;cursor:pointer;right:0;bottom:76px;max-width:300px;width:calc(66vw);text-align:left;font-size:14px;font-weight:normal}
 #yelda_assistant_bubble_text.hidden{display:none}
-#yelda_assistant_bubble_text::before,#yelda_assistant_bubble_text::after{content:"";position:absolute;border-top:5px solid transparent;border-bottom:5px solid transparent;top:50%;left:100%}
-#yelda_assistant_bubble_text::before{border-left:10px solid #000;margin-top:-5px;margin-left:1px}
-#yelda_assistant_bubble_text::after{border-left:10px solid white;margin-top:-5px;z-index:1}
 .bubbleCloseButton{position:relative;top:-17px;left:95%;color:white;background:grey;border-radius:50%;padding:1px 4px;font-size:16px;visibility:hidden}
 #yelda_assistant_bubble_text:hover .bubbleCloseButton{visibility:visible}
 @media only screen and (max-width:768px){.bubbleCloseButton{visibility:visible !important}}
