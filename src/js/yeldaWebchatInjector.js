@@ -96,18 +96,27 @@ class YeldaChat {
     this.assistantBubbleText = document.createElement('span')
     this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
     this.assistantBubbleText.innerText = text
-    // Create close button and add it to the bubble text container
-    const closeButton = document.createElement('a')
-    closeButton.setAttribute('class', 'bubbleCloseButton')
-    closeButton.innerHTML = '&times;'
-    closeButton.onclick = this.closeBubbleText.bind(this)
-    this.assistantBubbleText.prepend(closeButton)
+    this.addCloseButtonForBubbleText()
 
     // Add click event to assistant text
     this.assistantBubbleText.addEventListener('click', this.openChat.bind(this))
 
     // add assistant text to webChatContainer using the webchatSettings
     this.webChatContainer.appendChild(this.assistantBubbleText)
+  }
+
+  /**
+   * Add close button for bubble text
+   */
+  addCloseButtonForBubbleText() {
+    // Create close button and add it to the bubble text container
+    const closeButton = document.createElement('a')
+    closeButton.setAttribute('class', 'bubbleCloseButton')
+    closeButton.setAttribute('id', 'yelda_assistant_bubble_text_close')
+    closeButton.setAttribute('href', '#')
+    closeButton.innerHTML = '&times;'
+    closeButton.onclick = this.closeBubbleText.bind(this)
+    this.assistantBubbleText.prepend(closeButton)
   }
 
   /**
@@ -118,6 +127,7 @@ class YeldaChat {
     event.preventDefault()
     event.stopPropagation()
     this.removeElement('yelda_assistant_bubble_text')
+    this.assistantBubbleText = null
   }
 
   /**

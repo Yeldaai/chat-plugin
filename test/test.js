@@ -683,11 +683,37 @@ describe('YeldaChat', () => {
           expect(yeldaChat.webChatContainer).to.contain('span')
           expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
         })
+
+        it('should contain close button if the assistantBubbleText exists', () => {
+          expect(yeldaChat.assistantBubbleText).to.contain('a.bubbleCloseButton')
+        })
+
+        //console.log(yeldaChat.assistantBubbleText, yeldaChat.assistantBubbleText.getElementsByClassName('bubbleCloseButton'))
+        //document.getElementsByClassName('a.bubbleCloseButton').click()
+
+        it('should assistantBubbleText to be removed while clicking the bubbleCloseButton', () => {
+          document.getElementById('yelda_assistant_bubble_text_close').click()
+          expect(yeldaChat.assistantBubbleText).to.be.null
+          expect(yeldaChat.webChatContainer).not.to.contain('span')
+        })
       })
 
-      describe('yeldaChat.bubbleText should be removed while opening the webchat window', () => {
-        before(() => {
-          yeldaChat.openChat()
+    describe('yeldaChat.bubbleText should be removed while opening the webchat window', () => {
+        before((done) => {
+          yeldaChat.unLoadChat()
+          yeldaChat.setupChat(validMockData).then(() => {
+            yeldaChat.webChatIframe.contentWindow.parent.postMessage(
+              { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
+              '*'
+            )
+
+            // Delay is added to give time for messageListener to updates the assistant bubble text
+            setTimeout(() => {
+              yeldaChat.openChat()
+              done()
+            }, 100)
+
+          })
         })
 
         it('should not set assistantBubbleText element', () => {
