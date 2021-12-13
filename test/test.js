@@ -688,9 +688,6 @@ describe('YeldaChat', () => {
           expect(yeldaChat.assistantBubbleText).to.contain('a.bubbleCloseButton')
         })
 
-        //console.log(yeldaChat.assistantBubbleText, yeldaChat.assistantBubbleText.getElementsByClassName('bubbleCloseButton'))
-        //document.getElementsByClassName('a.bubbleCloseButton').click()
-
         it('should assistantBubbleText to be removed while clicking the bubbleCloseButton', () => {
           document.getElementById('yelda_assistant_bubble_text_close').click()
           expect(yeldaChat.assistantBubbleText).to.be.null
