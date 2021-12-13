@@ -95,13 +95,39 @@ class YeldaChat {
     // create assistantBubbleText element and set the text
     this.assistantBubbleText = document.createElement('span')
     this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
-    this.assistantBubbleText.innerText = text || this.webchatSettings.bubbleText
+    this.assistantBubbleText.innerText = text
+    this.addCloseButtonForBubbleText()
 
     // Add click event to assistant text
     this.assistantBubbleText.addEventListener('click', this.openChat.bind(this))
 
     // add assistant text to webChatContainer using the webchatSettings
     this.webChatContainer.appendChild(this.assistantBubbleText)
+  }
+
+  /**
+   * Add close button for bubble text
+   */
+  addCloseButtonForBubbleText() {
+    // Create close button and add it to the bubble text container
+    const closeButton = document.createElement('a')
+    closeButton.setAttribute('class', 'bubbleCloseButton')
+    closeButton.setAttribute('id', 'yelda_assistant_bubble_text_close')
+    closeButton.setAttribute('href', '#')
+    closeButton.innerHTML = '&times;'
+    closeButton.onclick = this.closeBubbleText.bind(this)
+    this.assistantBubbleText.prepend(closeButton)
+  }
+
+  /**
+   * Callback function for bubble text close button
+   * @param {Event} event
+   */
+  closeBubbleText(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.removeElement('yelda_assistant_bubble_text')
+    this.assistantBubbleText = null
   }
 
   /**
@@ -442,7 +468,9 @@ class YeldaChat {
         }
       break
       case config.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
-        this.addAssistantBubbleText(eventData.text)
+        if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
+          this.addAssistantBubbleText(eventData.text)
+        }
       break;
     }
   }
