@@ -3,6 +3,33 @@
 
 .yelda_assistant_img {
   cursor: pointer;
+  opacity: 1;
+  height: auto;
+  transition-property: opacity, height;
+  transition-duration: 1s, 1ms;
+  transition-delay: 1.2s, 1.2s;
+  animation-name: appear;
+  animation-duration: 0.8s;
+  animation-delay: 1s;
+  animation-timing-function: cubic-bezier(0.230, 1.000, 0.320, 1.000);
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.yelda_container.y_active .yelda_assistant_img{
+  opacity:0 ;
+  height: 0;
+  transition-property: opacity, height;
+  transition-duration: 1ms, 1ms;
+  transition-delay: 0, 0;
+  animation: none;
+}
+
+.yelda_assistant_img.activated{
+  transition-delay: 1s;
+  /*animation-delay: 0s;*/
 }
 
 .yelda_assistant_img.default {
@@ -38,8 +65,6 @@
   font-size: 35px !important;
 }
 
-
-
 .yelda_container {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
   'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -55,7 +80,6 @@
   top: 80px;
 }
 
-
 #web_chat_frame{
   height: 100% !important;
   width: 100% !important;
@@ -70,12 +94,15 @@
 
 .yelda_iframe_container {
   width: 430px;
-  height: calc(100vh - 170px);
+  height: 0;
   max-height: 600px;
-  transition-duration: 1s;
-  margin: 0px 20px 0 0px;
+  margin: 0;
   overflow: hidden;
+  transition-property: opacity, transform, height;
+  transition-duration: 1s, 1s, 1ms;
+  transition-delay: 0s, 0s, 1s;
   opacity: 0;
+  transform: translateY(20px);
 }
 
 .yelda_iframe_container:not(.voiceFirstUI) {
@@ -83,9 +110,13 @@
   border-radius: 6px;
 }
 
-.yelda_iframe_container.y_active{
+.y_active .yelda_iframe_container{
+  height: calc(100vh - 170px);
+  transition-property: opacity, transform, height;
+  transition-duration: 1s, 1s, 1ms;
+  transition-delay: 0s, 0s, 0s;
   opacity: 1 !important;
-  margin-bottom: 20px !important;
+  transform: translateY(0);
 }
 
 .lg-backdrop {
@@ -123,21 +154,24 @@
     border-radius: 0;
     margin: 0 !important;
     padding: 0;
-    transition-duration: 0s;
   }
 
   .yelda_iframe_container.inner {
     width: 100%;
     box-shadow: 0 5px 32px rgba(0,0,0,.16);
     border-radius: 6px;
-    transition-duration: 1s;
     margin: 0px 20px 0 0px;
     overflow: hidden;
   }
 }
 /** CSS for assistant bubble text */
 #yelda_assistant_bubble_text {
-  animation: 1s ease-out 0s 1 fadeAndSlideInFromRight;
+  animation-name: fadeAndSlideInFromRight;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-timing-function: cubic-bezier(0.230, 1.000, 0.320, 1.000);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
   padding: 7px 10px 6px;
   border-radius: 8px;
   box-shadow: #00000030 0 2px 8px 0;
@@ -152,8 +186,15 @@
   display: inline-block;
   margin-bottom: 10px;
 }
+#yelda_assistant_bubble_text.y_notification{
+  animation-delay: 0s;
+}
 
 #yelda_assistant_bubble_text.hidden {
+  display: none;
+}
+
+.y_active #yelda_assistant_bubble_text{
   display: none;
 }
 
@@ -165,31 +206,34 @@
   border-radius: 68%;
   padding: 0;
   font-size: 20px;
-  display: block;
   width: 27px;
   height: 27px;
   line-height: 22px;
   text-align: center;
   right: -14px;
   top: -17px;
-  visibility: hidden; /* Don't show the close button by default */
+  text-decoration: none !important;
+  transition: all 0.15s ease-in;
+  transform: scale(0.7);
+  opacity:0; /* Don't show the close button by default */
 }
 
 a.bubbleCloseButton:hover {
   color: white;
-  text-decoration: none;
   background: #5a5a5a;
 }
 
 /* Show the close button on mouse hover */
 #yelda_assistant_bubble_text:hover .bubbleCloseButton {
-  visibility: visible;
+  opacity:1;
+  transform: scale(1);
 }
 
 /* Show the close button always on mobile screen */
 @media only screen and (max-width: 768px) {
   .bubbleCloseButton {
-    visibility: visible !important;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -201,6 +245,18 @@ a.bubbleCloseButton:hover {
   }
   100% {
     transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+
+@keyframes appear {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
     opacity: 1;
   }
 }
