@@ -482,6 +482,28 @@ describe('YeldaChat', () => {
       })
     })
 
+    describe('yeldaChat.initWebChatContainerYActiveClass', () => {
+      before(async () => {
+        yeldaChat.unLoadChat()
+        const mockData = {
+          'assistantSlug': 'testClient',
+          'assistantId': '12345678',
+          'chatUrl': 'https://app.yelda.ai/chat',
+          'chatPath': 'chat',
+          'locale': 'fr_FR',
+          'isAdmin': true,
+          'shouldBeOpened': true,
+          'isStartBtn': true,
+          'canBeClosed': false
+        }
+        await yeldaChat.setupChat(mockData)
+      })
+
+      it('webChatContainer should have attribute class y_active when the webchat force to open and can\'t be closed', () => {
+        expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container y_active')
+      })
+    })
+
     describe('yeldaChat.bubbleContainer', () => {
       before(async () => {
         yeldaChat.unLoadChat()
@@ -598,7 +620,7 @@ describe('YeldaChat', () => {
         })
 
         it('should contain voiceFirstUI class', (done) => {
-          expect(yeldaChat.iframeContainer).to.have.attribute('class', 'yelda_iframe_container voiceFirstUI y_active')
+          expect(yeldaChat.iframeContainer).to.have.attribute('class', 'yelda_iframe_container voiceFirstUI')
           done()
         })
 
@@ -716,6 +738,24 @@ describe('YeldaChat', () => {
         it('should not set assistantBubbleText element', () => {
           expect(yeldaChat.assistantBubbleText).to.be.null
           expect(yeldaChat.webChatContainer).not.to.contain('span')
+        })
+
+        it('should webChatContainer have y_active after opening the webchat', () => {
+          expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container y_active')
+        })
+      })
+
+      describe('yeldaChat.closeChat hide the webchat iframe', () => {
+        before((done) => {
+            // Delay is added to give time for messageListener to updates the assistant bubble text
+          setTimeout(() => {
+            yeldaChat.closeChat()
+            done()
+          }, 100)
+        })
+
+        it('should webChatContainer note have y_active after closing the webchat', () => {
+          expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container')
         })
       })
 

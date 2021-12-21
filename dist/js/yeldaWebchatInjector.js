@@ -824,12 +824,14 @@ var YeldaChat = function () {
     /**
      * Create an assistantBubbleText component and add it to webChatContainer element
      * @param {String} text - default null
+     * @param {String} cssClass - default ''
      */
 
   }, {
     key: 'addAssistantBubbleText',
     value: function addAssistantBubbleText() {
       var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var cssClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
       text = text || this.webchatSettings && this.webchatSettings.bubbleText;
       if (!this.webChatContainer || !text) {
@@ -841,6 +843,7 @@ var YeldaChat = function () {
       // create assistantBubbleText element and set the text
       this.assistantBubbleText = document.createElement('span');
       this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text');
+      this.assistantBubbleText.setAttribute('class', cssClass);
       this.assistantBubbleText.innerText = text;
       this.addCloseButtonForBubbleText();
 
@@ -1038,6 +1041,46 @@ var YeldaChat = function () {
     }
 
     /**
+     * Add 'y_active' class to the webChatContainer if required
+     *
+     * To control the opacity of the iframe container (.yelda_iframe_container) and the assistant image (.yelda_assistant_img),
+      * We add and remove the "y_active" CSS class to the webChatContainer (.yelda_container) which is always visible
+      * By default
+      * - yelda_iframe_container is hidden (opacity: 0;)
+      * - assistant image is visible (opacity: 1 for yelda_assistant_img)
+      *
+      * When we add the class "y_active" to  (webChatContainer)
+      * - yelda_iframe_container is now visible (.y_active .yelda_iframe_container => opacity: 1)
+      * - the assistant image is hidden (.yelda_container.y_active .yelda_assistant_img => opacity: 0
+      *
+      * @param {Boolean} data.shouldBeOpened
+      * @param {Boolean} data.isStartBtn
+      * @param {Boolean} data.canBeClosed
+      */
+
+  }, {
+    key: 'initWebChatContainerYActiveClass',
+    value: function initWebChatContainerYActiveClass(data) {
+      // should be opened on load OR has a start button
+      var shoulBeOpened = data.shouldBeOpened || data.isStartBtn;
+
+      // cannot be closed (canBeClosed explicitly set to false)
+      var cantBeClosed = data.hasOwnProperty('canBeClosed') && !data.canBeClosed;
+
+      /**
+       * If we are sure that the webchat should be opened from the creation and displayed all the time
+       * we add the y_active class to webChatContainer at the creation
+       *
+       * Otherwise yelda_assistant_img click event management will take care of showing and hiding the webchat
+       * - closeChat() remove "y_active" from the yelda container
+       * - openChat() add y_active" to the yelda container
+       */
+      if (shoulBeOpened && cantBeClosed) {
+        this.webChatContainer.classList.add('y_active');
+      }
+    }
+
+    /**
      * Create iframeContainer and it's child webchat iframe, and add it to webChatContainer
      * @param {String} url webchat url
      * @param {Boolean} data.shouldBeOpened
@@ -1066,24 +1109,7 @@ var YeldaChat = function () {
           classList += ' inner';
         }
 
-        /**
-         * add CSS class which controls the opacity of the frame container if the iframe:
-         * - should be opened on load OR has a start button
-         * - cannot be closed (canBeClosed explicitly set to false)
-         *
-         * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
-         * Otherwise,
-         */
-        if ((data.shouldBeOpened || data.isStartBtn) && data.hasOwnProperty('canBeClosed') && !data.canBeClosed) {
-          classList += ' y_active';
-        } else {
-          /**
-           * If the iframe can be closed, hide it by default
-           * yelda_assistant_img click event management will take care of showing and hiding the webchat
-           * And if it should be opened, the webchat will trigger the 'openChat' event on its own
-           */
-          this.iframeContainer.style.cssText = 'display: none;';
-        }
+        this.initWebChatContainerYActiveClass(data);
 
         this.iframeContainer.setAttribute('class', classList);
         this.webChatContainer.appendChild(this.iframeContainer);
@@ -1241,7 +1267,7 @@ var YeldaChat = function () {
           break;
         case _config__WEBPACK_IMPORTED_MODULE_14___default.a.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
           if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
-            this.addAssistantBubbleText(eventData.text);
+            this.addAssistantBubbleText(eventData.text, 'y_notification');
           }
           break;
       }
@@ -1307,15 +1333,11 @@ var YeldaChat = function () {
   }, {
     key: 'closeChat',
     value: function closeChat() {
-      var assistantImgElement = document.getElementById('yelda_assistant_img');
-      if (assistantImgElement !== null) {
-        assistantImgElement.style.display = 'inline-block';
-      }
-
-      var yeldaIframeContainerElement = document.getElementById('yelda_iframe_container');
-      if (yeldaIframeContainerElement !== null) {
-        yeldaIframeContainerElement.classList.remove('y_active');
-        yeldaIframeContainerElement.style.display = 'none';
+      // Closing the webchat = remove the y_active class on #yelda_container
+      // Hiding the iframe + showing back the bubble + animation  => All is done in CSS
+      var yeldaContainerElement = document.getElementById('yelda_container');
+      if (yeldaContainerElement !== null) {
+        yeldaContainerElement.classList.remove('y_active');
       }
     }
 
@@ -1326,18 +1348,21 @@ var YeldaChat = function () {
   }, {
     key: 'openChat',
     value: function openChat() {
+      // Adding the class "activated" allows the CSS to change the transition/animation after the first opening
       var assistantImgElement = document.getElementById('yelda_assistant_img');
       if (assistantImgElement !== null) {
-        assistantImgElement.style.display = 'none';
+        assistantImgElement.classList.add('activated');
       }
 
-      var yeldaIframeContainerElement = document.getElementById('yelda_iframe_container');
-      if (yeldaIframeContainerElement !== null) {
-        yeldaIframeContainerElement.style.display = 'block';
-        yeldaIframeContainerElement.classList.add('y_active');
+      // Opening the webchat = adding the y_active class on #yelda_container
+      // Showing the iframe + hiding bubble + hiding minimal notification + animation => All is done in CSS
+      var yeldaContainerElement = document.getElementById('yelda_container');
+      if (yeldaContainerElement !== null) {
+        yeldaContainerElement.classList.add('y_active');
       }
 
-      // hide the assistant bubble text while opening the webchat window
+      // Hide the assistant bubble text while opening the webchat window
+      // Note :  bubble text container is also hidden in CSS
       if (this.assistantBubbleText) {
         this.assistantBubbleText = null;
       }
@@ -1443,7 +1468,7 @@ var YeldaChat = function () {
           }, _callee, _this2);
         }));
 
-        return function (_x5) {
+        return function (_x6) {
           return _ref.apply(this, arguments);
         };
       }());
@@ -1721,7 +1746,7 @@ var YeldaChat = function () {
           }, _callee2, _this4, [[12, 19]]);
         }));
 
-        return function (_x6) {
+        return function (_x7) {
           return _ref2.apply(this, arguments);
         };
       }());
@@ -1964,7 +1989,7 @@ var YeldaChat = function () {
           }, _callee4, _this5);
         }));
 
-        return function (_x7) {
+        return function (_x8) {
           return _ref4.apply(this, arguments);
         };
       }());
@@ -2206,8 +2231,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 var require;var require;/**!
  * lg-video.js | 1.2.0 | May 20th 2020
  * http://sachinchoolur.github.io/lg-video.js
- * Copyright (c) 2016 Sachin N;
- * @license GPLv3
+ * Copyright (c) 2016 Sachin N; 
+ * @license GPLv3 
  */(function(f){if(true){module.exports=f()}else { var g; }})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return require(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2475,11 +2500,12 @@ var require;var require;/**!
             videoTitle = this.core.s.dynamicEl[index].title;
         } else {
             videoTitle = this.core.items[index].getAttribute('title');
-            var firstImage = this.core.items[index].querySelector('img');
+        }
 
-            if (firstImage) {
-                videoTitle = videoTitle || firstImage.getAttribute('alt');
-            }
+        var firstImage = this.core.items[index].querySelector('img');
+
+        if (firstImage) {
+            videoTitle = videoTitle || firstImage.getAttribute('alt');
         }
 
         videoTitle = videoTitle ? 'title="' + videoTitle + '"' : '';

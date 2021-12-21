@@ -83,8 +83,9 @@ class YeldaChat {
   /**
    * Create an assistantBubbleText component and add it to webChatContainer element
    * @param {String} text - default null
+   * @param {String} cssClass - default ''
    */
-  addAssistantBubbleText(text = null) {
+  addAssistantBubbleText(text = null, cssClass = '') {
     text = text || this.webchatSettings && this.webchatSettings.bubbleText
     if (!this.webChatContainer || !text) {
       return
@@ -95,6 +96,7 @@ class YeldaChat {
     // create assistantBubbleText element and set the text
     this.assistantBubbleText = document.createElement('span')
     this.assistantBubbleText.setAttribute('id', 'yelda_assistant_bubble_text')
+    this.assistantBubbleText.setAttribute('class', cssClass)
     this.assistantBubbleText.innerText = text
     this.addCloseButtonForBubbleText()
 
@@ -278,6 +280,43 @@ class YeldaChat {
   }
 
   /**
+   * Add 'y_active' class to the webChatContainer if required
+   *
+   * To control the opacity of the iframe container (.yelda_iframe_container) and the assistant image (.yelda_assistant_img),
+    * We add and remove the "y_active" CSS class to the webChatContainer (.yelda_container) which is always visible
+    * By default
+    * - yelda_iframe_container is hidden (opacity: 0;)
+    * - assistant image is visible (opacity: 1 for yelda_assistant_img)
+    *
+    * When we add the class "y_active" to  (webChatContainer)
+    * - yelda_iframe_container is now visible (.y_active .yelda_iframe_container => opacity: 1)
+    * - the assistant image is hidden (.yelda_container.y_active .yelda_assistant_img => opacity: 0
+    *
+    * @param {Boolean} data.shouldBeOpened
+    * @param {Boolean} data.isStartBtn
+    * @param {Boolean} data.canBeClosed
+    */
+  initWebChatContainerYActiveClass(data) {
+      // should be opened on load OR has a start button
+      const shoulBeOpened = data.shouldBeOpened || data.isStartBtn
+
+      // cannot be closed (canBeClosed explicitly set to false)
+      const cantBeClosed = data.hasOwnProperty('canBeClosed') && !data.canBeClosed
+
+      /**
+       * If we are sure that the webchat should be opened from the creation and displayed all the time
+       * we add the y_active class to webChatContainer at the creation
+       *
+       * Otherwise yelda_assistant_img click event management will take care of showing and hiding the webchat
+       * - closeChat() remove "y_active" from the yelda container
+       * - openChat() add y_active" to the yelda container
+       */
+     if (shoulBeOpened && cantBeClosed) {
+       this.webChatContainer.classList.add('y_active')
+     }
+  }
+
+  /**
    * Create iframeContainer and it's child webchat iframe, and add it to webChatContainer
    * @param {String} url webchat url
    * @param {Boolean} data.shouldBeOpened
@@ -303,24 +342,7 @@ class YeldaChat {
         classList += ' inner'
       }
 
-      /**
-       * add CSS class which controls the opacity of the frame container if the iframe:
-       * - should be opened on load OR has a start button
-       * - cannot be closed (canBeClosed explicitly set to false)
-       *
-       * If we are sure that the webchat should be opened and displayed all the time, we can add the y_active class right away
-       * Otherwise,
-       */
-      if ((data.shouldBeOpened || data.isStartBtn) && data.hasOwnProperty('canBeClosed') && !data.canBeClosed) {
-        classList += ' y_active'
-      } else {
-        /**
-         * If the iframe can be closed, hide it by default
-         * yelda_assistant_img click event management will take care of showing and hiding the webchat
-         * And if it should be opened, the webchat will trigger the 'openChat' event on its own
-         */
-        this.iframeContainer.style.cssText = 'display: none;'
-      }
+      this.initWebChatContainerYActiveClass(data)
 
       this.iframeContainer.setAttribute('class', classList)
       this.webChatContainer.appendChild(this.iframeContainer)
@@ -469,7 +491,7 @@ class YeldaChat {
       break
       case config.FRAME_EVENT_TYPES.RECEIVED.ADD_MINIMAL_NOTIFICATION_TEXT:
         if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
-          this.addAssistantBubbleText(eventData.text)
+          this.addAssistantBubbleText(eventData.text, 'y_notification')
         }
       break;
     }
@@ -528,15 +550,11 @@ class YeldaChat {
    * Close the webchat window
    */
   closeChat() {
-    const assistantImgElement = document.getElementById('yelda_assistant_img')
-    if (assistantImgElement !== null) {
-      assistantImgElement.style.display = 'inline-block'
-    }
-
-    const yeldaIframeContainerElement = document.getElementById('yelda_iframe_container')
-    if (yeldaIframeContainerElement !== null) {
-      yeldaIframeContainerElement.classList.remove('y_active')
-      yeldaIframeContainerElement.style.display = 'none'
+    // Closing the webchat = remove the y_active class on #yelda_container
+    // Hiding the iframe + showing back the bubble + animation  => All is done in CSS
+    const yeldaContainerElement = document.getElementById('yelda_container')
+    if (yeldaContainerElement !== null) {
+      yeldaContainerElement.classList.remove('y_active')
     }
   }
 
@@ -544,18 +562,21 @@ class YeldaChat {
    * Open the webchat window
    */
   openChat() {
+    // Adding the class "activated" allows the CSS to change the transition/animation after the first opening
     const assistantImgElement = document.getElementById('yelda_assistant_img')
     if (assistantImgElement !== null) {
-      assistantImgElement.style.display = 'none'
+      assistantImgElement.classList.add('activated')
     }
 
-    const yeldaIframeContainerElement = document.getElementById('yelda_iframe_container')
-    if (yeldaIframeContainerElement !== null) {
-      yeldaIframeContainerElement.style.display = 'block'
-      yeldaIframeContainerElement.classList.add('y_active')
+    // Opening the webchat = adding the y_active class on #yelda_container
+    // Showing the iframe + hiding bubble + hiding minimal notification + animation => All is done in CSS
+    const yeldaContainerElement = document.getElementById('yelda_container')
+    if (yeldaContainerElement !== null) {
+      yeldaContainerElement.classList.add('y_active')
     }
 
-    // hide the assistant bubble text while opening the webchat window
+    // Hide the assistant bubble text while opening the webchat window
+    // Note :  bubble text container is also hidden in CSS
     if (this.assistantBubbleText) {
       this.assistantBubbleText = null
     }
