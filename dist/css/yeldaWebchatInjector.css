@@ -3,33 +3,28 @@
 
 .yelda_assistant_img {
   cursor: pointer;
-  opacity: 1;
   height: auto;
-  transition-property: opacity, height;
-  transition-duration: 1s, 1ms;
-  transition-delay: 1.2s, 1.2s;
+  transition: opacity 0.6s ease-in-out 1.2s, height 1ms linear 1.2s;
   animation-name: appear;
   animation-duration: 0.8s;
   animation-delay: 1s;
   animation-timing-function: cubic-bezier(0.230, 1.000, 0.320, 1.000);
   animation-iteration-count: 1;
-  animation-fill-mode: forwards;
+  animation-fill-mode: both;
   opacity: 0;
   overflow: hidden;
 }
 
 .yelda_container.y_active .yelda_assistant_img{
   opacity:0 ;
-  height: 0;
-  transition-property: opacity, height;
-  transition-duration: 1ms, 1ms;
-  transition-delay: 0, 0;
+  height: 0 !important;
+  width: 0 !important;
+  transition: opacity 1ms linear 0s, height 1ms linear 0s;
   animation: none;
 }
 
 .yelda_assistant_img.activated{
-  transition-delay: 1s;
-  /*animation-delay: 0s;*/
+  transition: opacity 0.6s ease-in-out 0.6s, height 1ms linear 0.6s;
 }
 
 .yelda_assistant_img.default {
@@ -65,6 +60,9 @@
   font-size: 35px !important;
 }
 
+
+
+
 .yelda_container {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
   'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -93,14 +91,12 @@
 }
 
 .yelda_iframe_container {
-  width: 430px;
+  width: 0;
   height: 0;
   max-height: 600px;
   margin: 0;
   overflow: hidden;
-  transition-property: opacity, transform, height;
-  transition-duration: 1s, 1s, 1ms;
-  transition-delay: 0s, 0s, 1s;
+  transition: opacity 0.6s linear 0s, transform 0.6s ease-in-out 0s, height 1ms linear 0.6s, width 1ms linear 0.6s;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -111,10 +107,9 @@
 }
 
 .y_active .yelda_iframe_container{
+  width: 430px;
   height: calc(100vh - 170px);
-  transition-property: opacity, transform, height;
-  transition-duration: 1s, 1s, 1ms;
-  transition-delay: 0s, 0s, 0s;
+  transition: opacity 0.6s linear 0s, transform 0.6s ease-in-out 0s, height 1ms linear 0s, width 1ms linear 0s;
   opacity: 1 !important;
   transform: translateY(0);
 }
@@ -260,3 +255,4 @@ a.bubbleCloseButton:hover {
     opacity: 1;
   }
 }
+

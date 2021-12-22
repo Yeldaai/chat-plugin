@@ -1,7 +1,7 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
-.yelda_assistant_img{cursor:pointer;opacity:1;height:auto;transition-property:opacity, height;transition-duration:1s, 1ms;transition-delay:1.2s,1.2s;animation-name:appear;animation-duration:.8s;animation-delay:1s;animation-timing-function:cubic-bezier(.23, 1, .32, 1);animation-iteration-count:1;animation-fill-mode:forwards;opacity:0;overflow:hidden}
-.yelda_container.y_active .yelda_assistant_img{opacity:0 ;height:0;transition-property:opacity, height;transition-duration:1ms, 1ms;transition-delay:0, 0;animation:none}
-.yelda_assistant_img.activated{transition-delay:1s}
+.yelda_assistant_img{cursor:pointer;height:auto;transition:opacity .6s ease-in-out 1.2s,height 1ms linear 1.2s;animation-name:appear;animation-duration:.8s;animation-delay:1s;animation-timing-function:cubic-bezier(.23, 1, .32, 1);animation-iteration-count:1;animation-fill-mode:both;opacity:0;overflow:hidden}
+.yelda_container.y_active .yelda_assistant_img{opacity:0 ;height:0 !important;width:0 !important;transition:opacity 1ms linear 0s, height 1ms linear 0s;animation:none}
+.yelda_assistant_img.activated{transition:opacity .6s ease-in-out .6s,height 1ms linear .6s}
 .yelda_assistant_img.default{box-shadow:0 5px 10px rgba(0,0,0,0.16);text-align:center;color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
 .yelda_assistant_img.custom{height:auto;width:auto}
 .yelda_assistant_img.custom img{max-height:100%;max-width:100%}
@@ -10,9 +10,9 @@
 .yelda_container.inner{position:absolute !important;left:45px;top:80px}
 #web_chat_frame{height:100% !important;width:100% !important}
 .yelda_container:not(.inner){position:fixed;right:20px;bottom:20px;z-index:2147483647}
-.yelda_iframe_container{width:430px;height:0;max-height:600px;margin:0;overflow:hidden;transition-property:opacity, transform, height;transition-duration:1s, 1s, 1ms;transition-delay:0s, 0s, 1s;opacity:0;transform:translateY(20px)}
+.yelda_iframe_container{width:0;height:0;max-height:600px;margin:0;overflow:hidden;transition:opacity .6s linear 0s,transform .6s ease-in-out 0s,height 1ms linear .6s,width 1ms linear .6s;opacity:0;transform:translateY(20px)}
 .yelda_iframe_container:not(.voiceFirstUI){box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px}
-.y_active .yelda_iframe_container{height:calc(100vh - 170px);transition-property:opacity, transform, height;transition-duration:1s, 1s, 1ms;transition-delay:0s, 0s, 0s;opacity:1 !important;transform:translateY(0)}
+.y_active .yelda_iframe_container{width:430px;height:calc(100vh - 170px);transition:opacity .6s linear 0s,transform .6s ease-in-out 0s,height 1ms linear 0s,width 1ms linear 0s;opacity:1 !important;transform:translateY(0)}
 .lg-backdrop{z-index:10000000000 !important}
 .lg-outer{z-index:10000000001 !important}
 @media only screen and (max-width:768px){.yelda_container:not(.inner){position:fixed;right:20px;bottom:20px;z-index:2147483647}.yelda_iframe_container:not(.inner){position:fixed;left:0;top:0;right:0;bottom:0;width:100%;height:auto;max-height:none;border-radius:0;margin:0 !important;padding:0}.yelda_iframe_container.inner{width:100%;box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px;margin:0px 20px 0 0px;overflow:hidden}}

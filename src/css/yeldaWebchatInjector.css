@@ -4,9 +4,7 @@
 .yelda_assistant_img {
   cursor: pointer;
   height: auto;
-  transition-property: opacity, height;
-  transition-duration: 1s, 1ms;
-  transition-delay: 1.2s, 1.2s;
+  transition: opacity 0.6s ease-in-out 1.2s, height 1ms linear 1.2s;
   animation-name: appear;
   animation-duration: 0.8s;
   animation-delay: 1s;
@@ -19,34 +17,15 @@
 
 .yelda_container.y_active .yelda_assistant_img{
   opacity:0 ;
-  height: 0;
-  transition-property: opacity, height;
-  transition-duration: 1ms, 1ms;
-  transition-delay: 0, 0;
+  height: 0 !important;
+  width: 0 !important;
+  transition: opacity 1ms linear 0s, height 1ms linear 0s;
   animation: none;
 }
 
 .yelda_assistant_img.activated{
-  transition-delay: 1s;
-  /*animation-delay: 0s;*/
+  transition: opacity 0.6s ease-in-out 0.6s, height 1ms linear 0.6s;
 }
-
-
-
-.yelda_container.y_active .yelda_assistant_img{
-  opacity:0 ;
-  height: 0;
-  transition-property: opacity, height;
-  transition-duration: 1ms, 1ms;
-  transition-delay: 0, 0;
-  animation: none;
-}
-
-.yelda_assistant_img.activated{
-  transition-delay: 1s;
-  /*animation-delay: 0s;*/
-}
-
 
 .yelda_assistant_img.default {
   box-shadow: 0 5px 10px rgba(0,0,0,.16);
@@ -117,9 +96,7 @@
   max-height: 600px;
   margin: 0;
   overflow: hidden;
-  transition-property: opacity, transform, height, width;
-  transition-duration: 1s, 1s, 1ms, 1ms;
-  transition-delay: 0s, 0s, 1s, 1s;
+  transition: opacity 0.6s linear 0s, transform 0.6s ease-in-out 0s, height 1ms linear 0.6s, width 1ms linear 0.6s;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -132,9 +109,7 @@
 .y_active .yelda_iframe_container{
   width: 430px;
   height: calc(100vh - 170px);
-  transition-property: opacity, transform, height, width;
-  transition-duration: 1s, 1s, 1ms, 1ms;
-  transition-delay: 0s, 0s, 0s, 0s;
+  transition: opacity 0.6s linear 0s, transform 0.6s ease-in-out 0s, height 1ms linear 0s, width 1ms linear 0s;
   opacity: 1 !important;
   transform: translateY(0);
 }
