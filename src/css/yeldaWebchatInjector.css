@@ -137,19 +137,24 @@
     z-index: 2147483647;
   }
 
+  .y_active .yelda_iframe_container{
+    width: 100%;
+  }
+
   .yelda_iframe_container:not(.inner) {
     position: fixed;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
     height: auto;
     max-height: none;
     border-radius: 0;
     margin: 0 !important;
     padding: 0;
   }
+
+
 
   .yelda_iframe_container.inner {
     width: 100%;
