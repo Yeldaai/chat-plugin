@@ -138,7 +138,7 @@
   }
 
   .y_active .yelda_iframe_container{
-    width: 100%;
+    width: 100% !important;
   }
 
   .yelda_iframe_container:not(.inner) {
@@ -147,6 +147,7 @@
     top: 0;
     right: 0;
     bottom: 0;
+    width: 0;
     height: auto;
     max-height: none;
     border-radius: 0;
