@@ -1043,15 +1043,15 @@ var YeldaChat = function () {
     /**
      * Add 'y_active' class to the webChatContainer if required
      *
-     * To control the opacity of the iframe container (.yelda_iframe_container) and the assistant image (.yelda_assistant_img),
+     * To control the opacity/display of the iframe container (.yelda_iframe_container) and the assistant image (.yelda_assistant_img),
       * We add and remove the "y_active" CSS class to the webChatContainer (.yelda_container) which is always visible
       * By default
-      * - yelda_iframe_container is hidden (opacity: 0;)
-      * - assistant image is visible (opacity: 1 for yelda_assistant_img)
+      * - yelda_iframe_container is hidden (opacity: 0; height:0; width: 0; to not affect page interactions)
+      * - assistant image is hidden (opacity: 0), but immediatly animated by css to be displayed (opacity: 1 with animation-name: appear;) for yelda_assistant_img)
       *
       * When we add the class "y_active" to  (webChatContainer)
       * - yelda_iframe_container is now visible (.y_active .yelda_iframe_container => opacity: 1)
-      * - the assistant image is hidden (.yelda_container.y_active .yelda_assistant_img => opacity: 0
+      * - the assistant image is hidden (.yelda_container.y_active .yelda_assistant_img => display:none, no opacity manipulation because no need of animation)
       *
       * @param {Boolean} data.shouldBeOpened
       * @param {Boolean} data.isStartBtn
