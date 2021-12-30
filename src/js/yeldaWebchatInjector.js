@@ -618,7 +618,7 @@ class YeldaChat {
     yeldaCss.rel = 'stylesheet'
     yeldaCss.type = 'text/css'
     yeldaCss.crossorigin = 'anonymous'
-    yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.csss'
+    yeldaCss.href = 'https://yelda-webchat.s3.eu-west-3.amazonaws.com/css/yeldaWebchatInjector.min.css'
     yeldaCss.media = 'all'
     head.appendChild(yeldaCss)
   }
