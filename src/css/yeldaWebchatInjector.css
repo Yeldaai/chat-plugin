@@ -16,13 +16,11 @@
 }
 
 .yelda_container.y_active .yelda_assistant_img{
-  opacity:0 ;
-  height: 0 !important;
-  width: 0 !important;
-  transition: opacity 1ms linear 0s, height 1ms linear 0s;
+  display:none;
   animation: none;
 }
 
+/* activated : not the first time we see the bubble */
 .yelda_assistant_img.activated{
   transition: opacity 0.6s ease-in-out 0.6s, height 1ms linear 0.6s;
 }

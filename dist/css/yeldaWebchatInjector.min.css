@@ -1,6 +1,6 @@
 @import url(https://use.fontawesome.com/releases/v5.3.1/css/all.css);
 .yelda_assistant_img{cursor:pointer;height:auto;transition:opacity .6s ease-in-out 1.2s,height 1ms linear 1.2s;animation-name:appear;animation-duration:.8s;animation-delay:1s;animation-timing-function:cubic-bezier(.23, 1, .32, 1);animation-iteration-count:1;animation-fill-mode:both;opacity:0;overflow:hidden}
-.yelda_container.y_active .yelda_assistant_img{opacity:0 ;height:0 !important;width:0 !important;transition:opacity 1ms linear 0s, height 1ms linear 0s;animation:none}
+.yelda_container.y_active .yelda_assistant_img{display:none;animation:none}
 .yelda_assistant_img.activated{transition:opacity .6s ease-in-out .6s,height 1ms linear .6s}
 .yelda_assistant_img.default{box-shadow:0 5px 10px rgba(0,0,0,0.16);text-align:center;color:white;font-size:32px;line-height:64px;height:60px;width:60px;border-radius:50%;background:#17a3d8;background:linear-gradient(135deg, #17a3d8 0%, #1f60f2 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#17a3d8', endColorstr='#1f60f2', GradientType=1)}
 .yelda_assistant_img.custom{height:auto;width:auto}
@@ -16,7 +16,7 @@
 .lg-backdrop{z-index:10000000000 !important}
 .lg-outer{z-index:10000000001 !important}
 @media only screen and (max-width:768px){.yelda_container:not(.inner){position:fixed;right:20px;bottom:20px;z-index:2147483647}.y_active .yelda_iframe_container{width:100% !important}.yelda_iframe_container:not(.inner){position:fixed;left:0;top:0;right:0;bottom:0;width:0;height:auto;max-height:none;border-radius:0;margin:0 !important;padding:0}.yelda_iframe_container.inner{width:100%;box-shadow:0 5px 32px rgba(0,0,0,0.16);border-radius:6px;margin:0px 20px 0 0px;overflow:hidden}}
-#yelda_assistant_bubble_text{animation-name:fadeAndSlideInFromRight;animation-duration:1s;animation-delay:2s;animation-timing-function:cubic-bezier(.23, 1, .32, 1);animation-iteration-count:1;animation-fill-mode:both;padding:7px 10px 6px;border-radius:8px;box-shadow:#00000030 0 2px 8px 0;background-color:white;cursor:pointer;right:0;bottom:76px;max-width:300px;text-align:left;font-size:14px;font-weight:normal;display:inline-block;margin-bottom:10px}
+#yelda_assistant_bubble_text{animation-name:fadeAndSlideInFromRight;animation-duration:1s;animation-delay:2s;animation-timing-function:cubic-bezier(.23, 1, .32, 1);animation-iteration-count:1;animation-fill-mode:both;padding:7px 10px 6px;border-radius:8px;box-shadow:#00000030 0 2px 8px 0;background-color:white;cursor:pointer;max-width:300px;text-align:left;font-size:14px;font-weight:normal;display:inline-block;margin-bottom:10px}
 #yelda_assistant_bubble_text.y_notification{animation-delay:0s}
 #yelda_assistant_bubble_text.hidden{display:none}
 .y_active #yelda_assistant_bubble_text{display:none}
