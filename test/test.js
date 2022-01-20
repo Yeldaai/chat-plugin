@@ -17,10 +17,10 @@ import mock from 'xhr-mock'
 // mock.setup() sets global.XMLHttpRequest with mock xhr
 mock.setup()
 const testAPIUrls = [
-  'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR',
-  'https://app.yelda.ai/assistants/12345678/chatBubble/en_US',
-  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble',
-  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble'
+  'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=production',
+  'https://app.yelda.ai/assistants/12345678/chatBubble/en_US?env=production',
+  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=production',
+  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=production'
 ]
 
 testAPIUrls.forEach(url => {
@@ -53,7 +53,8 @@ const { JSDOM } = jsdom
 const validMockData = {
   'assistantSlug': 'testClient',
   'assistantId': '12345678',
-  'chatPath': 'chat'
+  'chatPath': 'chat',
+  'env': 'production'
 }
 
 describe('YeldaChat', () => {
@@ -73,7 +74,7 @@ describe('YeldaChat', () => {
 
   describe('yeldaChat.setAssistantUrl', () => {
     it('should return typeof function', () => {
-      assert.typeOf(yeldaChat.setAssistantUrl, 'function', 'init function exists')
+      assert.typeOf(yeldaChat.setAssistantUrl, 'function', 'setAssistantUrl function exists')
     })
 
     it('should return assistantUrl if provided', () => {
@@ -122,6 +123,45 @@ describe('YeldaChat', () => {
     })
   })
 
+  describe('yeldaChat.getAppEnv', () => {
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.getAppEnv, 'function', 'getAppEnv function exists')
+    })
+
+    it('should return \'production\' if no assistantUrl provided', () => {
+      expect(yeldaChat.getAppEnv()).to.deep.equal('production')
+    })
+
+    it('should return \'production\' if assistantUrl is http://localhost:8080', () => {
+      expect(yeldaChat.getAppEnv('http://localhost:8080')).to.deep.equal('production')
+    })
+
+    it('should return \'production\' if assistantUrl is https://app.yelda.ai/a7932/yelda', () => {
+      expect(yeldaChat.getAppEnv('https://app.yelda.ai/a7932/yelda')).to.deep.equal('production')
+    })
+
+    it('should return \'staging\' if assistantUrl is https://staging.yelda.ai/a7932/yelda', () => {
+      expect(yeldaChat.getAppEnv('https://staging.yelda.ai/a7932/yelda')).to.deep.equal('staging')
+    })
+
+  })
+  describe('yeldaChat.getChatBubbleUrlBase', () => {
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.getChatBubbleUrlBase, 'function', 'getChatBubbleUrlBase function exists')
+    })
+
+    const mockData = {
+      assistantUrl: 'https://staging.yelda.ai'
+    }
+    it('should return https://webchat.yelda.ai/webchat if isFallback is false', () => {
+      expect(yeldaChat.getChatBubbleUrlBase(mockData, false)).to.deep.equal('https://webchat.yelda.ai/webchat')
+    })
+
+    it('should return https://staging.yelda.ai/assistants if isFallback is true', () => {
+      expect(yeldaChat.getChatBubbleUrlBase(mockData, true)).to.deep.equal('https://staging.yelda.ai/assistants')
+    })
+  })
+
   describe('yeldaChat.updateAssistantData', () => {
     var webchatSettings = {
       assistantId : '1',
@@ -130,7 +170,7 @@ describe('YeldaChat', () => {
     }
 
     it('should return typeof function', () => {
-      assert.typeOf(yeldaChat.updateAssistantData, 'function', 'init function exists')
+      assert.typeOf(yeldaChat.updateAssistantData, 'function', 'updateAssistantData function exists')
     })
 
     it('should return data if no webchatSettings', () => {

@@ -72,21 +72,22 @@ We don't advise you to download a local version without using the NPM package : 
 
 Initialize the lib with the Yelda provided elements
 
-| Name              | Type    | Default                | Description                                                                                                                                                        |
-| ----------------- | ------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| assistantSlug     | String  |                        | The assistant short name on Yelda **Required**                                                                                                                     |
-| assistantId       | String  |                        | The assistant id on Yelda **Required**                                                                                                                             |
-| assistantUrl      | String  | `https://app.yelda.ai` |
-| chatPath          | String  | `/chat`                |
-| locale            | String  | `fr_FR`                |
-| isAdmin           | Boolean | `false`                | Set to `true` only to access the conversations analysis                                                                                                            |
-| shouldBeOpened    | Boolean | `false`                | Set to `true` to open the chat popin on load. With default `false` value, the webchat is closed and the user only see the assistant image or the start button      |
-| parentContainerId | String  |                        | DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body |
-| bubbleContainerChildId | String  |                  | Child DOM element id where you want to add bubble element. If the 'bubbleContainerChildId' does not exist, **the chat won't be loaded** |
-| isStartBtn        | Boolean | `false`                | Set to `true` only if need to show 'start' button. ⚠️ This is an admin feature. It can only work if isAdmin is also set to `true`                                  |
-| canBeClosed       | Boolean | `true`                 | It is used to toggle the visible state of close button. ⚠️ If parentContainerId is provided and canBeClosed is not provided, canBeClosed is set to `false`         |
-| isDemo            | Boolean | `false`                | Set to `true` to flag the conversation as "demo" in conversations list and training inbox and force the webchat to be opened on page load, even if shouldBeOpened is set to false |
-| yparam            | String  | `null`                 | If the iframe's parent URL contains "yparam" parameter, then yparam value will be passed as the settings. yparam value "yshowbot" will force the webchat to be opened on page load, even if shouldBeOpened is set to false|
+| Name                   | Type    | Default                | Description                                                                                                                                                        |
+| -----------------      | ------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| assistantSlug          | String  |                        | The assistant short name on Yelda **Required**                                                                                                                     |
+| assistantId            | String  |                        | The assistant id on Yelda **Required**                                                                                                                             |
+| assistantUrl           | String  | `https://app.yelda.ai` |
+| chatPath               | String  | `/chat`                |
+| locale                 | String  | `fr_FR`                |
+| isAdmin                | Boolean | `false`                | Set to `true` only to access the conversations analysis                                                                                                            |
+| shouldBeOpened         | Boolean | `false`                | Set to `true` to open the chat popin on load. With default `false` value, the webchat is closed and the user only see the assistant image or the start button      |
+| parentContainerId      | String  |                        | DOM element id where you want to add the iframe. If the 'container_id' does not exist in the DOM, the iframe will be automatically inserted into the document body |
+| bubbleContainerChildId | String  |                   | Child DOM element id where you want to add bubble element. If the 'bubbleContainerChildId' does not exist, **the chat won't be loaded** |
+| isStartBtn             | Boolean | `false`                | Set to `true` only if need to show 'start' button. ⚠️ This is an admin feature. It can only work if isAdmin is also set to `true`                                  |
+| canBeClosed            | Boolean | `true`                 | It is used to toggle the visible state of close button. ⚠️ If parentContainerId is provided and canBeClosed is not provided, canBeClosed is set to `false`         |
+| isDemo                 | Boolean | `false`                | Set to `true` to flag the conversation as "demo" in conversations list and training inbox and force the webchat to be opened on page load, even if shouldBeOpened is set to false |
+| yparam                 | String  | `null`                 | If the iframe's parent URL contains "yparam" parameter, then yparam value will be passed as the settings. yparam value "yshowbot" will force the webchat to be opened on page load, even if shouldBeOpened is set to false|
+| env                    | String  |                        | Force an env value. It is used to get the webchat settings from Redis.                                                                                             |
 
 ```javascript
 yeldaChat.init({

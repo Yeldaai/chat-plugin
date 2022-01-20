@@ -776,37 +776,107 @@ class YeldaChat {
   }
 
   /**
-   * return getAssistantSettings endpoint URL from data
-   * @param {Object} data { assistantUrl, assistantId, settingId }
-   * @return {String} url
+   * Get the app env from the assistant url
+   * @param {String} assistantUrl 
+   * @returns {String} env
    */
-  getAssistantSettingsUrl(data) {
-    if(data.settingId) {
-      return  `${data.assistantUrl}/assistants/settings/${data.settingId}/chatBubble`
+  getAppEnv(assistantUrl) {
+    if (config.REGEX_HOST.STAGING.test(assistantUrl)) {
+      return config.APP_ENV_VALUES.STAGING
     }
 
-    return  `${data.assistantUrl}/assistants/${data.assistantId}/chatBubble/${data.locale}`
+    // By default, use the production env
+    return config.APP_ENV_VALUES.PRODUCTION
+  }
+
+  /**
+   * Get the chat bubble url base based on isFallback
+   * @param {Object} data { assistantUrl, assistantId, settingId }
+   * @param {Boolean} isFallback fallback means yelda endpoint
+   * @returns {String} url base
+   */
+  getChatBubbleUrlBase(data, isFallback) {
+    if (isFallback) {
+      return `${data.assistantUrl}/assistants`
+    }
+    return config.CHAT_BUBBLE_EXTERNAL_ENDPOINT
+  }
+
+  /**
+   * return getAssistantSettings endpoint URL from data
+   * @param {Object} data { assistantUrl, assistantId, settingId }
+   * @param {Boolean} isFallback
+   * @return {String} url
+   */
+  getAssistantSettingsUrl(data, isFallback) {
+    const urlBase = this.getChatBubbleUrlBase(data, isFallback)
+    // The app env is required as query for the external chatbubble endpoint
+    // If the env was not explicitly set in data, guess it from the assistant url
+    const appEnv = data.env || this.getAppEnv(data.assistantUrl)
+    const envQuery = `env=${appEnv}`
+    if(data.settingId) {
+      return  `${urlBase}/settings/${data.settingId}/chatBubble?${envQuery}`
+    }
+
+    return  `${urlBase}/${data.assistantId}/chatBubble/${data.locale}?${envQuery}`
   }
 
   /**
    * Update assistantImage with assistant settings from backend if any
    * @param {Object} data { assistantUrl, assistantId, settingId }
+   * @param {Object} options
+   * @param {Object} options.isFallback
+   * @param {Number} options.customTimeout in milliseconds
    * @return {Promise}
    */
-  getAssistantSettings(data) {
+  getAssistantSettings(data, { isFallback = false, customTimeout = null } = {}) {
     return new Promise((resolve, reject) => {
       try {
         const xhr = new XMLHttpRequest()
-        const url = this.getAssistantSettingsUrl(data)
 
+        // Get the url base depending on if we are doing the basic request (external chatbubble endpoint) 
+        // or the fallback one (chatbubble endpoint in Yelda)
+        const url = this.getAssistantSettingsUrl(data, isFallback)
+        
         xhr.open('GET', url)
+        if (customTimeout) {
+          xhr.timeout = customTimeout
+        }
         xhr.send()
 
         // Bind and call are necessary to pass the "this" to the callback function
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
-            const webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null
-            resolve(webchatSettings)
+            const responseText = xhr.responseText ? JSON.parse(xhr.responseText) : null
+            // Yelda endpoint returns { data: ...webchatSettings } (to be compatible with old versions of the chat-plugin) 
+            // whereas the external endpoint returns { ...webchatSettings }
+            // We need to handle both format
+            const webchatSettings = responseText && (responseText.data || responseText)
+
+            if (webchatSettings) {
+              return resolve(webchatSettings)
+            }
+
+            // We did not received the expected webchatSettings
+            // If we are already in fallback mode, it means there is no webchat settings for the given init information
+            if (isFallback) {
+              return resolve(null)
+            }
+
+            // If the initial request do not return webchatSettings, it might be because they were not set in Redis yet
+            // So let's call the yelda endpoint (fallback) that will find the setting (if it exists) and set it in Redis
+            return resolve(this.getAssistantSettings(data, { isFallback: true }))
+          }
+        }
+            
+        xhr.ontimeout = () => {
+          /*
+            It the initial request to the external chatbubble endpoint timed out, (maybe the endpoint is down)
+            let's fallback on the yelda endpoint
+          */
+          if (!isFallback) {
+            // Set isFallback to true to be sure to not end up in an infinite loop
+            return resolve(this.getAssistantSettings(data, { isFallback: true }))
           }
         }
       } catch (e) {
@@ -846,7 +916,7 @@ class YeldaChat {
 
       // Get assistant settings from backend
       try {
-        this.webchatSettings = await this.getAssistantSettings(data)
+        this.webchatSettings = await this.getAssistantSettings(data, { customTimeout: config.CHAT_BUBBLE_REQUEST_TIMEOUT })
         // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
         // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
         data = this.updateAssistantData(data, this.webchatSettings)

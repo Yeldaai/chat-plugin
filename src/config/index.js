@@ -30,5 +30,11 @@ module.exports = {
       ADD_BUBBLE_TEXT: 'addBubbleText',
       ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText'
     }
+  },
+  CHAT_BUBBLE_EXTERNAL_ENDPOINT: 'https://webchat.yelda.ai/webchat',
+  CHAT_BUBBLE_REQUEST_TIMEOUT: 5000,
+  APP_ENV_VALUES: {
+    STAGING: 'staging',
+    PRODUCTION: 'production'
   }
 }
