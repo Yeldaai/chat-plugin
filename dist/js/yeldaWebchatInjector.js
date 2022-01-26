@@ -1611,24 +1611,66 @@ var YeldaChat = function () {
     }
 
     /**
+     * Get the app env from the assistant url
+     * @param {String} assistantUrl 
+     * @returns {String} env
+     */
+
+  }, {
+    key: 'getAppEnv',
+    value: function getAppEnv(assistantUrl) {
+      if (_config__WEBPACK_IMPORTED_MODULE_14___default.a.REGEX_HOST.STAGING.test(assistantUrl)) {
+        return _config__WEBPACK_IMPORTED_MODULE_14___default.a.APP_ENV_VALUES.STAGING;
+      }
+
+      // By default, use the production env
+      return _config__WEBPACK_IMPORTED_MODULE_14___default.a.APP_ENV_VALUES.PRODUCTION;
+    }
+
+    /**
+     * Get the chat bubble url base based on isFallback
+     * @param {Object} data { assistantUrl, assistantId, settingId }
+     * @param {Boolean} isFallback fallback means yelda endpoint
+     * @returns {String} url base
+     */
+
+  }, {
+    key: 'getChatBubbleUrlBase',
+    value: function getChatBubbleUrlBase(data, isFallback) {
+      if (isFallback) {
+        return data.assistantUrl + '/assistants';
+      }
+      return _config__WEBPACK_IMPORTED_MODULE_14___default.a.CHAT_BUBBLE_EXTERNAL_ENDPOINT;
+    }
+
+    /**
      * return getAssistantSettings endpoint URL from data
      * @param {Object} data { assistantUrl, assistantId, settingId }
+     * @param {Boolean} isFallback
      * @return {String} url
      */
 
   }, {
     key: 'getAssistantSettingsUrl',
-    value: function getAssistantSettingsUrl(data) {
+    value: function getAssistantSettingsUrl(data, isFallback) {
+      var urlBase = this.getChatBubbleUrlBase(data, isFallback);
+      // The app env is required as query for the external chatbubble endpoint
+      // If the env was not explicitly set in data, guess it from the assistant url
+      var appEnv = data.env || this.getAppEnv(data.assistantUrl);
+      var envQuery = 'env=' + appEnv;
       if (data.settingId) {
-        return data.assistantUrl + '/assistants/settings/' + data.settingId + '/chatBubble';
+        return urlBase + '/settings/' + data.settingId + '/chatBubble?' + envQuery;
       }
 
-      return data.assistantUrl + '/assistants/' + data.assistantId + '/chatBubble/' + data.locale;
+      return urlBase + '/' + data.assistantId + '/chatBubble/' + data.locale + '?' + envQuery;
     }
 
     /**
      * Update assistantImage with assistant settings from backend if any
      * @param {Object} data { assistantUrl, assistantId, settingId }
+     * @param {Object} options
+     * @param {Object} options.isFallback
+     * @param {Number} options.customTimeout in milliseconds
      * @return {Promise}
      */
 
@@ -1637,19 +1679,59 @@ var YeldaChat = function () {
     value: function getAssistantSettings(data) {
       var _this3 = this;
 
+      var _ref2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+          _ref2$isFallback = _ref2.isFallback,
+          isFallback = _ref2$isFallback === undefined ? false : _ref2$isFallback,
+          _ref2$customTimeout = _ref2.customTimeout,
+          customTimeout = _ref2$customTimeout === undefined ? null : _ref2$customTimeout;
+
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function (resolve, reject) {
         try {
           var xhr = new XMLHttpRequest();
-          var url = _this3.getAssistantSettingsUrl(data);
+
+          // Get the url base depending on if we are doing the basic request (external chatbubble endpoint) 
+          // or the fallback one (chatbubble endpoint in Yelda)
+          var url = _this3.getAssistantSettingsUrl(data, isFallback);
 
           xhr.open('GET', url);
+          if (customTimeout) {
+            xhr.timeout = customTimeout;
+          }
           xhr.send();
 
           // Bind and call are necessary to pass the "this" to the callback function
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-              var webchatSettings = xhr.responseText ? JSON.parse(xhr.responseText).data : null;
-              resolve(webchatSettings);
+              var responseText = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+              // Yelda endpoint returns { data: ...webchatSettings } (to be compatible with old versions of the chat-plugin) 
+              // whereas the external endpoint returns { ...webchatSettings }
+              // We need to handle both format
+              var webchatSettings = responseText && (responseText.data || responseText);
+
+              if (webchatSettings) {
+                return resolve(webchatSettings);
+              }
+
+              // We did not received the expected webchatSettings
+              // If we are already in fallback mode, it means there is no webchat settings for the given init information
+              if (isFallback) {
+                return resolve(null);
+              }
+
+              // If the initial request do not return webchatSettings, it might be because they were not set in Redis yet
+              // So let's call the yelda endpoint (fallback) that will find the setting (if it exists) and set it in Redis
+              return resolve(_this3.getAssistantSettings(data, { isFallback: true }));
+            }
+          };
+
+          xhr.ontimeout = function () {
+            /*
+              It the initial request to the external chatbubble endpoint timed out, (maybe the endpoint is down)
+              let's fallback on the yelda endpoint
+            */
+            if (!isFallback) {
+              // Set isFallback to true to be sure to not end up in an infinite loop
+              return resolve(_this3.getAssistantSettings(data, { isFallback: true }));
             }
           };
         } catch (e) {
@@ -1670,7 +1752,7 @@ var YeldaChat = function () {
       var _this4 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
-        var _ref2 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve) {
+        var _ref3 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve) {
           return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
@@ -1709,7 +1791,7 @@ var YeldaChat = function () {
                   // Get assistant settings from backend
                   _context2.prev = 12;
                   _context2.next = 15;
-                  return _this4.getAssistantSettings(data);
+                  return _this4.getAssistantSettings(data, { customTimeout: _config__WEBPACK_IMPORTED_MODULE_14___default.a.CHAT_BUBBLE_REQUEST_TIMEOUT });
 
                 case 15:
                   _this4.webchatSettings = _context2.sent;
@@ -1746,8 +1828,8 @@ var YeldaChat = function () {
           }, _callee2, _this4, [[12, 19]]);
         }));
 
-        return function (_x7) {
-          return _ref2.apply(this, arguments);
+        return function (_x8) {
+          return _ref3.apply(this, arguments);
         };
       }());
     }
@@ -1815,10 +1897,10 @@ var YeldaChat = function () {
 
   }, {
     key: 'isDataOutdated',
-    value: function isDataOutdated(data, _ref3) {
-      var settingId = _ref3.settingId,
-          assistantId = _ref3.assistantId,
-          locale = _ref3.locale;
+    value: function isDataOutdated(data, _ref4) {
+      var settingId = _ref4.settingId,
+          assistantId = _ref4.assistantId,
+          locale = _ref4.locale;
 
       if (data.settingId && data.settingId !== settingId) {
         return true;
@@ -1935,7 +2017,7 @@ var YeldaChat = function () {
       var _this5 = this;
 
       return new babel_runtime_core_js_promise__WEBPACK_IMPORTED_MODULE_2___default.a(function () {
-        var _ref4 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
+        var _ref5 = babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(resolve) {
           return babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
             while (1) {
               switch (_context4.prev = _context4.next) {
@@ -1989,8 +2071,8 @@ var YeldaChat = function () {
           }, _callee4, _this5);
         }));
 
-        return function (_x8) {
-          return _ref4.apply(this, arguments);
+        return function (_x9) {
+          return _ref5.apply(this, arguments);
         };
       }());
     }
@@ -2626,6 +2708,12 @@ module.exports = {
       ADD_BUBBLE_TEXT: 'addBubbleText',
       ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText'
     }
+  },
+  CHAT_BUBBLE_EXTERNAL_ENDPOINT: 'https://webchat.yelda.ai/webchat',
+  CHAT_BUBBLE_REQUEST_TIMEOUT: 5000,
+  APP_ENV_VALUES: {
+    STAGING: 'staging',
+    PRODUCTION: 'production'
   }
 };
 
