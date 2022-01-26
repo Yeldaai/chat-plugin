@@ -17,10 +17,15 @@ import mock from 'xhr-mock'
 // mock.setup() sets global.XMLHttpRequest with mock xhr
 mock.setup()
 const testAPIUrls = [
+  // Old yelda chatBubble endpoint on assistant Id for multiple locale
   'https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=production',
   'https://app.yelda.ai/assistants/12345678/chatBubble/en_US?env=production',
+  // Old yelda chatBubble endpoint on setting Id
   'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=production',
-  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=production'
+  'https://app.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=staging',
+  // new webchat endpoint on settingId
+  // used by     it('should return object if settings for webchat are correct', async () => {
+  'https://webchat.yelda.ai/webchat/settings/600060987bcdfb0fe914808c/chatBubble?env=production'
 ]
 
 testAPIUrls.forEach(url => {
@@ -53,8 +58,7 @@ const { JSDOM } = jsdom
 const validMockData = {
   'assistantSlug': 'testClient',
   'assistantId': '12345678',
-  'chatPath': 'chat',
-  'env': 'production'
+  'chatPath': 'chat'
 }
 
 describe('YeldaChat', () => {
@@ -159,6 +163,73 @@ describe('YeldaChat', () => {
 
     it('should return https://staging.yelda.ai/assistants if isFallback is true', () => {
       expect(yeldaChat.getChatBubbleUrlBase(mockData, true)).to.deep.equal('https://staging.yelda.ai/assistants')
+    })
+  })
+
+  describe('yeldaChat.getAssistantSettingsUrl', () => {
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.getAssistantSettingsUrl, 'function', 'getAssistantSettingsUrl function exists')
+    })
+
+    const prodMockData = Object.assign({ locale: "fr_FR", assistantUrl: 'https://app.yelda.ai' }, validMockData)
+    it('should return https://webchat.yelda.ai/webchat/12345678/chatBubble/fr_FR?env=production if isFallback is false', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(prodMockData)).to.deep.equal('https://webchat.yelda.ai/webchat/12345678/chatBubble/fr_FR?env=production')
+    })
+
+    it('should return https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=production if isFallback is true', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(prodMockData, { isFallback: true })).to.deep.equal('https://app.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=production')
+    })
+
+    const stagingMockData = Object.assign({ locale: "fr_FR", assistantUrl: 'https://staging.yelda.ai' }, validMockData)
+    it('should return https://webchat.yelda.ai/webchat/12345678/chatBubble/fr_FR?env=staging if isFallback is false', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(stagingMockData)).to.deep.equal('https://webchat.yelda.ai/webchat/12345678/chatBubble/fr_FR?env=staging')
+    })
+
+    it('should return https://staging.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=staging if isFallback is true', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(stagingMockData, { isFallback: true })).to.deep.equal('https://staging.yelda.ai/assistants/12345678/chatBubble/fr_FR?env=staging')
+    })
+
+    const settingIdEnMockData = Object.assign({ locale: "en_US", assistantUrl: 'https://staging.yelda.ai', settingId:'600060987bcdfb0fe914808b' }, validMockData)
+    it('should return https://webchat.yelda.ai/webchat/settings/600060987bcdfb0fe914808b/chatBubble?env=staging if isFallback is false', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(settingIdEnMockData)).to.deep.equal('https://webchat.yelda.ai/webchat/settings/600060987bcdfb0fe914808b/chatBubble?env=staging')
+    })
+
+    it('should return https://staging.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=staging if isFallback is true', () => {
+      expect(yeldaChat.getAssistantSettingsUrl(settingIdEnMockData, { isFallback: true })).to.deep.equal('https://staging.yelda.ai/assistants/settings/600060987bcdfb0fe914808b/chatBubble?env=staging')
+    })
+  })
+
+  describe('yeldaChat.getAssistantSettings', () => {
+    it('should return typeof function', () => {
+      assert.typeOf(yeldaChat.getAssistantSettings, 'function', 'getAssistantSettings function exists')
+    })
+
+    const prodMockData = Object.assign({ locale: "fr_FR", assistantUrl: 'https://app.yelda.ai' }, validMockData)
+
+    it('should return object if settings are correct', async () => {
+        const settings = await yeldaChat.getAssistantSettings(prodMockData)
+        assert.typeOf(settings, 'object', 'we have an object')
+    })
+
+    // assistantId: 12 does not exists in mock options
+    const incorrectMockData = { locale: "fr_FR", assistantUrl: 'https://app.yelda.ai', assistantId: 12 }
+
+    it('should return object if settings are correct', async () => {
+      const settings = await yeldaChat.getAssistantSettings(incorrectMockData)
+      expect(settings).to.be.null
+    })
+
+      // 600060987bcdfb0fe914808c is set for webchat, but not app.yelda.ai
+      const webchatMockData = Object.assign({ assistantUrl: 'https://app.yelda.ai',  settingId: '600060987bcdfb0fe914808c' }, validMockData)
+
+    it('should return object if settings for webchat are correct', async () => {
+      const settings = await yeldaChat.getAssistantSettings(webchatMockData)
+      assert.typeOf(settings, 'object', 'we have an object')
+    })
+
+    it('should return null if settings for yelda are incorrect and isFallback is true', async () => {
+      const settings = await yeldaChat.getAssistantSettings(webchatMockData, { isFallback: true})
+      expect(settings).to.be.null
     })
   })
 
