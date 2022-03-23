@@ -174,7 +174,15 @@ const uploadToS3 = async () => {
     const subFiles = fs.readdirSync(folderPath)
 
     for (const subFile of subFiles) {
+      const ext = path.extname(subFile)
+      // Only upload renamed gzip and map files to s3
+      if (!['.gz', '.map'].includes(ext)) {
+        continue
+      }
+
+      const unzippedFile = subFile.replace('.gz', '')
       const filePath = path.join(folderPath, subFile)
+      const unzippedFilePath = path.join(folderPath, unzippedFile)
 
       const fileContent = fs.readFileSync(filePath)
 
@@ -182,10 +190,13 @@ const uploadToS3 = async () => {
       const s3Response = await s3
         .putObject({
           Bucket: process.env.AWS_BUCKET || 'yelda-webchat',
-          Key: `${file}/${subFile}`,
+          Key: `${file}/${unzippedFile}`,
           Body: fileContent,
           // ContentType is required to serve the file to browser properly, otherwise s3 sets octet-stream
-          ContentType: mime.getType(filePath),
+          ContentType: mime.getType(unzippedFilePath),
+          ...(ext === '.gz' && {
+            ContentEncoding: 'gzip'
+          }),
           ACL: 'public-read' //Public read permission
         })
         .promise()

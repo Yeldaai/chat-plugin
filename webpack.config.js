@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CompressionPlugin = require("compression-webpack-plugin")
 
 const env = 'production'
 
@@ -54,12 +55,11 @@ let rules = [
 const webpackConfig = {
   mode: 'production',
   entry: {
-    'yeldaWebchatInjector': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js'),
-    'yeldaWebchatInjector.min': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js')
+    'yeldaWebchatInjector': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js')
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'js/[name].js',
+    filename: 'js/[name].min.js',
     libraryExport: 'default',
     libraryTarget: 'umd',
     library: 'YeldaChat',
@@ -67,10 +67,7 @@ const webpackConfig = {
   },
   devtool: 'source-map',
   optimization: {
-    minimize: true,
-    minimizer: [new UglifyJsPlugin({
-      include: /\.min\.js$/
-    })]
+    minimize: true
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -102,7 +99,17 @@ const webpackConfig = {
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new UglifyJsPlugin({
+      sourceMap: true,
+      parallel: true
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      minRatio: 0.8,
+      test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
+      threshold: 10240
+    })
   ]
 }
 
