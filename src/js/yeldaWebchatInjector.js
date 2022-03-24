@@ -747,6 +747,20 @@ class YeldaChat {
     return data
   }
 
+  /**
+   * Check whether the css href is yeldaWebchatInjector.css or yeldaWebchatInjector.min.css
+   * @param {String} cssHref
+   * @returns {Boolean}
+   */
+  isYeldaCssInjector(cssHref) {
+    const injectorCSSRegex = new RegExp('\\yeldaWebchatInjector(.min)?.css')
+    return injectorCSSRegex.test(cssHref)
+  }
+
+  /**
+   * Check whether the style sheet is already loaded
+   * @returns {Boolean}
+   */
   isStyleSheetLoaded() {
     const sheets = document.styleSheets
     let isFound = false
@@ -767,6 +781,10 @@ class YeldaChat {
             }
           }
         } catch (e) {
+          if(this.isYeldaCssInjector(sheet.href)) {
+            isFound = true
+            break sheetsLoop
+          }
           continue
         }
       }
@@ -777,7 +795,7 @@ class YeldaChat {
 
   /**
    * Get the app env from the assistant url
-   * @param {String} assistantUrl 
+   * @param {String} assistantUrl
    * @returns {String} env
    */
   getAppEnv(assistantUrl) {
@@ -834,10 +852,10 @@ class YeldaChat {
       try {
         const xhr = new XMLHttpRequest()
 
-        // Get the url base depending on if we are doing the basic request (external chatbubble endpoint) 
+        // Get the url base depending on if we are doing the basic request (external chatbubble endpoint)
         // or the fallback one (chatbubble endpoint in Yelda)
         const url = this.getAssistantSettingsUrl(data, isFallback)
-        
+
         xhr.open('GET', url)
         if (customTimeout) {
           xhr.timeout = customTimeout
@@ -848,7 +866,7 @@ class YeldaChat {
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             const responseText = xhr.responseText ? JSON.parse(xhr.responseText) : null
-            // Yelda endpoint returns { data: ...webchatSettings } (to be compatible with old versions of the chat-plugin) 
+            // Yelda endpoint returns { data: ...webchatSettings } (to be compatible with old versions of the chat-plugin)
             // whereas the external endpoint returns { ...webchatSettings }
             // We need to handle both format
             const webchatSettings = responseText && (responseText.data || responseText)
@@ -868,7 +886,7 @@ class YeldaChat {
             return resolve(this.getAssistantSettings(data, { isFallback: true }))
           }
         }
-            
+
         xhr.ontimeout = () => {
           /*
             It the initial request to the external chatbubble endpoint timed out, (maybe the endpoint is down)
