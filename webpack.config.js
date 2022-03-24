@@ -55,11 +55,12 @@ let rules = [
 const webpackConfig = {
   mode: 'production',
   entry: {
-    'yeldaWebchatInjector': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js')
+    'yeldaWebchatInjector': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js'),
+    'yeldaWebchatInjector.min': path.resolve(__dirname, './src/js/yeldaWebchatInjector.js')
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'js/[name].min.js',
+    filename: 'js/[name].js',
     libraryExport: 'default',
     libraryTarget: 'umd',
     library: 'YeldaChat',
@@ -109,6 +110,10 @@ const webpackConfig = {
       minRatio: 0.8,
       test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
       threshold: 10240
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\yeldaWebchatInjector.css$/
     })
   ]
 }
