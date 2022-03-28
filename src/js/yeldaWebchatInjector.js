@@ -5,7 +5,7 @@ import 'lg-fullscreen.js'
 import 'lg-zoom.js'
 import 'lg-video.js'
 import 'lg-share.js'
-import 'lightgallery.js/dist/css/lightgallery.min.css'
+
 import config from '../config'
 
 class YeldaChat {
