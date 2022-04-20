@@ -1,7 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require("compression-webpack-plugin")
 
@@ -84,13 +83,12 @@ const webpackConfig = {
     new webpack.DefinePlugin({
       'process.env': env
     }),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, './src/css/yeldaWebchatInjector.css'),
-        to: path.resolve(__dirname, './dist/css/yeldaWebchatInjector.css'),
-        ignore: ['.*']
-      }
-    ]),
+    new MiniCssExtractPlugin({
+      filename: 'css/yeldaWebchatInjector.css',
+      chunkFilename: '[id].css',
+      minimize: false,
+      outputStyle: 'expanded'
+    }),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
@@ -113,7 +111,11 @@ const webpackConfig = {
     }),
     new CompressionPlugin({
       algorithm: 'gzip',
-      test: /\yeldaWebchatInjector.css$/
+      test: /yeldaWebchatInjector\.css$/
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /yeldaWebchatInjector\.min\.css$/
     })
   ]
 }
