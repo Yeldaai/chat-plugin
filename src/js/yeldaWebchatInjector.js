@@ -243,7 +243,7 @@ class YeldaChat {
    * @return {String} url
    */
   createWebChatURL(data) {
-    let url = data.chatUrl
+    let url = data.iframeURL
     url = this.updateQueryStringParameter(url, 'assistantId', data.assistantId)
     url = this.updateQueryStringParameter(url, 'assistantSlug', data.assistantSlug)
     url = this.updateQueryStringParameter(url, 'locale', data.locale)
@@ -625,7 +625,7 @@ class YeldaChat {
 
   /**
    * Generate webchatURL and create webchatIframe
-   * @param {Object} data { chatUrl, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
+   * @param {Object} data { iframeURL, assistantId, assistantSlug, shouldBeOpened, isStartBtn, canBeClosed }
    */
   setUpChatIFrame(data) {
     const webchatUrl = this.createWebChatURL(data)
@@ -653,10 +653,19 @@ class YeldaChat {
    * Update data object with assistantId, assistantSlug and locale if needed
    * @param {Object} data { data.assistantUrl, data.chatPath }
    * @param {Object} webchatSettings webchat settings from DB
+   * @param {String} href window.location.href
    * @param {Object} data
    */
-  updateAssistantData(data, webchatSettings) {
-    if (!data.settingId || !webchatSettings || !webchatSettings.assistantSlug) {
+  updateAssistantData(data, webchatSettings, href) {
+    if(!webchatSettings) {
+      return data
+    }
+
+    // we can overwrite the iframeURL on other domain than yelda ones
+    data.iframeURL = (!config.REGEX_HOST.YELDA.test(href) && webchatSettings.iframeURL) || data.iframeURL
+
+    // if no settingId, no need to go further, because the call has been done with the assistantId & assistantSlug
+    if (!data.settingId || !webchatSettings.assistantSlug) {
       return data
     }
 
@@ -697,7 +706,7 @@ class YeldaChat {
     */
     data.assistantUrl = this.setAssistantUrl(data.assistantUrl, window.location.href)
     data.chatPath = chatPath.replace(/^\//, '')
-    data.chatUrl = `${data.assistantUrl}/${data.chatPath}`
+    data.iframeURL = `${data.assistantUrl}/${data.chatPath}`
     data.locale = data.locale || 'fr_FR'
     data.isAdmin = data.isAdmin ? true : false
     data.isStartBtn = data.isStartBtn ? true : false
@@ -937,7 +946,7 @@ class YeldaChat {
         this.webchatSettings = await this.getAssistantSettings(data, { customTimeout: config.CHAT_BUBBLE_REQUEST_TIMEOUT })
         // Webchat can be loaded thanks to a single settingId or group of data : {assistantId, assistantSlug, locale}
         // If only settingId is provided, then we will fill {assistantId, assistantSlug, locale} thanks to the assistant settings
-        data = this.updateAssistantData(data, this.webchatSettings)
+        data = this.updateAssistantData(data, this.webchatSettings, window.location.href)
 
       } catch (err) {
         this.webchatSettings = null

@@ -237,7 +237,8 @@ describe('YeldaChat', () => {
     var webchatSettings = {
       assistantId : '1',
       assistantSlug: 'slug',
-      locale: 'fr_FR'
+      locale: 'fr_FR',
+      iframeURL: 'https://demo.yelda.ai/chat'
     }
 
     it('should return typeof function', () => {
@@ -255,15 +256,32 @@ describe('YeldaChat', () => {
     })
 
     it('should return data with webchatSettings assistantId, assistantSlug, locale if data.settingId', () => {
-      var data = {truc: 'truc', settingId: 'x'}
+      var data = {truc: 'truc', settingId: 'x', iframeURL: 'https://app.yelda.ai/chat'}
       var res = {
         truc: 'truc',
         settingId: 'x',
         assistantId : '1',
         assistantSlug: 'slug',
-        locale: 'fr_FR'
+        locale: 'fr_FR',
+        iframeURL: 'https://app.yelda.ai/chat'
       }
-      expect(yeldaChat.updateAssistantData(data, webchatSettings)).to.deep.equal(res)
+      var href = 'https://app.yelda.ai/chat'
+
+      expect(yeldaChat.updateAssistantData(data, webchatSettings, href)).to.deep.equal(res)
+    })
+
+    it('should use webchatSettings.iframeURL on non yelda domain ', () => {
+      var data = {truc: 'truc', settingId: 'x', iframeURL: 'https://app.yelda.ai/chat'}
+      var res = {
+        truc: 'truc',
+        settingId: 'x',
+        assistantId : '1',
+        assistantSlug: 'slug',
+        locale: 'fr_FR',
+        iframeURL: 'https://demo.yelda.ai/chat'
+      }
+      var href = 'https://github.com/Yeldaai/yelda/pulls'
+      expect(yeldaChat.updateAssistantData(data, webchatSettings, href)).to.deep.equal(res)
     })
 
   })
@@ -516,7 +534,7 @@ describe('YeldaChat', () => {
         const mockData = {
           'assistantSlug': 'testClient',
           'assistantId': '12345678',
-          'chatUrl': 'https://app.yelda.ai/chat',
+          'iframeURL': 'https://app.yelda.ai/chat',
           'chatPath': 'chat',
           'locale': 'fr_FR',
           'isAdmin': false,
@@ -536,7 +554,7 @@ describe('YeldaChat', () => {
         const mockData = {
           'assistantSlug': 'testClient',
           'assistantId': '12345678',
-          'chatUrl': 'https://app.yelda.ai/chat',
+          'iframeURL': 'https://app.yelda.ai/chat',
           'chatPath': 'chat',
           'locale': 'fr_FR',
           'isAdmin': true,
@@ -599,7 +617,7 @@ describe('YeldaChat', () => {
         const mockData = {
           'assistantSlug': 'testClient',
           'assistantId': '12345678',
-          'chatUrl': 'https://app.yelda.ai/chat',
+          'iframeURL': 'https://app.yelda.ai/chat',
           'chatPath': 'chat',
           'locale': 'fr_FR',
           'isAdmin': true,
