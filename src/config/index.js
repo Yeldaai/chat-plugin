@@ -29,7 +29,8 @@ module.exports = {
       LISTEN_URL_UPDATE: 'listenUrlUpdate',
       ABSTAIN_URL_UPDATE: 'abstainUrlUpdate',
       ADD_BUBBLE_TEXT: 'addBubbleText',
-      ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText'
+      ADD_MINIMAL_NOTIFICATION_TEXT: 'addMinimalNotificationText',
+      EXEC_JS_FUNC: 'execJsFunc'
     }
   },
   CHAT_BUBBLE_EXTERNAL_ENDPOINT: 'https://webchat.yelda.ai/webchat',

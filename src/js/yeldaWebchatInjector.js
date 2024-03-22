@@ -8,6 +8,116 @@ import 'lg-share.js'
 
 import config from '../config'
 
+/**
+ * Check whether the string is url encoded
+ * @param {String} str
+ * @returns {Boolean}
+ */
+const isStrLikelyEncoded = (str) => {
+  // Check if the string contains any characters that would typically need encoding
+  const needsEncoding = /[?&=<>#%{}|\\\^~\[\]`;"\s]/.test(str)
+
+  // Check if the string contains any non-ASCII characters
+  const hasNonASCII = /[^\x00-\x7F]/.test(str);
+
+  // Check if the string contains any percent-encoded characters
+  const hasPercentEncoding = /%[0-9A-Fa-f]{2}/.test(str)
+
+  // Return true if any of the conditions are met
+  return needsEncoding || hasNonASCII || hasPercentEncoding
+}
+
+/**
+ * Parse the function string to get the function name & arguments
+ * @param {String} str
+ * @returns {Object|null} {functionName, args}
+ */
+const parseFunctionString = (str) => {
+  // Regular expression to match function name and its arguments
+  const regex = /((?:[a-zA-Z_$][\w$]*\.)*)([a-zA-Z_$][\w$]*)\(([^]*)\)/
+
+  // Executing the regex to get the match
+  const match = regex.exec(str)
+
+  if (!match) {
+    // If the string doesn't match the expected format
+    return null
+  }
+
+  // Extracting function name
+  const namespaces = match[1] || ''
+  const functionName = namespaces + match[2]
+
+  // Extracting arguments
+  const argsStr = match[3].trim()
+
+  let args = []
+
+  if (argsStr !== '') {
+    let argBuffer = ''
+    let parenCount = 0
+    for (const element of argsStr) {
+        if (element === '(') parenCount++
+        else if (element === ')') parenCount--
+
+        if (element === ',' && parenCount === 0) {
+            args.push(argBuffer.trim())
+            argBuffer = ''
+        } else {
+            argBuffer += element
+        }
+    }
+    args.push(argBuffer.trim())
+  }
+
+  // Convert string representation of boolean, numbers, arrays, and objects to their actual types
+  args = args.map(arg => {
+    if (arg === 'true') return true
+    else if (arg === 'false') return false
+    else if (!isNaN(arg)) return parseFloat(arg)
+    else if (arg === 'null') return null
+    else if (arg.startsWith('[') && arg.endsWith(']')) {
+      try {
+        return JSON.parse(arg)
+      } catch(err) {
+        return ''
+      }
+    } else if (isStrLikelyEncoded(arg)) {
+      try{
+        return JSON.parse(decodeURIComponent(arg))
+      } catch(err) {
+        return ''
+      }
+    }
+    return arg.replace(/^['"]|['"]$/g, '') // Remove surrounding quotes if any
+  })
+
+  return { functionName, args }
+}
+
+/**
+ * Execute the function by name with the arguments
+ * @param {String} functionName
+ * @param {Context} context
+ * @param {Array} args
+ * @return {Any|null}
+ */
+const executeFunctionByName = (functionName, context, args) => {
+  try {
+    const namespaces = functionName.split(".")
+    const func = namespaces.pop()
+    for(const element of namespaces) {
+      context = context[element]
+    }
+
+    return context[func].apply(context, args)
+  } catch(error) {
+    console.error('executeFunctionByName error', error)
+    return null
+  }
+}
+
+
 class YeldaChat {
   /**
    * Updates the url with the given parameter and value
@@ -493,8 +603,30 @@ class YeldaChat {
         if (!this.configurationData.hasOwnProperty('canBeClosed') || this.configurationData.canBeClosed) {
           this.addAssistantBubbleText(eventData.text, 'y_notification')
         }
-      break;
+        break
+      case config.FRAME_EVENT_TYPES.RECEIVED.EXEC_JS_FUNC:
+        this.handleExecFunction(eventData)
+      break
     }
+  }
+
+  /**
+   * Execute the JS function passed from the webchat window
+   * @param {Object} eventData - iframe data sent from webchat window
+   */
+  handleExecFunction(eventData) {
+    if (!eventData.hasOwnProperty('data')) {
+      return
+    }
+
+    const execJsFunc = eventData.data
+    const response = parseFunctionString(execJsFunc)
+
+    if (!response) {
+      return
+    }
+
+    executeFunctionByName(response.functionName, window, response.args)
   }
 
   /**
