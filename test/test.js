@@ -726,6 +726,19 @@ describe('YeldaChat', () => {
     })
   })
 
+  describe('yeldaChat.parseFunctionString', () => {
+    it('should return {functionName: "this.bla", args: ["test"] if passed "this.bla("test")"', () => {
+      const data = {functionName: 'this.bla', args: ['test']}
+      expect(yeldaChat.parseFunctionString("this.bla('test')")).to.deep.equal(data)
+    })
+
+    it('should return {functionName: "this.bla", args: [true, 3, "test", [1, 2], {x: "x"}] if passed "this.bla(true, 3, "test", [1,2], {x:"x"})', () => {
+      const data = {functionName: 'this.bla', args: [true, 3, 'test', [1, 2], {x: 'x'}]}
+      // Objects are JSON stringified + URL encoded
+      expect(yeldaChat.parseFunctionString("this.bla(true, 3, 'test', '%5B1%2C2%5D', '%7B%22x%22%3A%22x%22%7D')")).to.deep.equal(data)
+    })
+  })
+
   /**
    * Since we are resetting and updating the mockRequest(voiceFirstUI & isActivated settings),
    * if platformSettings test cases runs parallel with other test cases,

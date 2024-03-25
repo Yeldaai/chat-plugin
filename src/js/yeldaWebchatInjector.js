@@ -28,74 +28,6 @@ const isStrLikelyEncoded = (str) => {
 }
 
 /**
- * Parse the function string to get the function name & arguments
- * @param {String} str
- * @returns {Object|null} {functionName, args}
- */
-const parseFunctionString = (str) => {
-  // Regular expression to match function name and its arguments
-  const regex = /((?:[a-zA-Z_$][\w$]*\.)*)([a-zA-Z_$][\w$]*)\(([^]*)\)/
-
-  // Executing the regex to get the match
-  const match = regex.exec(str)
-
-  if (!match) {
-    // If the string doesn't match the expected format
-    return null
-  }
-
-  // Extracting function name
-  const namespaces = match[1] || ''
-  const functionName = namespaces + match[2]
-
-  // Extracting arguments
-  const argsStr = match[3].trim()
-
-  let args = []
-
-  if (argsStr !== '') {
-    let argBuffer = ''
-    let parenCount = 0
-    for (const element of argsStr) {
-        if (element === '(') parenCount++
-        else if (element === ')') parenCount--
-
-        if (element === ',' && parenCount === 0) {
-            args.push(argBuffer.trim())
-            argBuffer = ''
-        } else {
-            argBuffer += element
-        }
-    }
-    args.push(argBuffer.trim())
-  }
-
-  // Convert string representation of boolean, numbers, arrays, and objects to their actual types
-  args = args.map(arg => {
-    if (arg === 'true') return true
-    else if (arg === 'false') return false
-    else if (!isNaN(arg)) return parseFloat(arg)
-    else if (arg === 'null') return null
-    else if (arg.startsWith('[') && arg.endsWith(']')) {
-      try {
-        return JSON.parse(arg)
-      } catch(err) {
-        return ''
-      }
-    } else if (isStrLikelyEncoded(arg)) {
-      try{
-        return JSON.parse(decodeURIComponent(arg))
-      } catch(err) {
-        return ''
-      }
-    }
-    return arg.replace(/^['"]|['"]$/g, '') // Remove surrounding quotes if any
-  })
-
-  return { functionName, args }
-}
-
-/**
  * Execute the function by name with the arguments
  * @param {String} functionName
  * @param {Context} context
@@ -119,6 +51,74 @@ const executeFunctionByName = (functionName, context, args) => {
 
 
 class YeldaChat {
+  /**
+ * Parse the function string to get the function name & arguments
+ * @param {String} str
+ * @returns {Object|null} {functionName, args}
+ */
+  parseFunctionString(str) {
+    // Regular expression to match function name and its arguments
+    const regex = /((?:[a-zA-Z_$][\w$]*\.)*)([a-zA-Z_$][\w$]*)\(([^]*)\)/
+
+    // Executing the regex to get the match
+    const match = regex.exec(str)
+
+    if (!match) {
+      // If the string doesn't match the expected format
+      return null
+    }
+
+    // Extracting function name
+    const namespaces = match[1] || ''
+    const functionName = namespaces + match[2]
+
+    // Extracting arguments
+    const argsStr = match[3].trim()
+
+    let args = []
+
+    if (argsStr !== '') {
+      let argBuffer = ''
+      let parenCount = 0
+      for (const element of argsStr) {
+          if (element === '(') parenCount++
+          else if (element === ')') parenCount--
+
+          if (element === ',' && parenCount === 0) {
+              args.push(argBuffer.trim())
+              argBuffer = ''
+          } else {
+              argBuffer += element
+          }
+      }
+      args.push(argBuffer.trim())
+    }
+
+    // Convert string representation of boolean, numbers, arrays, and objects to their actual types
+    args = args.map(arg => {
+      if (arg === 'true') return true
+      else if (arg === 'false') return false
+      else if (!isNaN(arg)) return parseFloat(arg)
+      else if (arg === 'null') return null
+      else if (arg.startsWith('[') && arg.endsWith(']')) {
+        try {
+          return JSON.parse(arg)
+        } catch(err) {
+          return ''
+        }
+      } else if (isStrLikelyEncoded(arg)) {
+        try{
+          return JSON.parse(decodeURIComponent(arg).replace(/^['"]|['"]$/g, ''))
+        } catch(err) {
+          return ''
+        }
+      }
+      return arg.replace(/^['"]|['"]$/g, '') // Remove surrounding quotes if any
+    })
+
+    return { functionName, args }
+  }
+
   /**
    * Updates the url with the given parameter and value
    * @param {String} uri
@@ -620,7 +620,7 @@ class YeldaChat {
     }
 
     const execJsFunc = eventData.data
-    const response = parseFunctionString(execJsFunc)
+    const response = this.parseFunctionString(execJsFunc)
 
     if (!response) {
       return
