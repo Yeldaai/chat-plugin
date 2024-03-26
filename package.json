@@ -70,9 +70,5 @@
     "lg-zoom.js": "^1.2.0",
     "lightgallery.js": "^1.2.0",
     "mobile-detect": "^1.4.4"
-  },
-  "engines": {
-    "node": "16.4.0",
-    "npm": "7.18.1"
   }
 }
