@@ -15,9 +15,11 @@ import config from '../config'
  */
 const isStrLikelyEncoded = (str) => {
   // Check if the string contains any characters that would typically need encoding
+  // eslint-disable-next-line no-useless-escape
   const needsEncoding = /[?&=<>#%{}|\\\^~\[\]`;"\s]/.test(str)
 
   // Check if the string contains any non-ASCII characters
+  // eslint-disable-next-line no-control-regex
   const hasNonASCII = /[^\x00-\x7F]/.test(str);
 
   // Check if the string contains any percent-encoded characters
