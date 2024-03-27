@@ -14,10 +14,6 @@ import config from '../config'
  * @returns {Boolean}
  */
 const isStrLikelyEncoded = (str) => {
-  // Check if the string contains any characters that would typically need encoding
-  // eslint-disable-next-line no-useless-escape
-  const needsEncoding = /[?&=<>#%{}|\\\^~\[\]`;"\s]/.test(str)
-
   // Check if the string contains any non-ASCII characters
   // eslint-disable-next-line no-control-regex
   const hasNonASCII = /[^\x00-\x7F]/.test(str);
@@ -26,7 +22,7 @@ const isStrLikelyEncoded = (str) => {
   const hasPercentEncoding = /%[0-9A-Fa-f]{2}/.test(str)
 
   // Return true if any of the conditions are met
-  return needsEncoding || hasNonASCII || hasPercentEncoding
+  return hasNonASCII || hasPercentEncoding
 }
 
 /**
@@ -117,7 +113,6 @@ class YeldaChat {
       }
       return arg.replace(/^['"]|['"]$/g, '') // Remove surrounding quotes if any
     })
-
     return { functionName, args }
   }
 
