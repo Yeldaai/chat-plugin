@@ -26,6 +26,23 @@ const isStrLikelyEncoded = (str) => {
 }
 
 /**
+ * Check whether the string is stringified object
+ * @param {String} str
+ * @returns {Boolean}
+ */
+const isStringifiedObject = (str) => {
+  try {
+    // Replace single quotes with double quotes
+    const jsonString = str.replace(/'/g, '"')
+    // Attempt to parse the string
+    const obj = JSON.parse(jsonString)
+    return typeof obj === 'object' && obj !== null
+  } catch (error) {
+    return false // Parsing failed, not a valid JSON string
+  }
+}
+
+/**
  * Execute the function by name with the arguments
  * @param {String} functionName
  * @param {Context} context
@@ -110,9 +127,16 @@ class YeldaChat {
         } catch(err) {
           return ''
         }
+      } else if (isStringifiedObject(arg)) {
+        try{
+          return JSON.parse(arg.replace(/'/g, '"'))
+        } catch(err) {
+          return ''
+        }
       }
       return arg.replace(/^['"]|['"]$/g, '') // Remove surrounding quotes if any
     })
+
     return { functionName, args }
   }
 
