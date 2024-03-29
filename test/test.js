@@ -737,6 +737,21 @@ describe('YeldaChat', () => {
       // Objects are JSON stringified + URL encoded
       expect(yeldaChat.parseFunctionString("this.bla(true, 3, 'test', '%5B1%2C2%5D', '%7B%22x%22%3A%22x%22%7D')")).to.deep.equal(data)
     })
+
+
+    it('should return {functionName: "data.push", args: [{"success": true}] if passed "data.push({success: true})', () => {
+      const data = {functionName: 'data.push', args: [{success: 'true'}]}
+      expect(yeldaChat.parseFunctionString("data.push({'success': 'true'})")).to.deep.equal(data)
+    })
+
+    it('should return {functionName: "data.push", args: [[1, 2, "three"]] if passed "data.push({success: true})', () => {
+      // Arrays need to be encoded, because it contains "," which breaks the argument separation regex in parseFunctionString
+      const param = [1, 2, "three"]
+      const encodedParam = encodeURIComponent(JSON.stringify(param))
+      const data = {functionName: 'data.push', args: [param]}
+
+      expect(yeldaChat.parseFunctionString("data.push("+encodedParam+")")).to.deep.equal(data)
+    })
   })
 
   /**
