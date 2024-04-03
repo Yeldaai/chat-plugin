@@ -732,7 +732,7 @@ describe('YeldaChat', () => {
       expect(yeldaChat.parseFunctionString("this.bla('test')")).to.deep.equal(data)
     })
 
-    it('should return {functionName: "this.bla", args: [true, 3, "test", [1, 2], {x: "x"}] if passed "this.bla(true, 3, "test", [1,2], {x:"x"})"', () => {
+    it('should return {functionName: "this.bla", args: [true, 3, "test", [1, 2], {x: "x"}] if passed "this.bla(true, 3, "test", "%5B1%2C2%5D", "%7B%22x%22%3A%22x%22%7D")"', () => {
       const data = {functionName: 'this.bla', args: [true, 3, 'test', [1, 2], {x: 'x'}]}
       // Objects are JSON stringified + URL encoded
       expect(yeldaChat.parseFunctionString("this.bla(true, 3, 'test', '%5B1%2C2%5D', '%7B%22x%22%3A%22x%22%7D')")).to.deep.equal(data)
@@ -753,10 +753,10 @@ describe('YeldaChat', () => {
       expect(yeldaChat.parseFunctionString("data.push("+encodedParam+")")).to.deep.equal(data)
     })
 
-    it('should return {functionName: "data.push", args: ["1, 2", "{"event":"OpenGuide","guide": "campagne-sms", {inner: "test"}}", 13, "bla", true, "23", "[1, "fiu", false, "14"]"] if passed "data.push("1, 2", {"event":"OpenGuide","guide": "campagne-sms", {inner: "test"}}, 13, "bla", true, "23", [1, "fiu", false, "14"])"', () => {
+    it('should return {functionName: "data.push", args: ["1, 2", "{"event":"OpenGuide","guide": "campagne-sms", "inner": {inner: "test"}}", 13, "bla", true, "23", "[1, "fiu", false, "14"]"] if passed "data.push("1, 2", {"event":"OpenGuide","guide": "campagne-sms", "inner": {inner: "test"}}, 13, "bla", true, "23", [1, "fiu", false, "14"])"', () => {
       const param = [
         "1, 2",
-        "{'event':'OpenGuide','guide': 'campagne-sms', {inner: 'test'}}",
+        "{'event':'OpenGuide','guide': 'campagne-sms', 'inner': {inner: 'test'}}",
         13,
         'bla',
         true,
@@ -765,7 +765,7 @@ describe('YeldaChat', () => {
       ]
       const data = {functionName: 'data.push', args: param}
 
-      expect(yeldaChat.parseFunctionString("data.push('1, 2', {'event':'OpenGuide','guide': 'campagne-sms', {inner: 'test'}}, 13, 'bla', true, '23', [1, 'fiu', false, '14'])")).to.deep.equal(data)
+      expect(yeldaChat.parseFunctionString("data.push('1, 2', {'event':'OpenGuide','guide': 'campagne-sms', 'inner': {inner: 'test'}}, 13, 'bla', true, '23', [1, 'fiu', false, '14'])")).to.deep.equal(data)
     })
   })
 
