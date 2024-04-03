@@ -744,7 +744,7 @@ describe('YeldaChat', () => {
       expect(yeldaChat.parseFunctionString("data.push({'success': 'true'})")).to.deep.equal(data)
     })
 
-    it('should return {functionName: "data.push", args: [[1, 2, "three"]] if passed "data.push({success: true})"', () => {
+    it('should return {functionName: "data.push", args: [[1, 2, "three"]] if passed "data.push("1%2C2%2Cthree")"', () => {
       // Arrays need to be encoded, because it contains "," which breaks the argument separation regex in parseFunctionString
       const param = [1, 2, "three"]
       const encodedParam = encodeURIComponent(JSON.stringify(param))
@@ -753,7 +753,7 @@ describe('YeldaChat', () => {
       expect(yeldaChat.parseFunctionString("data.push("+encodedParam+")")).to.deep.equal(data)
     })
 
-    it('should return {functionName: "data.push", args: [[1, 2, "three"]] if passed "data.push("1, 2", {"event":"OpenGuide","guide": "campagne-sms", {inner: "test"}}, 13, "bla", true, "23", [1, "fiu", false, "14"])"', () => {
+    it('should return {functionName: "data.push", args: ["1, 2", "{"event":"OpenGuide","guide": "campagne-sms", {inner: "test"}}", 13, "bla", true, "23", "[1, "fiu", false, "14"]"] if passed "data.push("1, 2", {"event":"OpenGuide","guide": "campagne-sms", {inner: "test"}}, 13, "bla", true, "23", [1, "fiu", false, "14"])"', () => {
       const param = [
         "1, 2",
         "{'event':'OpenGuide','guide': 'campagne-sms', {inner: 'test'}}",
