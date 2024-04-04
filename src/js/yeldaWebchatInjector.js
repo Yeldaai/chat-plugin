@@ -95,11 +95,19 @@ class YeldaChat {
     if (argsStr !== '') {
       let argBuffer = ''
       let parenCount = 0
-      for (const element of argsStr) {
-          if (element === '(') parenCount++
-          else if (element === ')') parenCount--
+      const openingBrackets = ['(', '[', '{']
+      const closingBrackets = [')', ']', '}']
+      let isQuotesOpened = false
 
-          if (element === ',' && parenCount === 0) {
+      for (const element of argsStr) {
+        if (element === `'`) {
+            isQuotesOpened = !isQuotesOpened
+          }
+
+          if (openingBrackets.includes(element)) parenCount++
+          else if(closingBrackets.includes(element)) parenCount--
+
+          if (element === ',' && parenCount === 0 && !isQuotesOpened) {
               args.push(argBuffer.trim())
               argBuffer = ''
           } else {
@@ -117,7 +125,7 @@ class YeldaChat {
       else if (arg === 'null') return null
       else if (arg.startsWith('[') && arg.endsWith(']')) {
         try {
-          return JSON.parse(arg)
+          return JSON.parse(JSON.stringify(arg))
         } catch(err) {
           return ''
         }
