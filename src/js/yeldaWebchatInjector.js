@@ -1310,7 +1310,7 @@ class YeldaChat {
     const webchatFrame = document.getElementById('web_chat_frame')
     if (webchatFrame) {
       this.openChat()
-      webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message })
+      webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.SEND_USER_MESSAGE, data: message }, '*')
     }
   }
 
