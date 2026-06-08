@@ -1396,6 +1396,18 @@ class YeldaChat {
       event: config.FRAME_EVENT_TYPES.SENT.LEAVE_VIEWPORT
     }, '*')
   }
+
+  /**
+   * Send an updateSlot postMessage to the webchat iframe
+   * @param {Object} slotObject {slotSlug: slotValue}
+   */
+  updateSlot(slotObject) {
+    const webchatFrame = document.getElementById('web_chat_frame')
+    if (webchatFrame) {
+      webchatFrame.contentWindow.postMessage(slotObject, '*')
+      webchatFrame.contentWindow.postMessage({ event: config.FRAME_EVENT_TYPES.SENT.UPDATE_SLOT, data: slotObject }, '*')
+    }
+  }
 }
 
 let yeldaChat = new YeldaChat()

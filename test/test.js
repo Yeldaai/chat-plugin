@@ -931,6 +931,38 @@ describe('YeldaChat', () => {
         })
       })
 
+      describe('yeldaChat.updateSlot', () => {
+        let postMessageCalls = []
+
+        before(async () => {
+          yeldaChat.unLoadChat()
+          await yeldaChat.setupChat(validMockData)
+
+          postMessageCalls = []
+          const webchatFrame = document.getElementById('web_chat_frame')
+          webchatFrame.contentWindow.postMessage = (...args) => {
+            postMessageCalls.push(args)
+          }
+        })
+
+        it('should send the slot object and then the updateSlot event to the iframe', () => {
+          const slotObject = { customerId: '1234', channel: 'web' }
+
+          yeldaChat.updateSlot(slotObject)
+
+          expect(postMessageCalls).to.deep.equal([
+            [slotObject, '*'],
+            [
+              {
+                event: 'updateSlot',
+                data: slotObject
+              },
+              '*'
+            ]
+          ])
+        })
+      })
+
       describe('yeldaChat.isActivated', () => {
         before(async () => {
           mock.reset()
