@@ -10,13 +10,14 @@ module.exports = {
   },
   HOST: {
     PRODUCTION: 'app.yelda.ai',
-    STAGING: 'staging.yelda.ai',
+    STAGING: 'staging.yelda.ai'
   },
   FRAME_EVENT_TYPES: {
     SENT: {
       OPEN_CHAT: 'openChat',
       LEAVE_VIEWPORT: 'leaveViewPort',
       SEND_USER_MESSAGE: 'sendUserMessage',
+      UPDATE_SLOT: 'updateSlot',
       URL_UPDATE: 'urlUpdate'
     },
     RECEIVED: {

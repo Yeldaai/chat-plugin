@@ -23,7 +23,7 @@ Each time a new package version is published, we also update static minified ver
 ## Usage - From  Node Packages Manager
 
 **System requirements**
-Node.JS 8+
+Node.JS 10.12+
 
 **Install & setup**
 
@@ -105,7 +105,35 @@ yeldaChat.init({
 });
 ```
 
-To avoid issue with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.reset(data)`
+To avoid issues with window.onload which might not be called when using JS Frameworks, you can also use `yeldaChat.setupChat(data)`, and even reset it with `yeldaChat.resetChat(data)`
+
+## Public API for external developers
+
+The `yeldaChat` object exposes the following methods:
+
+- `init(data)`: initialize the chat and wait for the page load if needed
+- `resetChat(data)`: destroy the current chat instance and optionally reinitialize it
+- `setupChat(data)`: initialize the chat immediately without waiting for `window.onload`
+- `openChat()`: open the chat window
+- `closeChat()`: close the chat window
+- `sendMessageToChat(message)`: open the chat and send a user message to the iframe
+- `updateSlot(slotObject)`: send a slot update to the iframe (posts the slot object, then an `updateSlot` event with that object as `data`)
+
+Example:
+
+```javascript
+yeldaChat.init({
+  assistantSlug: 'fm_logistic',
+  assistantId: '5b7edb2c1060312cfeaa7981',
+  assistantUrl: 'https://staging.yelda.ai',
+  chatPath: '/chat',
+  locale: 'fr_FR'
+})
+
+yeldaChat.openChat()
+yeldaChat.sendMessageToChat('Hello')
+yeldaChat.updateSlot({ customerId: '1234' })
+```
 
 ## Issues and Feature Requests
 
