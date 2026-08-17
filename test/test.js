@@ -11,8 +11,8 @@
  * 6. test createWebChatFrame function should create iframeContainer
  */
 
-import { expect, should, use, assert } from 'chai'
-import mock from 'xhr-mock'
+const { expect, should, use, assert } = require('chai')
+const mock = require('xhr-mock').default
 
 // mock.setup() sets global.XMLHttpRequest with mock xhr
 mock.setup()
@@ -36,9 +36,11 @@ testAPIUrls.forEach(url => {
 })
 
 // To Fix undefined error on navigator while running the test
-global.navigator = {
-  userAgent: 'node.js'
-}
+Object.defineProperty(global, 'navigator', {
+  value: { userAgent: 'node.js' },
+  configurable: true,
+  writable: true
+})
 
 // To Fix undefined error on MutationObserver while running the test
 global.MutationObserver = class {
@@ -770,217 +772,182 @@ describe('YeldaChat', () => {
   })
 
   /**
-   * Since we are resetting and updating the mockRequest(voiceFirstUI & isActivated settings),
-   * if platformSettings test cases runs parallel with other test cases,
-   * it causes error due to asynchronous nature.
-   * So "after" root level hook is used to run the platformSettings test cases after
-   * all other test cases are executed
+   * These tests reset the shared mock request handlers, so keep this suite last.
    */
-  after(() => {
-    describe('yeldaChat.platformSettings', () => {
-      describe('yeldaChat.voiceFirstUI', () => {
-        before(async () => {
-          mock.reset()
-          mock.get(testAPIUrls[0], {
-            status: 201,
-            body: JSON.stringify({ data: {isVoiceFirstUI: true} })
-          })
-
-          yeldaChat.unLoadChat()
-
-          await yeldaChat.setupChat(validMockData)
+  describe('yeldaChat.platformSettings', () => {
+    describe('yeldaChat.bubbleText set', () => {
+      before((done) => {
+        mock.reset()
+        mock.get(testAPIUrls[0], {
+          status: 201,
+          body: JSON.stringify({ data: { bubbleText: 'coucou' } })
         })
 
-        it('should contain voiceFirstUI class', (done) => {
-          expect(yeldaChat.iframeContainer).to.have.attribute('class', 'yelda_iframe_container voiceFirstUI')
-          done()
-        })
-
-        it('expect assistantImage not exists in document', (done) => {
-          expect(yeldaChat.assistantImage).to.be.null
-          done()
-        })
-
-        it('should not contain assistant image', (done) => {
-          expect(document.querySelector('#yelda_assistant_img')).to.be.null
-          done()
+        yeldaChat.unLoadChat()
+        yeldaChat.setupChat(validMockData).then(() => {
+          yeldaChat.webChatIframe.contentWindow.parent.postMessage('addBubbleText', '*')
+          // Delay is added to give time for messageListener to updates the assistant bubble text
+          setTimeout(() => {done()}, 100)
         })
       })
 
-      describe('yeldaChat.bubbleText set', () => {
-        before((done) => {
-          mock.reset()
-          mock.get(testAPIUrls[0], {
-            status: 201,
-            body: JSON.stringify({ data: { bubbleText: 'coucou' } })
-          })
+      it('should set assistantBubbleText', () => {
+        expect(yeldaChat.assistantBubbleText).not.to.be.null
+        expect(yeldaChat.assistantBubbleText).not.to.be.undefined
+        expect(yeldaChat.assistantBubbleText).to.have.rendered.text('coucou')
+      })
 
-          yeldaChat.unLoadChat()
-          yeldaChat.setupChat(validMockData).then(() => {
-            yeldaChat.webChatIframe.contentWindow.parent.postMessage('addBubbleText', '*')
-            // Delay is added to give time for messageListener to updates the assistant bubble text
-            setTimeout(() => {done()}, 100)
-          })
+      it('should add assistantBubbleText to webChatContainer', () => {
+        expect(yeldaChat.webChatContainer).to.contain('span')
+        expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
+      })
+    })
+
+    describe('yeldaChat.bubbleText not set', () => {
+      before(async () => {
+        mock.reset()
+        mock.get(testAPIUrls[0], {
+          status: 201,
+          body: JSON.stringify({ data: { bubbleText: '' } })
         })
 
-        it('should set assistantBubbleText', () => {
-          expect(yeldaChat.assistantBubbleText).not.to.be.null
-          expect(yeldaChat.assistantBubbleText).not.to.be.undefined
-          expect(yeldaChat.assistantBubbleText).to.have.rendered.text('coucou')
-        })
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+      })
 
-        it('should add assistantBubbleText to webChatContainer', () => {
-          expect(yeldaChat.webChatContainer).to.contain('span')
-          expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
+
+      it('should not set assistantBubbleText element', () => {
+        expect(yeldaChat.assistantBubbleText).to.be.null
+        expect(yeldaChat.webChatContainer).not.to.contain('span')
+      })
+    })
+
+    describe('yeldaChat.bubbleText is set on triggering minimal notification', () => {
+      before((done) => {
+        yeldaChat.unLoadChat()
+        yeldaChat.setupChat(validMockData).then(() => {
+          yeldaChat.webChatIframe.contentWindow.parent.postMessage(
+            { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
+            '*'
+          )
+          // Delay is added to give time for messageListener to updates the assistant bubble text
+          setTimeout(() => {done()}, 100)
         })
       })
 
-      describe('yeldaChat.bubbleText not set', () => {
-        before(async () => {
-          mock.reset()
-          mock.get(testAPIUrls[0], {
-            status: 201,
-            body: JSON.stringify({ data: { bubbleText: '' } })
-          })
-
-          yeldaChat.unLoadChat()
-          await yeldaChat.setupChat(validMockData)
-        })
-
-
-        it('should not set assistantBubbleText element', () => {
-          expect(yeldaChat.assistantBubbleText).to.be.null
-          expect(yeldaChat.webChatContainer).not.to.contain('span')
-        })
+      it('should set assistantBubbleText for notification', () => {
+        expect(yeldaChat.assistantBubbleText).not.to.be.null
+        expect(yeldaChat.assistantBubbleText).not.to.be.undefined
+        expect(yeldaChat.assistantBubbleText).to.have.rendered.text('Minimal notification message')
       })
 
-      describe('yeldaChat.bubbleText is set on triggering minimal notification', () => {
-        before((done) => {
-          yeldaChat.unLoadChat()
-          yeldaChat.setupChat(validMockData).then(() => {
-            yeldaChat.webChatIframe.contentWindow.parent.postMessage(
-              { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
-              '*'
-            )
-            // Delay is added to give time for messageListener to updates the assistant bubble text
-            setTimeout(() => {done()}, 100)
-          })
-        })
-
-        it('should set assistantBubbleText for notification', () => {
-          expect(yeldaChat.assistantBubbleText).not.to.be.null
-          expect(yeldaChat.assistantBubbleText).not.to.be.undefined
-          expect(yeldaChat.assistantBubbleText).to.have.rendered.text('Minimal notification message')
-        })
-
-        it('should add assistantBubbleText to webChatContainer', () => {
-          expect(yeldaChat.webChatContainer).to.contain('span')
-          expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
-        })
-
-        it('should contain close button if the assistantBubbleText exists', () => {
-          expect(yeldaChat.assistantBubbleText).to.contain('a.bubbleCloseButton')
-        })
-
-        it('should assistantBubbleText to be removed while clicking the bubbleCloseButton', () => {
-          document.getElementById('yelda_assistant_bubble_text_close').click()
-          expect(yeldaChat.assistantBubbleText).to.be.null
-          expect(yeldaChat.webChatContainer).not.to.contain('span')
-        })
+      it('should add assistantBubbleText to webChatContainer', () => {
+        expect(yeldaChat.webChatContainer).to.contain('span')
+        expect(yeldaChat.webChatContainer).to.contain(yeldaChat.assistantBubbleText)
       })
+
+      it('should contain close button if the assistantBubbleText exists', () => {
+        expect(yeldaChat.assistantBubbleText).to.contain('a.bubbleCloseButton')
+      })
+
+      it('should assistantBubbleText to be removed while clicking the bubbleCloseButton', () => {
+        document.getElementById('yelda_assistant_bubble_text_close').click()
+        expect(yeldaChat.assistantBubbleText).to.be.null
+        expect(yeldaChat.webChatContainer).not.to.contain('span')
+      })
+    })
 
     describe('yeldaChat.bubbleText should be removed while opening the webchat window', () => {
-        before((done) => {
-          yeldaChat.unLoadChat()
-          yeldaChat.setupChat(validMockData).then(() => {
-            yeldaChat.webChatIframe.contentWindow.parent.postMessage(
-              { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
-              '*'
-            )
+      before((done) => {
+        yeldaChat.unLoadChat()
+        yeldaChat.setupChat(validMockData).then(() => {
+          yeldaChat.webChatIframe.contentWindow.parent.postMessage(
+            { event: 'addMinimalNotificationText', text: 'Minimal notification message' },
+            '*'
+          )
 
-            // Delay is added to give time for messageListener to updates the assistant bubble text
-            setTimeout(() => {
-              yeldaChat.openChat()
-              done()
-            }, 100)
-
-          })
-        })
-
-        it('should not set assistantBubbleText element', () => {
-          expect(yeldaChat.assistantBubbleText).to.be.null
-          expect(yeldaChat.webChatContainer).not.to.contain('span')
-        })
-
-        it('should webChatContainer have y_active after opening the webchat', () => {
-          expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container y_active')
-        })
-      })
-
-      describe('yeldaChat.closeChat hide the webchat iframe', () => {
-        before((done) => {
-            // Delay is added to give time for messageListener to updates the assistant bubble text
+          // Delay is added to give time for messageListener to updates the assistant bubble text
           setTimeout(() => {
-            yeldaChat.closeChat()
+            yeldaChat.openChat()
             done()
           }, 100)
-        })
 
-        it('should webChatContainer note have y_active after closing the webchat', () => {
-          expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container')
         })
       })
 
-      describe('yeldaChat.updateSlot', () => {
-        let postMessageCalls = []
-
-        before(async () => {
-          yeldaChat.unLoadChat()
-          await yeldaChat.setupChat(validMockData)
-
-          postMessageCalls = []
-          const webchatFrame = document.getElementById('web_chat_frame')
-          webchatFrame.contentWindow.postMessage = (...args) => {
-            postMessageCalls.push(args)
-          }
-        })
-
-        it('should send the slot object and then the updateSlot event to the iframe', () => {
-          const slotObject = { customerId: '1234', channel: 'web' }
-
-          yeldaChat.updateSlot(slotObject)
-
-          expect(postMessageCalls).to.deep.equal([
-            [slotObject, '*'],
-            [
-              {
-                event: 'updateSlot',
-                data: slotObject
-              },
-              '*'
-            ]
-          ])
-        })
+      it('should not set assistantBubbleText element', () => {
+        expect(yeldaChat.assistantBubbleText).to.be.null
+        expect(yeldaChat.webChatContainer).not.to.contain('span')
       })
 
-      describe('yeldaChat.isActivated', () => {
-        before(async () => {
-          mock.reset()
-          mock.get(testAPIUrls[0], {
-            status: 201,
-            body: JSON.stringify({ data: {isActivated: false} })
-          })
+      it('should webChatContainer have y_active after opening the webchat', () => {
+        expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container y_active')
+      })
+    })
 
-          yeldaChat.unLoadChat()
-          await yeldaChat.setupChat(validMockData)
+    describe('yeldaChat.closeChat hide the webchat iframe', () => {
+      before((done) => {
+        // Delay is added to give time for messageListener to updates the assistant bubble text
+        setTimeout(() => {
+          yeldaChat.closeChat()
+          done()
+        }, 100)
+      })
+
+      it('should webChatContainer not have y_active after closing the webchat', () => {
+        expect(yeldaChat.webChatContainer).to.have.attribute('class', 'yelda_container')
+      })
+    })
+
+    describe('yeldaChat.updateSlot', () => {
+      let postMessageCalls = []
+
+      before(async () => {
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+
+        postMessageCalls = []
+        const webchatFrame = document.getElementById('web_chat_frame')
+        webchatFrame.contentWindow.postMessage = (...args) => {
+          postMessageCalls.push(args)
+        }
+      })
+
+      it('should send the slot object and then the updateSlot event to the iframe', () => {
+        const slotObject = { customerId: '1234', channel: 'web' }
+
+        yeldaChat.updateSlot(slotObject)
+
+        expect(postMessageCalls).to.deep.equal([
+          [slotObject, '*'],
+          [
+            {
+              event: 'updateSlot',
+              data: slotObject
+            },
+            '*'
+          ]
+        ])
+      })
+    })
+
+    describe('yeldaChat.isActivated', () => {
+      before(async () => {
+        mock.reset()
+        mock.get(testAPIUrls[0], {
+          status: 201,
+          body: JSON.stringify({ data: {isActivated: false} })
         })
 
-        it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', () => {
-          expect(yeldaChat.iframeContainer).to.be.null
-          expect(yeldaChat.webChatIframe).to.be.null
-          expect(yeldaChat.webChatContainer).to.be.null
-          expect(yeldaChat.parentContainer).to.be.null
-        })
+        yeldaChat.unLoadChat()
+        await yeldaChat.setupChat(validMockData)
+      })
+
+      it('iframeContainer & webChatIframe & webChatContainer & parentContainer should be removed when webchat is not activated', () => {
+        expect(yeldaChat.iframeContainer).to.be.null
+        expect(yeldaChat.webChatIframe).to.be.null
+        expect(yeldaChat.webChatContainer).to.be.null
+        expect(yeldaChat.parentContainer).to.be.null
       })
     })
   })

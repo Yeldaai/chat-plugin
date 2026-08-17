@@ -334,27 +334,8 @@ class YeldaChat {
       return
     }
 
-    const isVoiceFirstUI = this.webchatSettings.hasOwnProperty('isVoiceFirstUI')
-      ? this.webchatSettings.isVoiceFirstUI
-      : false
     const customImage = this.webchatSettings.image && this.webchatSettings.image.url
     const hasCustomStyle = this.webchatSettings.hasOwnProperty('isDefaultStyle') && !this.webchatSettings.isDefaultStyle
-
-    /**
-     * in isVoiceFirstUI mode
-     * - the assistant should be opened directly and will never be closed
-     * => we call directly openChat and do not add the assistant image
-     * - we don't want the box-shadow css style
-     *    => we add voiceFirstUI to iframeContainer
-     * - /chat vue render the voice first UI
-     *   => nothing more to do here
-     */
-    if (isVoiceFirstUI) {
-      this.iframeContainer.classList.add('voiceFirstUI')
-      this.openChat()
-      this.assistantImage = null
-      return
-    }
 
     if (!hasCustomStyle || !customImage) {
       this.addAssistantImageToWebChatContainer()

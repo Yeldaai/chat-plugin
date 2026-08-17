@@ -67,7 +67,13 @@ const webpackConfig = {
   },
   devtool: 'source-map',
   optimization: {
-    minimize: true
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        parallel: true
+      })
+    ]
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -99,10 +105,6 @@ const webpackConfig = {
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new UglifyJsPlugin({
-      sourceMap: true,
-      parallel: true
-    }),
     new CompressionPlugin({
       algorithm: 'gzip',
       minRatio: 0.8,

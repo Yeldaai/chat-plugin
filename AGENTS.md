@@ -13,7 +13,7 @@ description: Maintainer for the Yelda website chat injector plugin (webpack + br
 
 ## Setup
 
-- Node: use Node.js >=10.12.0 (Mocha 8.x requires >=10.12.0).
+- Node: use Node.js >=18.
 - Install deps: `npm install`
 - Build: `npm run build`
 - Test: `npm test`

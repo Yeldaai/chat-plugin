@@ -23,7 +23,7 @@ Each time a new package version is published, we also update static minified ver
 ## Usage - From  Node Packages Manager
 
 **System requirements**
-Node.JS 10.12+
+Node.js 18+
 
 **Install & setup**
 
@@ -171,7 +171,7 @@ npm run uploadBuildToS3 --semver=patch --destinationPath=/home/Documents/www/yel
 
 The MIT License (MIT)
 
-Copyright (c) 2018-2019 Yelda <dobby@yelda.ai>
+Copyright (c) 2018-2026 Yelda <dobby@yelda.ai>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
