@@ -260,8 +260,10 @@ a.bubbleCloseButton:hover {
 }
 
 
-/* Visible focus on the launcher for keyboard users */
+/* Visible focus on the launcher for keyboard users, without waiting for the appear animation when the focus comes back */
 .yelda_assistant_img:focus-visible {
   outline: 3px solid #1d76ea;
   outline-offset: 3px;
+  animation: none;
+  opacity: 1;
 }
