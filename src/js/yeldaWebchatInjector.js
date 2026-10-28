@@ -256,6 +256,7 @@ class YeldaChat {
     closeButton.setAttribute('id', 'yelda_assistant_bubble_text_close')
     closeButton.setAttribute('href', '#')
     closeButton.setAttribute('aria-label', this.getAccessibilityLabel('CLOSE_BUBBLE_TEXT'))
+    closeButton.setAttribute('lang', this.getAccessibilityLang())
     closeButton.innerHTML = '<span aria-hidden="true">&times;</span>'
     closeButton.onclick = this.closeBubbleText.bind(this)
     this.assistantBubbleText.prepend(closeButton)
@@ -307,6 +308,7 @@ class YeldaChat {
     this.assistantImage.setAttribute('role', 'button')
     this.assistantImage.setAttribute('tabindex', '0')
     this.assistantImage.setAttribute('aria-label', this.getAccessibilityLabel('OPEN_CHAT'))
+    this.assistantImage.setAttribute('lang', this.getAccessibilityLang())
 
     // Add click and keyboard events to assistant image
     this.assistantImage.addEventListener('click', this.openChatFromLauncher.bind(this))
@@ -501,6 +503,7 @@ class YeldaChat {
 
     // Screen readers announce the frame with its title
     iframe.setAttribute('title', this.getAccessibilityLabel('CHAT_FRAME_TITLE'))
+    iframe.setAttribute('lang', this.getAccessibilityLang())
 
     return iframe
   }
@@ -736,8 +739,23 @@ class YeldaChat {
    * @returns {String}
    */
   getAccessibilityLabel(key) {
-    const labels = config.ACCESSIBILITY_LABELS[this.labelsLocale] || config.ACCESSIBILITY_LABELS[config.DEFAULT_LOCALE]
-    return labels[key]
+    return config.ACCESSIBILITY_LABELS[this.getAccessibilityLocale()][key]
+  }
+
+  /**
+   * Get the locale of the labels read by screen readers, the default one if the webchat locale has no labels
+   * @returns {String}
+   */
+  getAccessibilityLocale() {
+    return config.ACCESSIBILITY_LABELS[this.labelsLocale] ? this.labelsLocale : config.DEFAULT_LOCALE
+  }
+
+  /**
+   * Get the language of the labels, so screen readers don't read them with the host page language, e.g. fr_FR -> fr-FR
+   * @returns {String}
+   */
+  getAccessibilityLang() {
+    return this.getAccessibilityLocale().replace('_', '-')
   }
 
   /**

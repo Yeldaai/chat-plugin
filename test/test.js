@@ -498,6 +498,7 @@ describe('YeldaChat', () => {
           expect(yeldaChat.assistantImage).to.have.attribute('role', 'button')
           expect(yeldaChat.assistantImage).to.have.attribute('tabindex', '0')
           expect(yeldaChat.assistantImage).to.have.attribute('aria-label', 'Ouvrir le chat')
+          expect(yeldaChat.assistantImage).to.have.attribute('lang', 'fr-FR')
         })
 
         it('should open the chat with the Enter key and move the focus into the webchat', () => {
