@@ -508,6 +508,14 @@ describe('YeldaChat', () => {
           expect(yeldaChat.webChatContainer).to.have.class('y_active')
           expect(document.activeElement).to.equal(yeldaChat.webChatIframe)
         })
+
+        it('should give the focus back to the launcher when closing the chat from the public API', () => {
+          yeldaChat.assistantImage.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter' }))
+          yeldaChat.closeChat()
+
+          expect(yeldaChat.webChatContainer).not.to.have.class('y_active')
+          expect(document.activeElement).to.equal(yeldaChat.assistantImage)
+        })
       })
 
       describe('yeldaChat.updateAssistantImageWithAssistantSettings', () => {

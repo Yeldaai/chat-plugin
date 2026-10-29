@@ -580,10 +580,6 @@ class YeldaChat {
         case config.FRAME_EVENT_TYPES.RECEIVED.CLOSE_CHAT:
           // 'closeChat' event triggered from webchat
           this.closeChat()
-          // Give the focus back to the launcher, the webchat window is hidden
-          if (this.assistantImage) {
-            this.assistantImage.focus()
-          }
         break
         case config.FRAME_EVENT_TYPES.RECEIVED.ABSTAIN_LEAVE_VIEWPORT:
           // 'abstainLeaveViewport' event triggered from webchat to stop listening to the leave viewport event
@@ -721,6 +717,11 @@ class YeldaChat {
     const yeldaContainerElement = document.getElementById('yelda_container')
     if (yeldaContainerElement !== null) {
       yeldaContainerElement.classList.remove('y_active')
+    }
+
+    // Give the focus back to the launcher when it was in the webchat window, which is now hidden
+    if (this.assistantImage && document.activeElement === document.getElementById('web_chat_frame')) {
+      this.assistantImage.focus()
     }
   }
 
