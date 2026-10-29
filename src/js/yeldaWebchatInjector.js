@@ -255,7 +255,9 @@ class YeldaChat {
     closeButton.setAttribute('class', 'bubbleCloseButton')
     closeButton.setAttribute('id', 'yelda_assistant_bubble_text_close')
     closeButton.setAttribute('href', '#')
-    closeButton.innerHTML = '&times;'
+    closeButton.setAttribute('aria-label', this.getAccessibilityLabel('CLOSE_BUBBLE_TEXT'))
+    closeButton.setAttribute('lang', this.getAccessibilityLang())
+    closeButton.innerHTML = '<span aria-hidden="true">&times;</span>'
     closeButton.onclick = this.closeBubbleText.bind(this)
     this.assistantBubbleText.prepend(closeButton)
   }
@@ -299,10 +301,24 @@ class YeldaChat {
     // Assistant Image setup
     this.assistantImage.setAttribute('id', 'yelda_assistant_img')
     this.assistantImage.setAttribute('class', 'yelda_assistant_img default')
-    this.assistantImage.innerHTML = '<i class="fas fa-comment"></i>'
+    this.assistantImage.innerHTML = '<i class="fas fa-comment" aria-hidden="true"></i>'
 
-    // Add click event to assistant image
-    this.assistantImage.addEventListener('click', this.openChat.bind(this))
+    // The image can be an element of the host page (bubbleContainerChildId), so it is made a button with ARIA
+    // instead of being replaced by a <button>
+    this.assistantImage.setAttribute('role', 'button')
+    this.assistantImage.setAttribute('tabindex', '0')
+    this.assistantImage.setAttribute('aria-label', this.getAccessibilityLabel('OPEN_CHAT'))
+    this.assistantImage.setAttribute('lang', this.getAccessibilityLang())
+
+    // Add click and keyboard events to assistant image
+    this.assistantImage.addEventListener('click', this.openChatFromLauncher.bind(this))
+    this.assistantImage.addEventListener('keydown', event => {
+      if (config.ACTIVATION_KEYS.includes(event.key)) {
+        // Avoid scrolling the host page with the space key
+        event.preventDefault()
+        this.openChatFromLauncher()
+      }
+    })
 
     // add assistantImage to webChatContainer using the webchatSettings
     this.updateAssistantImageWithAssistantSettings()
@@ -349,7 +365,7 @@ class YeldaChat {
       : customImage
 
     this.assistantImage.classList.remove('default', 'custom')
-    this.assistantImage.innerHTML = `<img src="${image}" alt="assistant">`
+    this.assistantImage.innerHTML = `<img src="${image}" alt="">`
     this.assistantImage.classList.add('custom')
 
     this.addAssistantImageToWebChatContainer()
@@ -484,6 +500,10 @@ class YeldaChat {
     } else {
       iframe = document.getElementById('web_chat_frame')
     }
+
+    // Screen readers announce the frame with its title
+    iframe.setAttribute('title', this.getAccessibilityLabel('CHAT_FRAME_TITLE'))
+    iframe.setAttribute('lang', this.getAccessibilityLang())
 
     return iframe
   }
@@ -698,6 +718,45 @@ class YeldaChat {
     if (yeldaContainerElement !== null) {
       yeldaContainerElement.classList.remove('y_active')
     }
+
+    // Give the focus back to the launcher when it was in the webchat window, which is now hidden
+    if (this.assistantImage && document.activeElement === document.getElementById('web_chat_frame')) {
+      this.assistantImage.focus()
+    }
+  }
+
+  /**
+   * Open the webchat window from the assistant image and move the focus into it
+   */
+  openChatFromLauncher() {
+    this.openChat()
+    // The launcher is hidden once the chat is opened, keyboard users continue in the webchat
+    document.getElementById('web_chat_frame').focus()
+  }
+
+  /**
+   * Get the label read by screen readers in the webchat locale
+   * @param {String} key - key of config.ACCESSIBILITY_LABELS
+   * @returns {String}
+   */
+  getAccessibilityLabel(key) {
+    return config.ACCESSIBILITY_LABELS[this.getAccessibilityLocale()][key]
+  }
+
+  /**
+   * Get the locale of the labels read by screen readers, the default one if the webchat locale has no labels
+   * @returns {String}
+   */
+  getAccessibilityLocale() {
+    return config.ACCESSIBILITY_LABELS[this.labelsLocale] ? this.labelsLocale : config.DEFAULT_LOCALE
+  }
+
+  /**
+   * Get the language of the labels, so screen readers don't read them with the host page language, e.g. fr_FR -> fr-FR
+   * @returns {String}
+   */
+  getAccessibilityLang() {
+    return this.getAccessibilityLocale().replace('_', '-')
   }
 
   /**
@@ -1194,6 +1253,9 @@ class YeldaChat {
       console.warn('document.body is not ready, please use yelda.init instead of yelda.setupChat or move the code in the page body')
       return null
     }
+
+    // Locale of the labels added for screen readers, known only now when the chat is loaded from a settingId
+    this.labelsLocale = data.locale
 
     // Create container for iframe
     this.createContainer()

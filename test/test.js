@@ -493,6 +493,29 @@ describe('YeldaChat', () => {
         it('assistantImage should have attribute class', () => {
           expect(yeldaChat.assistantImage).to.have.attribute('class', 'yelda_assistant_img default')
         })
+
+        it('assistantImage should be a keyboard focusable button with a name in the chat locale', () => {
+          expect(yeldaChat.assistantImage).to.have.attribute('role', 'button')
+          expect(yeldaChat.assistantImage).to.have.attribute('tabindex', '0')
+          expect(yeldaChat.assistantImage).to.have.attribute('aria-label', 'Ouvrir le chat')
+          expect(yeldaChat.assistantImage).to.have.attribute('lang', 'fr-FR')
+        })
+
+        it('should open the chat with the Enter key and move the focus into the webchat', () => {
+          yeldaChat.closeChat()
+          yeldaChat.assistantImage.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter' }))
+
+          expect(yeldaChat.webChatContainer).to.have.class('y_active')
+          expect(document.activeElement).to.equal(yeldaChat.webChatIframe)
+        })
+
+        it('should give the focus back to the launcher when closing the chat from the public API', () => {
+          yeldaChat.assistantImage.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter' }))
+          yeldaChat.closeChat()
+
+          expect(yeldaChat.webChatContainer).not.to.have.class('y_active')
+          expect(document.activeElement).to.equal(yeldaChat.assistantImage)
+        })
       })
 
       describe('yeldaChat.updateAssistantImageWithAssistantSettings', () => {
@@ -605,6 +628,10 @@ describe('YeldaChat', () => {
 
       it('webChatIframe should have attribute id', () => {
         expect(yeldaChat.webChatIframe).to.have.attribute('id', 'web_chat_frame')
+      })
+
+      it('webChatIframe should have a title for screen readers', () => {
+        expect(yeldaChat.webChatIframe).to.have.attribute('title', "Chat avec l'assistant virtuel")
       })
 
       it('webChatIframe should have attribute url', () => {
