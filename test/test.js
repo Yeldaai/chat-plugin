@@ -351,6 +351,32 @@ describe('YeldaChat', () => {
     it('should return true if webchatSettings.isActivated is true & data.bubbleContainerChildId & element exists', () => {
       expect(yeldaChat.shouldChatBeLoaded({ isActivated: true }, { bubbleContainerChildId: 'bubble' })).to.be.true
     })
+
+    it('should return true if the current website is in webchatSettings.allowedDomains', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: true, allowedDomains: ['www.site.com', 'yelda.ai'] })).to.be.true
+    })
+
+    it('should return false if the current website is not in webchatSettings.allowedDomains', () => {
+      expect(yeldaChat.shouldChatBeLoaded({ isActivated: true, allowedDomains: ['www.site.com'] })).to.be.false
+    })
+  })
+
+  describe('yeldaChat.isHostAllowed', () => {
+    it('should allow a listed host', () => {
+      expect(yeldaChat.isHostAllowed('www.site.com', ['www.site.com'])).to.be.true
+    })
+
+    it('should allow a subdomain of a wildcard domain', () => {
+      expect(yeldaChat.isHostAllowed('shop.site.com', ['*.site.com'])).to.be.true
+    })
+
+    it('should not allow the main domain of a wildcard domain', () => {
+      expect(yeldaChat.isHostAllowed('site.com', ['*.site.com'])).to.be.false
+    })
+
+    it('should not allow a host only ending like an allowed domain', () => {
+      expect(yeldaChat.isHostAllowed('mysite.com', ['*.site.com', 'site.com'])).to.be.false
+    })
   })
 
   describe('yeldaChat.isDataOutdated', () => {

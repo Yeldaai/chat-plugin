@@ -1136,7 +1136,25 @@ class YeldaChat {
       return false
     }
 
+    // allowedDomains is only sent when the admins restricted the webchat to some websites
+    if (webchatSettings.allowedDomains && !this.isHostAllowed(currentHost, webchatSettings.allowedDomains)) {
+      return false
+    }
+
     return true
+  }
+
+  /**
+   * Check the current website is in the webchat allowed domains
+   * @param {String} host - hostname of the current website, e.g. 'www.site.com'
+   * @param {Array<String>} allowedDomains - e.g. ['www.site.com', '*.site.com'], '*.site.com' allows the subdomains only
+   * @returns {Boolean}
+   */
+  isHostAllowed(host, allowedDomains) {
+    return allowedDomains.some(domain => domain.startsWith(config.ALLOWED_DOMAIN_WILDCARD_PREFIX)
+      // '*.site.com' gives '.site.com', matched by 'www.site.com' but not by 'site.com' or 'mysite.com'
+      ? host.endsWith(domain.slice(config.ALLOWED_DOMAIN_WILDCARD_PREFIX.length - 1))
+      : host === domain)
   }
 
   /**
