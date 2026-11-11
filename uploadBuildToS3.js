@@ -6,7 +6,10 @@
  *
  * To copy dist folder to Yelda repo include the yelda repo static folder path in the command
  * Like this
- * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch -o <code>
+ * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch --otp=<code>
+ *
+ * npm (>= 7) passes these options as lowercased env vars (npm_config_destinationpath, npm_config_semver, npm_config_otp),
+ * which are used as defaults. Running the script directly also works: node uploadBuildToS3 build -s patch -d <path> -o <code>
  * This command uploadBuildToS3 runs build, test, upload to s3, npm version update, push to git and move dist folder to yelda repo
  */
 
@@ -27,23 +30,28 @@ const argv = yargs
       semver: {
         description: 'Semantic versioning for the npm',
         alias: 's',
-        choices: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease']
+        choices: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease'],
+        default: process.env.npm_config_semver
       },
       destinationPath: {
         description: 'Destination path to copy',
         alias: 'd',
-        type: 'string'
+        type: 'string',
+        default: process.env.npm_config_destinationpath
       },
       otp: {
         description: 'Npm one-time password from your authenticator',
         alias: 'o',
-        type: 'string'
+        type: 'string',
+        default: process.env.npm_config_otp
       }
     })
     .argv
 
 const main = async () => {
   try {
+    checkNoUnexpectedArguments()
+
     // Check if there are any change that has not been committed before starting the script
     if (!(await checkIfAllChangesCommitted())) {
       throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
@@ -67,7 +75,21 @@ const main = async () => {
     process.exit()
   } catch (err) {
     console.error('Error while uploading to s3:', err)
-    process.exit()
+    process.exit(1)
+  }
+}
+
+/**
+ * Stops the release before anything is uploaded or pushed when stray positional arguments are given,
+ * e.g. the old `npm run uploadBuildToS3 -o <code>` form, where npm appends the code as a positional argument
+ * and the OTP would otherwise be silently ignored until `npm publish` fails at the very end
+ * @throws {Error}
+ */
+const checkNoUnexpectedArguments = () => {
+  const unexpectedArgs = argv._.filter((arg) => arg !== 'build')
+
+  if (unexpectedArgs.length) {
+    throw new Error(`Unexpected arguments: ${unexpectedArgs.join(' ')}. Use --otp=<code>, --semver=<semver> and --destinationPath=<path>.`)
   }
 }
 
