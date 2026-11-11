@@ -57,9 +57,12 @@ const main = async () => {
       throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
 
+    // Validate the destination before uploading, so a wrong path can't leave S3 updated without a release
+    const destFolderPath = getDestinationFolderPath()
+
     await uploadToS3()
 
-    await copyDistToYelda()
+    await copyDistToYelda(destFolderPath)
 
     const branchName = await getCurrentBranch()
 
@@ -233,21 +236,35 @@ const uploadToS3 = async () => {
 }
 
 /**
- * Copy html to dist folder
+ * Get the folder the dist folder should be copied to, and check that it is an existing directory
+ * @throws {Error} if destinationPath is provided but is not an existing directory
+ * @return {String|false} destination folder path, or false when destinationPath is not provided
  */
-const copyDistToYelda = async () => {
+const getDestinationFolderPath = () => {
   const destFolderPath = (argv._.includes('build') && argv.destinationPath) || false
 
+  if (!destFolderPath) {
+    return false
+  }
+
+  if (!fs.existsSync(destFolderPath) || !fs.statSync(destFolderPath).isDirectory()) {
+    throw new Error(`Provided destinationPath is not an existing folder: ${destFolderPath}`)
+  }
+
+  return destFolderPath
+}
+
+/**
+ * Copy the dist folder content to the destination folder
+ * @param {String|false} destFolderPath - validated by getDestinationFolderPath
+ */
+const copyDistToYelda = async (destFolderPath) => {
   if (!destFolderPath) {
     console.info('destinationPath is not provided in the option')
     return
   }
 
   console.info('Copying dist folder content to the destination folder')
-
-  if (!fs.existsSync(destFolderPath)) {
-    throw new Error('Provided folder in the argument does not exists')
-  }
 
   const distFolder = path.join(__dirname, '/dist')
   await executeCommand(`cp -a ${distFolder}/. ${destFolderPath}`)
