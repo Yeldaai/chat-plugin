@@ -6,7 +6,10 @@
  *
  * To copy dist folder to Yelda repo include the yelda repo static folder path in the command
  * Like this
- * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch -o <code>
+ * npm run uploadBuildToS3 --destinationPath=/home/Documents/www/yelda/git/yelda/frontend/static --semver=patch --otp=<code>
+ *
+ * npm (>= 7) passes these options as lowercased env vars (npm_config_destinationpath, npm_config_semver, npm_config_otp),
+ * which are used as defaults. Running the script directly also works: node uploadBuildToS3 build -s patch -d <path> -o <code>
  * This command uploadBuildToS3 runs build, test, upload to s3, npm version update, push to git and move dist folder to yelda repo
  */
 
@@ -27,31 +30,39 @@ const argv = yargs
       semver: {
         description: 'Semantic versioning for the npm',
         alias: 's',
-        choices: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease']
+        choices: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease'],
+        default: process.env.npm_config_semver
       },
       destinationPath: {
         description: 'Destination path to copy',
         alias: 'd',
-        type: 'string'
+        type: 'string',
+        default: process.env.npm_config_destinationpath
       },
       otp: {
         description: 'Npm one-time password from your authenticator',
         alias: 'o',
-        type: 'string'
+        type: 'string',
+        default: process.env.npm_config_otp
       }
     })
     .argv
 
 const main = async () => {
   try {
+    checkNoUnexpectedArguments()
+
     // Check if there are any change that has not been committed before starting the script
     if (!(await checkIfAllChangesCommitted())) {
       throw new Error('Some changes are not committed. Commit your changes or stash them before running this script.')
     }
 
+    // Validate the destination before uploading, so a wrong path can't leave S3 updated without a release
+    const destFolderPath = getDestinationFolderPath()
+
     await uploadToS3()
 
-    await copyDistToYelda()
+    await copyDistToYelda(destFolderPath)
 
     const branchName = await getCurrentBranch()
 
@@ -67,7 +78,21 @@ const main = async () => {
     process.exit()
   } catch (err) {
     console.error('Error while uploading to s3:', err)
-    process.exit()
+    process.exit(1)
+  }
+}
+
+/**
+ * Stops the release before anything is uploaded or pushed when stray positional arguments are given,
+ * e.g. the old `npm run uploadBuildToS3 -o <code>` form, where npm appends the code as a positional argument
+ * and the OTP would otherwise be silently ignored until `npm publish` fails at the very end
+ * @throws {Error}
+ */
+const checkNoUnexpectedArguments = () => {
+  const unexpectedArgs = argv._.filter((arg) => arg !== 'build')
+
+  if (unexpectedArgs.length) {
+    throw new Error(`Unexpected arguments: ${unexpectedArgs.join(' ')}. Use --otp=<code>, --semver=<semver> and --destinationPath=<path>.`)
   }
 }
 
@@ -213,21 +238,35 @@ const uploadToS3 = async () => {
 }
 
 /**
- * Copy html to dist folder
+ * Get the folder the dist folder should be copied to, and check that it is an existing directory
+ * @throws {Error} if destinationPath is provided but is not an existing directory
+ * @return {String|false} destination folder path, or false when destinationPath is not provided
  */
-const copyDistToYelda = async () => {
+const getDestinationFolderPath = () => {
   const destFolderPath = (argv._.includes('build') && argv.destinationPath) || false
 
+  if (!destFolderPath) {
+    return false
+  }
+
+  if (!fs.existsSync(destFolderPath) || !fs.statSync(destFolderPath).isDirectory()) {
+    throw new Error(`Provided destinationPath is not an existing folder: ${destFolderPath}`)
+  }
+
+  return destFolderPath
+}
+
+/**
+ * Copy the dist folder content to the destination folder
+ * @param {String|false} destFolderPath - validated by getDestinationFolderPath
+ */
+const copyDistToYelda = async (destFolderPath) => {
   if (!destFolderPath) {
     console.info('destinationPath is not provided in the option')
     return
   }
 
   console.info('Copying dist folder content to the destination folder')
-
-  if (!fs.existsSync(destFolderPath)) {
-    throw new Error('Provided folder in the argument does not exists')
-  }
 
   const distFolder = path.join(__dirname, '/dist')
   await executeCommand('cp', ['-a', `${distFolder}/.`, destFolderPath])
