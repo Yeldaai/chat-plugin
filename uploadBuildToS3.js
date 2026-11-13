@@ -18,7 +18,7 @@ const AWS = require('aws-sdk')
 const fs = require('fs')
 const path = require('path')
 const mime = require('mime')
-const { exec } = require('child_process')
+const { execFile } = require('child_process')
 const yargs = require('yargs')
 
 // Parse the command line arguments
@@ -77,20 +77,22 @@ const main = async () => {
  * @returns {Promise<Boolean>}
  */
 const checkIfAllChangesCommitted = async () => {
-  const output = await executeCommand('git status --porcelain')
+  const output = await executeCommand('git', ['status', '--porcelain'])
   return !output || !output.length
 }
 
 /**
- * Executes the given command
- * @param {String} cmd
+ * Executes the given command without a shell, so arguments (paths, branch name, OTP)
+ * are passed as-is and can never be interpreted as shell syntax
+ * @param {String} file - executable name
+ * @param {String[]} args - arguments
  * @return {Promise<string>} - stdout
  */
-const executeCommand = (cmd) => {
+const executeCommand = (file, args = []) => {
   return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout) => {
+    execFile(file, args, (error, stdout) => {
       if (error) {
-        reject(error)
+        return reject(error)
       }
 
       resolve(typeof stdout === 'string' ? stdout.trim() : false)
@@ -103,7 +105,7 @@ const executeCommand = (cmd) => {
  * @return {Promise<string>} stdout
  */
 const getCurrentBranch = async() => {
-  return await executeCommand('git rev-parse --abbrev-ref HEAD')
+  return await executeCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
 }
 
 /**
@@ -114,7 +116,7 @@ const updateNPMVersion = async () => {
   console.info('Updating npm version ...')
   // Get the Semantic Versioning from argument if found or else use the default 'patch'
   const semver = (argv._.includes('build') && argv.semver) || 'patch'
-  return await executeCommand(`npm -no-git-tag-version version ${semver}`)
+  return await executeCommand('npm', ['-no-git-tag-version', 'version', semver])
 }
 
 /**
@@ -122,9 +124,9 @@ const updateNPMVersion = async () => {
  */
 const publishPackage = async () => {
   console.info('Publishing the package ...')
-  const otp = (argv._.includes('build') && argv.otp) ? `--otp=${argv.otp}` : ''
+  const otpArgs = (argv._.includes('build') && argv.otp) ? [`--otp=${argv.otp}`] : []
 
-  return await executeCommand(`npm publish ${otp}`)
+  return await executeCommand('npm', ['publish', ...otpArgs])
 }
 
 /**
@@ -133,8 +135,8 @@ const publishPackage = async () => {
  * @return {Promise<string>} stdout
  */
 const pushToGit = async (branchName) => {
-  await executeCommand(`git commit -am "npm version update"`)
-  return await executeCommand(`git push origin ${branchName}`)
+  await executeCommand('git', ['commit', '-am', 'npm version update'])
+  return await executeCommand('git', ['push', 'origin', branchName])
 }
 
 /**
@@ -228,7 +230,7 @@ const copyDistToYelda = async () => {
   }
 
   const distFolder = path.join(__dirname, '/dist')
-  await executeCommand(`cp -a ${distFolder}/. ${destFolderPath}`)
+  await executeCommand('cp', ['-a', `${distFolder}/.`, destFolderPath])
   console.info('dist copied to the destination folder')
 
   return
