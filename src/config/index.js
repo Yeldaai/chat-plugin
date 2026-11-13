@@ -4,6 +4,8 @@ module.exports = {
   YELDA_PARAMETER: 'yparam',
   DEFAULT_PUBLICATION_STATUS: true,
   ALWAYS_ALLOWED_SITES_REGEX : /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/,
+  // Prefix of an allowed domain that allows all its subdomains, but not the domain itself
+  ALLOWED_DOMAIN_WILDCARD_PREFIX: '*.',
   REGEX_HOST: {
     STAGING: /staging.yelda.ai/,
     YELDA: /.yelda.ai/

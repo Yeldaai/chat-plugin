@@ -1,6 +1,6 @@
 {
   "name": "yelda-webchat",
-  "version": "1.1.24",
+  "version": "1.1.25",
   "description": "Website Chat Plugin",
   "main": "./dist/js/yeldaWebchatInjector.min.js",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "lint:check": "eslint src",
     "lint:fix": "eslint --fix src",
     "test": "mocha ./test/*.js",
-    "uploadBuildToS3": "npm run prepack && node uploadBuildToS3 build -s $npm_config_semver -d $npm_config_destinationPath -o $otp"
+    "uploadBuildToS3": "npm run prepack && node uploadBuildToS3 build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -54,7 +54,7 @@
     "mime": "^2.4.6",
     "mini-css-extract-plugin": "^0.4.1",
     "mocha": "^12.0.1",
-    "optimize-css-assets-webpack-plugin": "^5.0.8",
+    "optimize-css-assets-webpack-plugin": "^6.0.1",
     "postcss-import": "^12.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-url": "^8.0.0",
