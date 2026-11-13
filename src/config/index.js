@@ -3,7 +3,8 @@ module.exports = {
   CAN_BE_CLOSED_WITH_PARENT_ID: false,
   YELDA_PARAMETER: 'yparam',
   DEFAULT_PUBLICATION_STATUS: true,
-  ALWAYS_ALLOWED_SITES_REGEX : /^([a-z-]*.yelda.ai|localhost|0.0.0.0|127.0.0.1)$/,
+  // Dots escaped and a non-empty subdomain, so look-alike hosts such as evilyelda.ai are not always allowed
+  ALWAYS_ALLOWED_SITES_REGEX : /^([a-z0-9-]+\.yelda\.ai|localhost|0\.0\.0\.0|127\.0\.0\.1)$/,
   // Prefix of an allowed domain that allows all its subdomains, but not the domain itself
   ALLOWED_DOMAIN_WILDCARD_PREFIX: '*.',
   REGEX_HOST: {

@@ -361,6 +361,22 @@ describe('YeldaChat', () => {
     })
   })
 
+  describe('config.ALWAYS_ALLOWED_SITES_REGEX', () => {
+    const { ALWAYS_ALLOWED_SITES_REGEX } = require('../src/config')
+
+    for (const host of ['app.yelda.ai', 'staging.yelda.ai', 'app2.yelda.ai', 'localhost', '0.0.0.0', '127.0.0.1']) {
+      it(`should always allow ${host}`, () => {
+        expect(ALWAYS_ALLOWED_SITES_REGEX.test(host)).to.be.true
+      })
+    }
+
+    for (const host of ['evilyelda.ai', 'xyelda.ai', 'app.yeldaxai', '.yelda.ai', 'yelda.ai.evil.com', '0a0b0c0', '127x0x0x1']) {
+      it(`should not always allow the look-alike host ${host}`, () => {
+        expect(ALWAYS_ALLOWED_SITES_REGEX.test(host)).to.be.false
+      })
+    }
+  })
+
   describe('yeldaChat.isHostAllowed', () => {
     it('should allow a listed host', () => {
       expect(yeldaChat.isHostAllowed('www.site.com', ['www.site.com'])).to.be.true
