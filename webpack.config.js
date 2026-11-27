@@ -59,8 +59,9 @@ const webpackConfig = {
     libraryTarget: 'umd',
     library: 'YeldaChat',
     umdNamedDefine: true,
-    // The UMD bundle is also loaded in Node by the tests, where `self` is not defined
-    globalObject: 'this'
+    // window in a browser, even when the bundle is wrapped in a strict mode function where `this` is undefined.
+    // The tests load the UMD bundle in Node, where `self` is not defined
+    globalObject: "typeof self !== 'undefined' ? self : this"
   },
   devtool: 'source-map',
   optimization: {
