@@ -68,5 +68,12 @@
     "lg-zoom.js": "^1.2.0",
     "lightgallery.js": "^1.2.0",
     "mobile-detect": "^1.4.4"
-  }
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "not op_mini all",
+    "not kaios <= 2.5"
+  ]
 }
