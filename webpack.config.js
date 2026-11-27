@@ -1,7 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require("compression-webpack-plugin")
 
 const env = 'production'
@@ -14,31 +15,25 @@ let rules = [
   {
     test: /\.js$/,
     loader: 'babel-loader',
-    include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+    include: [resolve('src'), resolve('test')]
   },
   {
     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-    loader: 'url-loader',
-    options: {
-      limit: 10000,
-      name: './dist/img/[name].[hash:7].[ext]'
-    }
+    type: 'asset',
+    parser: { dataUrlCondition: { maxSize: 10000 } },
+    generator: { filename: 'img/[name].[hash:7][ext]' }
   },
   {
     test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-    loader: 'url-loader',
-    options: {
-      limit: 10000,
-      name: './dist/media/[name].[hash:7].[ext]'
-    }
+    type: 'asset',
+    parser: { dataUrlCondition: { maxSize: 10000 } },
+    generator: { filename: 'media/[name].[hash:7][ext]' }
   },
   {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-    loader: 'url-loader',
-    options: {
-      limit: 10000,
-      name: './dist/fonts/[name].[hash:7].[ext]'
-    }
+    type: 'asset',
+    parser: { dataUrlCondition: { maxSize: 10000 } },
+    generator: { filename: 'fonts/[name].[hash:7][ext]' }
   },
   {
     test: /\.(less|css)$/,
@@ -63,17 +58,16 @@ const webpackConfig = {
     libraryExport: 'default',
     libraryTarget: 'umd',
     library: 'YeldaChat',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    // The UMD bundle is also loaded in Node by the tests, where `self` is not defined
+    globalObject: 'this'
   },
   devtool: 'source-map',
   optimization: {
     minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        sourceMap: true,
-        parallel: true
-      })
-    ]
+    // Both bundles are minified, as they were with webpack 4: the .min files hold the same code
+    // The license comments stay in the bundles instead of separate .LICENSE.txt files, so dist keeps the same files
+    minimizer: [new TerserPlugin({ parallel: true, extractComments: false }), new CssMinimizerPlugin()]
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -89,22 +83,11 @@ const webpackConfig = {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+    // One CSS file per entry: css/yeldaWebchatInjector.css and css/yeldaWebchatInjector.min.css
     new MiniCssExtractPlugin({
-      filename: 'css/yeldaWebchatInjector.css',
-      chunkFilename: '[id].css',
-      minimize: false,
-      outputStyle: 'expanded'
-    }),
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      filename: 'css/yeldaWebchatInjector.min.css',
+      filename: 'css/[name].css',
       chunkFilename: '[id].css'
     }),
-    // keep module.id stable when vendor modules does not change
-    new webpack.HashedModuleIdsPlugin(),
-    // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new CompressionPlugin({
       algorithm: 'gzip',
       minRatio: 0.8,
